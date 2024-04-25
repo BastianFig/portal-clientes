@@ -1487,11 +1487,13 @@
                 <div class="card mt-3">
                     <div class="card-body">
                         <p class="card-title h3">Imagen del proyecto</p>
+                        @if($proyecto->fasediseno !== null)
                         @if ($proyecto->fasediseno->getImagenesAttribute()->isEmpty())
                             <img src="{{ url('/storage/no-imagen-proyecto.png') }}" alt="imagen por defecto" style="filter: grayscale(100%);" class="img-thumbnail img-fluid">
                         @else
                             <?php $media = $proyecto->fasediseno->getImagenesAttribute()->first(); ?>
                             <img src="{{ $media->getFullUrl() }}" alt="imagen del proyecto" style="max-width: 100%; height: auto;" class="img-thumbnail img-fluid">
+                        @endif
                         @endif
                     </div>
                 </div>
