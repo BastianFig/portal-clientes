@@ -837,9 +837,9 @@
                                                         <button class="btn btn-primary" id="save-btn-acepta">Guardar Firma</button>
                                                         <input type="hidden" id="signature-img" name="signature_img"> --}}
                                                         <h4 class="font-weight-bold">Firma en el siguiente recuadro</h4>
-                                                        <div id="signature-pad" class="m-signature-pad">
-                                                            <div class="m-signature-pad--body">
-                                                            <canvas style="border: 2px dashed #ccc" width="400" height="200"></canvas>
+                                                        <div id="signature-pad" class="m-signature-pad container-firma">
+                                                            <div class="m-signature-pad--body container-firma ">
+                                                            <canvas style="border: 2px dashed #ccc" class="canvas"></canvas>
                                                             </div>
                                                         
                                                             <div class="m-signature-pad--footer">
@@ -862,9 +862,9 @@
                                                     <button class="btn btn-primary" id="save-btn-acepta">Guardar Firma</button>
                                                     <input type="hidden" id="signature-img" name="signature_img"> --}}
                                                     <h4 class="font-weight-bold">Firma en el siguiente recuadro</h4>
-                                                    <div id="signature-pad" class="m-signature-pad">
-                                                        <div class="m-signature-pad--body">
-                                                        <canvas style="border: 2px dashed #ccc" width="400" height="200"></canvas>
+                                                    <div id="signature-pad" class="m-signature-pad container-firma">
+                                                        <div class="m-signature-pad--body container-firma">
+                                                        <canvas style="border: 2px dashed #ccc;" class="canvas" ></canvas>
                                                         </div>
                                                     
                                                         <div class="m-signature-pad--footer">
