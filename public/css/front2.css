@@ -1,0 +1,113 @@
+.input-file-custom-disable {
+    border: 1px solid grey !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: white;
+    color: grey;
+    border-radius: 10px !important;
+}
+
+.logo-welcome{
+    width:400px;
+}
+
+
+.carrousel-mobile {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2vw;
+    height: 15vw;
+}
+
+.carrousel-mobile .container-item-carrousel-mobile {
+    width: 33.33%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+}
+
+.carrousel-mobile button {
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    background-color: #009fd4;
+    color: white;
+    width: 8vw;
+    height: 8vw;
+}
+
+.carrousel-mobile button:hover {
+    cursor: pointer;
+}
+
+.container-item-carrousel-mobile ul {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.container-item-carrousel-mobile ul li {
+    font-size: 4vw;
+    text-align: center;
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display:none;
+    white-space: nowrap;
+}
+.container-item-carrousel-mobile ul li#fase-list-2 {
+    white-space: pre-wrap !important;
+}
+
+.container-item-carrousel-mobile ul li#fase-list-1 {
+    display: flex;
+}
+
+@media screen and (max-width:767px) {
+    .hello {
+        display: none !important;
+    }
+    
+    .logo-welcome{
+    width:150px;
+}
+
+    .carrousel-desktop {
+        display: none;
+    }
+}
+
+.hello {
+    color: black;
+}
+
+@media screen and (min-width:768px) {
+
+    .nav-mobile {
+        display: none !important;
+    }
+
+    .no-hello {
+        display: none;
+    }
+
+    .carrousel-mobile {
+        display: none;
+    }
+}
