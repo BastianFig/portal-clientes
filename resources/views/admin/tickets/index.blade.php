@@ -3,7 +3,7 @@
 
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.ticket.title_singular') }} {{ trans('global.list') }}
+        Lista de
     </div>
 
     <div class="card-body">
@@ -90,9 +90,7 @@
         { data: 'proyecto_nombre_proyecto', name: 'proyecto.nombre_proyecto' },
         { data: 'asunto', name: 'asunto' },
         { data: 'estado', name: 'estado' },
-        { data: 'user_id', name: 'user_id', render: function(data, type, row, meta) {
-            return row.users.name; // Asumiendo que la relación users está definida en el modelo Ticket
-        }}
+        { data: 'user_name', name: 'user_name' }
     ],
     orderCellsTop: true,
     order: [[ 0, 'desc' ]],

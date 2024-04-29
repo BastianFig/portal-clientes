@@ -24,7 +24,8 @@ use App\Mail\NotificarTicket;
 
 class TicketController extends Controller
 {
-    public function cerrarTicket(Request $request){
+    public function cerrarTicket(Request $request)
+    {
         $id_ticket = $request->ticket_id;
         $ticket = Ticket::find($id_ticket);
         if ($ticket) {
@@ -36,7 +37,8 @@ class TicketController extends Controller
     }
 
 
-    public function asignar_vendedor(Request $request){
+    public function asignar_vendedor(Request $request)
+    {
         $id_ticket = $request->ticket_id;
         $ticket = Ticket::find($id_ticket);
         if ($ticket) {
@@ -47,18 +49,21 @@ class TicketController extends Controller
         return back();
     }
 
-    public function getVendedor(Request $request){
+    public function getVendedor(Request $request)
+    {
         $id_proyecto = $request->id_proyecto;
-        $response = DB::select("SELECT id_vendedor FROM proyectos WHERE id =".$id_proyecto);
+        $response = DB::select("SELECT id_vendedor FROM proyectos WHERE id =" . $id_proyecto);
         $id_vendedor = $response[0]->id_vendedor;
-        
-         return response()->json($id_vendedor);
+
+        return response()->json($id_vendedor);
     }
-    public function storeMensaje(Request $request){
+    public function storeMensaje(Request $request)
+    {
         $sender_id = Auth::user()->id;
         $current_timestamp = Carbon::now()->toDateTimeString();
         DB::table('mensajes_ticket')->insert(
-            array('sender_id' => $sender_id,
+            array(
+                'sender_id' => $sender_id,
                 'ticket_id' => $request->ticket_id,
                 'mensaje' => $request->mensaje,
                 'created_at' => $current_timestamp,
@@ -105,9 +110,9 @@ class TicketController extends Controller
             $table->addColumn('actions', '&nbsp;');
 
             $table->editColumn('actions', function ($row) {
-                $viewGate      = 'ticket_show';
-                $editGate      = 'ticket_edit';
-                $deleteGate    = 'ticket_delete';
+                $viewGate = 'ticket_show';
+                $editGate = 'ticket_edit';
+                $deleteGate = 'ticket_delete';
                 $crudRoutePart = 'tickets';
 
                 return view('partials.datatablesActions', compact(
@@ -116,17 +121,9 @@ class TicketController extends Controller
                     'deleteGate',
                     'crudRoutePart',
                     'row'
-                ));
+                )
+                );
             });
-            
-            /*$table->editColumn('user', function ($row) {
-                $labels = [];
-                foreach ($row->users as $user) {
-                    $labels[] = sprintf('<span class="label label-info label-many">%s</span>', $user->name);
-                }
-
-                return implode(' ', $labels);
-            });*/
 
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : '';
@@ -141,6 +138,10 @@ class TicketController extends Controller
             $table->editColumn('asunto', function ($row) {
                 return $row->asunto ? $row->asunto : '';
             });
+            $table->addColumn('user_name', function ($row) {
+                return $row->users ? $row->users->name : '';
+            });
+
 
             $table->rawColumns(['actions', 'placeholder', 'proyecto', 'user']);
 
@@ -167,15 +168,16 @@ class TicketController extends Controller
     {
         $ticket = Ticket::create($request->all());
 
-     
+
         $current_timestamp = Carbon::now()->toDateTimeString();
 
         DB::table('mensajes_ticket')->insert(
-            array('sender_id' => $ticket->user_id,
-                  'ticket_id' => $ticket->id,
-                  'mensaje' => $request->mensaje,
-                  'created_at' => $current_timestamp,
-        )
+            array(
+                'sender_id' => $ticket->user_id,
+                'ticket_id' => $ticket->id,
+                'mensaje' => $request->mensaje,
+                'created_at' => $current_timestamp,
+            )
         );
 
         return redirect()->route('admin.tickets.index');
