@@ -197,7 +197,7 @@
                                             @foreach($proyecto->fasecomercial->cotizacion as $archivo)
                                             <tr>
                                                 <td>{{$archivo['file_name']}}</td>
-                                                <td><a href="{{$archivo['url']}}" target="_blank">Ver Archivo</a></td>
+                                                <td><a href="{{$archivo['url']}}" target="_blank">Ver Archivossss</a></td>
                                                 <td>{{$archivo['created_at']->format('d-m-Y')}}</td>
                                             </tr>
                                                 
