@@ -545,35 +545,20 @@
                                         <td>
                                             @if ($proyecto->fasecomercial)
                                                 @php
-                                                    $cotizacion  = $proyecto->fasecomercial->cotizacion;
-                                                    $fullUrlc = []; // Inicializar $fullUrl como un array vacío
-                                                    $i = 0;
-                                                    if ($cotizacion) {
-                                                        foreach ($cotizacion as $mediaItem) {
-                                                            // Obtener la URL completa del elemento de media actual
-                                                            $fullUrlc[] = $mediaItem->getUrl();
-                                                        }
-                                                    }
+                                                    $cotizacion = $proyecto->fasecomercial->cotizacion;
+                                                    $ultimaCotizacion = $cotizacion->last(); // Obtener la última cotización
                                                 @endphp
-                                                @if ($cotizacion)
-                                                    @if($fullUrlc)
-                                                        @foreach($fullUrlc as $item)
-                                                            @php
-                                                                $i=$i+1;
-                                                            @endphp
-                                                            <a href="{{ $item }}" class="btn btn-success btn-personalizado" style="border-radius: 10px;" target="_blank">
-                                                                Ver cotización {{$i}}
-                                                            </a>
-                                                        @endforeach
-                                                    @else
-                                                        No hay cotizacion disponible
-                                                    @endif
+                                                @if ($ultimaCotizacion)
+                                                    <a href="{{ $ultimaCotizacion->getUrl() }}" class="btn btn-success btn-personalizado" style="border-radius: 10px;" target="_blank">
+                                                        Ver última cotización
+                                                    </a>
                                                 @else
-                                                    No hay cotizacion disponible
+                                                    No hay cotización disponible
                                                 @endif
                                             @else
-                                                No hay cotizacion disponible
+                                                No hay cotización disponible
                                             @endif
+
                                         </td>
                                     </tr>
                                     <tr class="tabla-personalizada">
