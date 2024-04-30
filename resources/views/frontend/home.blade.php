@@ -386,7 +386,17 @@
                                                     @endswitch
 
                                                 </div>
-                                                <div class="text-small text-muted">Fase actual: {{ $item->fase }}</div>
+<div class="text-small text-muted">Fase actual: {{ $item->fase }}</div>
+                                                @if ($item->fase != 'Fase Dise���o')
+                                                    <a href="{{ url('tickets/create') }}?proyecto_id={{ $item->id }}"
+                                                        style="margin: 10px 0 ;margin-left:-8px;"
+                                                        ><button class="btn btn-ohffice"
+                                                            style="border-radius:10px; max-height:40px; width:100px; margin:25px 5px 5px 0px;">
+                                                            Abrir solicitud</button></a>
+                                                            
+                                                @endif
+
+                                                
                                             </div>
                                         </div>
                                     </div>
