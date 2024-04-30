@@ -210,6 +210,12 @@ table {
   padding: 0.5rem 1rem !important;
 }
 
+@media screen and (max-width:500px) {
+  .btn-personalizado {
+    max-width: 80%;
+  }
+}
+
 .paginate_button {
   margin: 0 2rem !important;
 }
