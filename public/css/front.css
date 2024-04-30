@@ -211,8 +211,11 @@ table {
 }
 
 @media screen and (max-width:500px) {
-  .btn-personalizado {
+  .btn .btn-success .btn-personalizado {
     max-width: 80%;
+    white-space: normal !important;
+    text-overflow: ellipsis;
+    text-align: center
   }
 }
 
