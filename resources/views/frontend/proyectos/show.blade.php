@@ -809,7 +809,8 @@
                                             @if($proyecto->fasecomercialproyecto != NULL)
                                                 @if($proyecto->fasecomercialproyecto->firma != NULL && $proyecto->fasecomercialproyecto->acepta == "Si")
                                                     <h4 class="font-weight-bold">Ya has aceptado las condiciones del Acuerdo Comercial </h4>
-                                                    <img src="{{$proyecto->fasecomercialproyecto->firma}}">
+                                                    <img src="{{$proyecto->fasecomercialproyecto->firma}}" width="100%"
+                                                    height="auto">
                                                 @else
                                                     <form method="POST" enctype="multipart/form-data" >
                                                         @method('POST')
