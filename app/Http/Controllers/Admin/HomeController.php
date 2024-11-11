@@ -132,10 +132,10 @@ class HomeController
                 ->select(
                     'proyectos.id_vendedor',
                     'users.name as vendedor_nombre',
-                    'proyectos.fase_actual',
+                    'proyectos.fase',
                     DB::raw('count(proyectos.id) as total_proyectos')
                 )
-                ->groupBy('proyectos.id_vendedor', 'proyectos.fase_actual', 'users.name') // Agrupar por vendedor y fase actual
+                ->groupBy('proyectos.id_vendedor', 'proyectos.fase', 'users.name') // Agrupar por vendedor y fase actual
                 ->get();
 
         }

@@ -6,7 +6,9 @@
         </div>
         <div class="card-body">
             @foreach ($proyectos as $proyecto)
-                <p>{{$proyecto->id}}</p>
+                {{$proyecto->vendedor_nombre }}
+                {{ $proyecto->fase }}
+                {{ $proyecto->total_proyectos }}
             @endforeach
         </div>
         <div class="card-footer">
