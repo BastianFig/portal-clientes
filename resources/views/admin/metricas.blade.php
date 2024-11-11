@@ -63,7 +63,7 @@
                                     <div class="fase">
                                         <p><strong>Fase: {{ $proyecto->fase }}</strong></p>
                                         <div class="progress-bar" style="width: {{ $porcentaje }}%">
-                                            <span>{{ number_format($porcentaje, 2) }}%</span>
+                                            <span>{{ number_format($porcentaje, 0) }}%</span>
                                         </div>
                                         <p>{{ $proyecto->total_fase }} proyectos</p>
                                     </div>
