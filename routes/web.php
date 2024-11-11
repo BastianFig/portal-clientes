@@ -9,6 +9,8 @@ Auth::routes(['register' => false]);
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', 'admin']], function () {
     Route::get('/', 'HomeController@index')->name('home');
     Route::get('/kpis', 'HomeController@kpis')->name('kpis');
+    Route::get('/metricas', 'HomeController@metricas')->name('metricas');
+
     // Permissions
     Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
     Route::resource('permissions', 'PermissionsController');
@@ -238,15 +240,15 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
         '/soporte',
         'HomeController@soporte'
     )->name('soporte');*/
-    
-  /* Route::get('/migrate', function () {
-        //$exitCode = Artisan::call('make:migration add_tipo_empresa_to_empresas_table');
-        $exitCode = Artisan::call('storage:link');
-    
-        // Puedes manejar la salida del comando si es necesario
-        $output = Artisan::output();
-    
-        return "Migration completed. Exit code: $exitCode\n$output";
-    });*/
-    
+
+    /* Route::get('/migrate', function () {
+          //$exitCode = Artisan::call('make:migration add_tipo_empresa_to_empresas_table');
+          $exitCode = Artisan::call('storage:link');
+      
+          // Puedes manejar la salida del comando si es necesario
+          $output = Artisan::output();
+      
+          return "Migration completed. Exit code: $exitCode\n$output";
+      });*/
+
 });
