@@ -68,9 +68,6 @@
                                                 </div>
                                                 <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
-                                            <div class="progress-bar" style="width: {{ $porcentaje }}%">
-                                                <span>{{ number_format($porcentaje, 0) }}%</span>
-                                            </div>
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                         @elseif($proyecto->fase == 'Fase Acuerdo Comercial')
                                             <p><strong>Fase Acuerdo Comercial</strong></p>
