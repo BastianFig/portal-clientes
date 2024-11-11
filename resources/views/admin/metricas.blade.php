@@ -25,27 +25,11 @@
         }
     </style>
 
-    @php
-        // Definir el orden de las fases según lo que has especificado
-        $ordenFases = [
-            'Fase Diseño',
-            'Fase Propuesta Comercial',
-            'Fase Contable',
-            'Fase Acuerdo Comercial',
-            'Fase Fabricación',
-            'Fase Despachos',
-            'Fase Postventa'
-        ];
-    @endphp
-
     <div class="row"> <!-- Contenedor de la fila para las tarjetas -->
         @foreach ($proyectosAgrupados->groupBy('id_vendedor') as $vendedorId => $proyectosPorVendedor)
             @php
                 $totalProyectos = $totalProyectosPorVendedor[$vendedorId] ?? 0; // Control de error en caso de no tener proyectos
                 // Ordenar los proyectos por las fases según el orden definido
-                $proyectosPorVendedor = $proyectosPorVendedor->sortBy(function ($proyecto) use ($ordenFases) {
-                    return array_search($proyecto->fase, $ordenFases);
-                });
             @endphp
 
             @if($totalProyectos > 0) <!-- Asegurarse de que haya proyectos para mostrar -->
@@ -69,6 +53,36 @@
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                         @elseif($proyecto->fase == 'Fase Propuesta Comercial')
                                             <p><strong>Fase Propuesta Comercial</strong></p>
+                                            <div class="progress-bar" style="width: {{ $porcentaje }}%">
+                                                <span>{{ number_format($porcentaje, 0) }}%</span>
+                                            </div>
+                                            <p>{{ $proyecto->total_fase }} proyectos</p>
+                                        @elseif($proyecto->fase == 'Fase Contable')
+                                            <p><strong>Fase Contable</strong></p>
+                                            <div class="progress-bar" style="width: {{ $porcentaje }}%">
+                                                <span>{{ number_format($porcentaje, 0) }}%</span>
+                                            </div>
+                                            <p>{{ $proyecto->total_fase }} proyectos</p>
+                                        @elseif($proyecto->fase == 'Fase Acuerdo Comercial')
+                                            <p><strong>Fase Acuerdo Comercial</strong></p>
+                                            <div class="progress-bar" style="width: {{ $porcentaje }}%">
+                                                <span>{{ number_format($porcentaje, 0) }}%</span>
+                                            </div>
+                                            <p>{{ $proyecto->total_fase }} proyectos</p>
+                                        @elseif($proyecto->fase == 'Fase Fabricacion')
+                                            <p><strong>Fase Fabricación</strong></p>
+                                            <div class="progress-bar" style="width: {{ $porcentaje }}%">
+                                                <span>{{ number_format($porcentaje, 0) }}%</span>
+                                            </div>
+                                            <p>{{ $proyecto->total_fase }} proyectos</p>
+                                        @elseif($proyecto->fase == 'Fase Despachos')
+                                            <p><strong>Fase Despachos</strong></p>
+                                            <div class="progress-bar" style="width: {{ $porcentaje }}%">
+                                                <span>{{ number_format($porcentaje, 0) }}%</span>
+                                            </div>
+                                            <p>{{ $proyecto->total_fase }} proyectos</p>
+                                        @elseif($proyecto->fase == 'Fase Postventa')
+                                            <p><strong>Fase Postventa</strong></p>
                                             <div class="progress-bar" style="width: {{ $porcentaje }}%">
                                                 <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
