@@ -386,13 +386,8 @@
                                                     @endswitch
 
                                                 </div>
-<<<<<<< HEAD
                                                 <div class="text-small text-muted">Fase actual: {{ $item->fase }}</div>
                                                  @if ($item->fase != 'Fase Dise���o')
-=======
-<div class="text-small text-muted">Fase actual: {{ $item->fase }}</div>
-                                                @if ($item->fase != 'Fase Dise���o')
->>>>>>> f8b8892aa497a248de78c3b8d9d63f4ffdcf8d99
                                                     <a href="{{ url('tickets/create') }}?proyecto_id={{ $item->id }}"
                                                         style="margin: 10px 0 ;margin-left:-8px;"
                                                         ><button class="btn btn-ohffice"
@@ -400,11 +395,6 @@
                                                             Abrir solicitud</button></a>
                                                             
                                                 @endif
-<<<<<<< HEAD
-=======
-
-                                                
->>>>>>> f8b8892aa497a248de78c3b8d9d63f4ffdcf8d99
                                             </div>
                                         </div>
                                     </div>
