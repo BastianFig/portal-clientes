@@ -1,3 +1,4 @@
+@extends('layouts.admin')
 <div class="card">
     <div class="card-head">
 
