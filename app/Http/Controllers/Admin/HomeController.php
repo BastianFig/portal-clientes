@@ -34,24 +34,56 @@ class HomeController
 
         if($rol_usuario == "Admin"){
             $proyectos = Proyecto::paginate(5);
-            $p_activos = Proyecto::where('estado', '=', 'Activo')->count();
-            $p_finalizados = Proyecto::where('estado', '=', 'Despachado')->count();
+            //$p_activos = Proyecto::where('estado', '=', 'Activo')->count();
+            $p_activos = Proyecto::whereIn('estado', ['Proyecto Caliente', 'Proyecto Interesante', 'Proyecto Potencial'])->count();
+            //$p_finalizados = Proyecto::where('estado', '=', 'Despachado')->count();
+            $p_finalizados = Proyecto::whereIn('estado', ['Negocio Ganado', 'Negocio Perdido'])->count();
         }else{
-            $proyectos = Proyecto::join('proyecto_user', 'proyectos.id', '=', 'proyecto_user.proyecto_id')
+            /*$proyectos = Proyecto::join('proyecto_user', 'proyectos.id', '=', 'proyecto_user.proyecto_id')
                     ->where('proyecto_user.user_id', $id_cliente)
                     ->select('proyectos.*', 'proyecto_user.user_id')
-                    ->paginate(5);          
-            $p_activos = Proyecto::join('proyecto_user', 'proyectos.id', '=', 'proyecto_user.proyecto_id')
+                    ->paginate(5);    */
+                    
+            $proyectos = Proyecto::where('id_vendedor', $id_cliente)->orderBy('created_at', 'desc')->paginate(5);        
+            
+           /* $p_activos = Proyecto::join('proyecto_user', 'proyectos.id', '=', 'proyecto_user.proyecto_id')
                     ->where('proyecto_user.user_id', $id_cliente)
                     ->where('proyectos.estado', '=', 'Activo')
                     ->select('proyectos.*', 'proyecto_user.user_id')
-                    ->count();
+                    ->count();*/
+                    
+             /*$p_activos = Proyecto::join('proyecto_user', 'proyecto_user.proyecto_id', '=', 'proyectos.id')
+                    ->where('proyecto_user.user_id', $id_cliente)
+                    ->where(function($query) {
+                    $query->where('proyectos.estado', '=', 'Proyecto Caliente')
+                        ->orWhere('proyectos.estado', '=', 'Proyecto Interesante')
+                        ->orWhere('proyectos.estado', '=', 'Proyecto Potencial');
+                    })->count();*/
+                    
+                $p_activos = Proyecto::where('id_vendedor',$id_cliente)
+                            ->where(function($query) {
+                            $query->where('proyectos.estado', '=', 'Proyecto Caliente')
+                                ->orWhere('proyectos.estado', '=', 'Proyecto Interesante')
+                                ->orWhere('proyectos.estado', '=', 'Proyecto Potencial');
+                            })->count();
 
-            $p_finalizados = Proyecto::join('proyecto_user', 'proyectos.id', '=', 'proyecto_user.proyecto_id')
+            /*$p_finalizados = Proyecto::join('proyecto_user', 'proyectos.id', '=', 'proyecto_user.proyecto_id')
                     ->where('proyecto_user.user_id', $id_cliente)
                     ->where('proyectos.estado', '=', 'Despachado')
                     ->select('proyectos.*', 'proyecto_user.user_id')
-                    ->count();
+                    ->count();*/
+                    
+            /*$p_finalizados = Proyecto::join('proyecto_user', 'proyecto_user.proyecto_id', '=', 'proyectos.id')
+                    ->where('proyecto_user.user_id', $id_cliente)->where(function($query) {
+                    $query->where('estado', '=', 'Negocio Ganado')
+                        ->orWhere('estado', '=', 'Negocio Perdido');
+                    })->count();*/
+                    
+                $p_finalizados = Proyecto::where('id_vendedor',$id_cliente) 
+                                ->where(function($query) {
+                                    $query->where('estado', '=', 'Negocio Ganado')
+                                          ->orWhere('estado', '=', 'Negocio Perdido');
+                                })->count();
         }
 
         $empresas  = Empresa::all();

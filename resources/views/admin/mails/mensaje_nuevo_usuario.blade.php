@@ -66,7 +66,7 @@
                                                                                     </tr>
                                                                                     <tr style="border-collapse:collapse">
                                                                                         <td class="es-m-txt-l" bgcolor="#ffffff" align="left" style="Margin:0;padding-bottom:15px;padding-top:20px;padding-left:30px;padding-right:30px">
-                                                                                            <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:lato, 'helvetica neue', helvetica, arial, sans-serif;line-height:27px;color:#000000;font-size:20px;text-align:center !important;">Bienvenido {{ $name }}, <br> Adjuntamos tus datos o credenciales de acceso a nuestro portal.<br>
+                                                                                            <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:lato, 'helvetica neue', helvetica, arial, sans-serif;line-height:27px;color:#000000;font-size:20px;text-align:center !important;">Bienvenido {{ $name }}, <br> Adjuntamos tus datos o credenciales de acceso a nuestro <a href="https://clientes.ohffice.cl/">portal.</a><br>
                                                                                             </p> 
                                                                                         </td>
                                                                                     </tr>

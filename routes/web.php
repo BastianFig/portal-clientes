@@ -234,14 +234,14 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     Route::post('frontend/profile/password', 'ProfileController@password')->name('profile.password');
 
     // soporte
-   /*  Route::get(
+    /*Route::get(
         '/soporte',
         'HomeController@soporte'
     )->name('soporte');*/
     
-    /*Route::get('/migrate', function () {
+  /* Route::get('/migrate', function () {
         //$exitCode = Artisan::call('make:migration add_tipo_empresa_to_empresas_table');
-        $exitCode = Artisan::call('make:controller Api/AuthController');
+        $exitCode = Artisan::call('storage:link');
     
         // Puedes manejar la salida del comando si es necesario
         $output = Artisan::output();

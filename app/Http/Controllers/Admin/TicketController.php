@@ -118,15 +118,6 @@ class TicketController extends Controller
                     'row'
                 ));
             });
-            
-            /*$table->editColumn('user', function ($row) {
-                $labels = [];
-                foreach ($row->users as $user) {
-                    $labels[] = sprintf('<span class="label label-info label-many">%s</span>', $user->name);
-                }
-
-                return implode(' ', $labels);
-            });*/
 
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : '';
@@ -141,6 +132,10 @@ class TicketController extends Controller
             $table->editColumn('asunto', function ($row) {
                 return $row->asunto ? $row->asunto : '';
             });
+            $table->addColumn('user_name', function ($row) {
+                return $row->users ? $row->users->name : '';
+            });
+            
 
             $table->rawColumns(['actions', 'placeholder', 'proyecto', 'user']);
 

@@ -27,7 +27,7 @@ class EncuestaController extends Controller
         $userID = Auth::id();
         $user = User::find($userID);
         $empresa_user = Empresa::find($user->empresa_id);
-
+        //dd($userID);
         return view('frontend.encuesta.responder', compact('id_proyecto','userID', 'user', 'empresa_user'));
     }
 
@@ -77,8 +77,6 @@ class EncuestaController extends Controller
                 }
             }
         }
-
-
         return redirect()->route('frontend.home');
     }
 
@@ -93,7 +91,7 @@ class EncuestaController extends Controller
     {
         $encuestum->update($request->all());
 
-        return redirect()->route('frontend.encuesta.index');
+        return redirect()->route('frontend.home');
     }
 
     public function show(Encuestum $encuestum)

@@ -65,7 +65,7 @@ class ProyectoController extends Controller
         abort_if(Gate::denies('fase_diseno_create') && Gate::denies('fase_diseno_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $aux = $request->all();
         if (empty($request->input('id_fasediseno'))) { //NUEVA
-            if ($request->descripcion != NULL && $request->input('propuesta') != NULL && $request->input('imagenes') != NULL) { //LLENA DE DATOS
+            if ($request->descripcion != NULL && $request->input('imagenes') != NULL) { //LLENA DE DATOS
                 $faseDiseno = FaseDiseno::create($request->all());
                 
                 foreach ($request->input('imagenes', []) as $file) {
@@ -85,7 +85,7 @@ class ProyectoController extends Controller
                 $txt = "La Fase de Diseño de tu proyecto ha terminado";
                 $this->Alerta_modifica($request->id_proyecto_id, $txt);
                
-            }elseif($request->descripcion == NULL && $request->input('propuesta') == NULL && $request->input('imagenes') == NULL){ //VACIA
+            }elseif($request->descripcion == NULL && $request->input('imagenes') == NULL){ //VACIA
                 $mensaje_aux = "Debe llenar los campos para continuar a la siguiente fase.";
                 return back()->withErrors($mensaje_aux);
             }else{//POCOS DATOS
@@ -128,13 +128,13 @@ class ProyectoController extends Controller
                     $faseDiseno->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('propuesta');
                 }
             }
-            if ($request->descripcion != NULL && $request->input('propuesta') != NULL && $request->input('imagenes') != NULL) {//LLENA DE DATOS
+            if ($request->descripcion != NULL && $request->input('imagenes') != NULL) {//LLENA DE DATOS
                 $faseDiseno->estado = 'Completa';
                 $faseDiseno->save();
                 DB::update('UPDATE proyectos SET fase = "Fase Propuesta Comercial" WHERE id = ' . $request->id_proyecto_id);
                 $txt = "La Fase de Diseño de tu proyecto ha terminado";
                 $this->Alerta_modifica($request->id_proyecto_id, $txt);
-            } elseif($request->descripcion == NULL && $request->input('propuesta') == NULL && $request->input('imagenes') == NULL){//VACIA
+            } elseif($request->descripcion == NULL && $request->input('imagenes') == NULL){//VACIA
                 $mensaje_aux = "Debe llenar los campos para continuar a la siguiente fase.";
                 return back()->withErrors($mensaje_aux);
             }else{//POCOS DATOS
@@ -178,7 +178,7 @@ class ProyectoController extends Controller
             $txt = "Ha comenzado la fase comercial de tu proyecto";
             $this->Alerta_modifica($request->id_proyecto_id, $txt);
 
-            if ($request->comentarios != NULL && $request->input('oc') != NULL && $request->input('cotizacion') != NULL) { //LLENA DE DATOS
+            if ($request->comentarios != NULL && $request->input('cotizacion') != NULL) { //LLENA DE DATOS
                 $faseComercial = Fasecomercial::create($request->all());
                 /*if ($request->input('cotizacion', false)) {
                     $faseComercial->addMedia(storage_path('tmp/uploads/' . basename($request->input('cotizacion'))))->toMediaCollection('cotizacion');
@@ -1172,7 +1172,7 @@ class ProyectoController extends Controller
 
             DB::update('UPDATE proyectos SET id_fasepostventa = ' . $fasePostventum->id . ' WHERE id = ' . $request->id_proyecto_id);
             if ($aux['estado'] == 'Finalizada') {
-                DB::update('UPDATE proyectos SET estado = "Finalizado" WHERE id = ' . $request->id_proyecto_id);
+                DB::update('UPDATE proyectos SET estado = "Negocio Ganado" WHERE id = ' . $request->id_proyecto_id);
                 $txt = "La Fase de Post Venta de tu proyecto ha terminado";
                 $this->Alerta_modifica($request->id_proyecto_id, $txt);
                 $proyecto = Proyecto::find($request->id_proyecto_id); // Suponiendo que el modelo de Proyecto se llama Proyecto
@@ -1201,7 +1201,7 @@ class ProyectoController extends Controller
             $fasePostventum->save();
             $fasePostventum->id_usuarios()->sync($request->input('id_usuarios', []));
             if ($aux['estado'] == 'Finalizada') {
-                DB::update('UPDATE proyectos SET estado = "Finalizado" WHERE id = ' . $request->id_proyecto_id);
+                DB::update('UPDATE proyectos SET estado = "Negocio Ganado" WHERE id = ' . $request->id_proyecto_id);
                 $txt = "La Fase de Post Venta de tu proyecto ha terminado";
                 $this->Alerta_modifica($request->id_proyecto_id, $txt);
                 $proyecto = Proyecto::find($request->id_proyecto_id); // Suponiendo que el modelo de Proyecto se llama Proyecto
@@ -1366,89 +1366,108 @@ class ProyectoController extends Controller
     }
 
 
-    public function index(Request $request)
-    {
-        abort_if(Gate::denies('proyecto_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        if ($request->ajax()) {
-            
-            error_log('Valor de la columna fase recibido desde la solicitud: ' . $request->input('columns')[12]['search']['value']);
-            $query = Proyecto::with(['id_cliente', 'id_usuarios_clientes', 'sucursal'])->select(sprintf('%s.*', (new Proyecto)->table));
+public function index(Request $request)
+{
+    abort_if(Gate::denies('proyecto_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // Obtener el ID del usuario autenticado
+        $userId = auth()->id();
+        // Verificar si el usuario tiene el rol de administrador
+        $isAdmin = \DB::table('role_user')
+            ->join('roles', 'role_user.role_id', '=', 'roles.id')
+            ->where('role_user.user_id', $userId)
+            ->where('roles.title', 'Admin')
+            ->exists();
+    if ($request->ajax()) {
+        
+        error_log('Valor de la columna fase recibido desde la solicitud: ' . $request->input('columns')[12]['search']['value']);
+        
+        if($isAdmin){
+            $query = Proyecto::with(['id_cliente', 'id_usuarios_clientes', 'sucursal'])
+                         ->select(sprintf('%s.*', (new Proyecto)->table));
             $query->orderBy('created_at', 'desc');
             $table = Datatables::of($query);
-
-            $table->addColumn('placeholder', '&nbsp;');
-            $table->addColumn('actions', '&nbsp;');
-
-            $table->editColumn('actions', function ($row) {
-                $viewGate      = 'proyecto_show';
-                $editGate      = 'proyecto_edit';
-                $deleteGate    = 'proyecto_delete';
-                $crudRoutePart = 'proyectos';
-
-                return view('partials.datatablesActions', compact(
-                    'viewGate',
-                    'editGate',
-                    'deleteGate',
-                    'crudRoutePart',
-                    'row'
-                ));
-            });
-
-            $table->editColumn('id', function ($row) {
-                return $row->id ? $row->id : '';
-            });
-            $table->addColumn('id_cliente_nombe_de_fantasia', function ($row) {
-                return $row->id_cliente ? $row->id_cliente->nombe_de_fantasia : '';
-            });
-
-            $table->addColumn('created_at', function ($row) {
-                return $row->created_at ? $row->created_at : '';
-            });
-
-            $table->editColumn('id_cliente.rut', function ($row) {
-                return $row->id_cliente ? (is_string($row->id_cliente) ? $row->id_cliente : $row->id_cliente->rut) : '';
-            });
-            $table->editColumn('id_usuarios_cliente', function ($row) {
-                $labels = [];
-                foreach ($row->id_usuarios_clientes as $id_usuarios_cliente) {
-                    $labels[] = sprintf('<span class="label label-info label-many">%s</span>', $id_usuarios_cliente->name);
-                }
-
-                return implode(' ', $labels);
-            });
-            $table->addColumn('sucursal_nombre', function ($row) {
-                return $row->sucursal ? $row->sucursal->nombre : '';
-            });
-
-            $table->editColumn('sucursal.direccion_sucursal', function ($row) {
-                return $row->sucursal ? (is_string($row->sucursal) ? $row->sucursal : $row->sucursal->direccion_sucursal) : '';
-            });
-            $table->editColumn('categoria_proyecto', function ($row) {
-                return $row->categoria_proyecto ? Proyecto::CATEGORIA_PROYECTO_SELECT[$row->categoria_proyecto] : '';
-            });
-            $table->editColumn('estado', function ($row) {
-                return $row->estado ? Proyecto::ESTADO_SELECT[$row->estado] : '';
-            });
-            $table->editColumn('fase', function ($row) {
-                return $row->fase ? Proyecto::FASE_SELECT[$row->fase] : '';
-            });
-            $table->editColumn('nombre_proyecto', function ($row) {
-                return $row->nombre_proyecto ? $row->nombre_proyecto : '';
-            });
-
-            $table->rawColumns(['actions', 'placeholder', 'id_cliente', 'id_usuarios_cliente', 'sucursal']);
-
-            return $table->make(true);
-
+        }else{
+            $query = Proyecto::with(['id_cliente', 'id_usuarios_clientes', 'sucursal'])
+                         ->where('id_vendedor', auth()->id()) // Filtrar proyectos por el usuario conectado
+                         ->orWhere('disenador', auth()->user()->name)
+                         ->select(sprintf('%s.*', (new Proyecto)->table));
+            $query->orderBy('created_at', 'desc');
+            $table = Datatables::of($query);
         }
+        
 
-        $empresas  = Empresa::orderBy('nombe_de_fantasia', 'asc')->get();
-        $empresas2  = Empresa::orderBy('rut', 'asc')->get();
-        $users     = User::orderBy('name', 'asc')->get();
-        $sucursals = Sucursal::orderBy('nombre', 'asc')->get();
-        return view('admin.proyectos.index', compact('empresas', 'users', 'sucursals', 'empresas2'));
+        $table->addColumn('placeholder', '&nbsp;');
+        $table->addColumn('actions', '&nbsp;');
+
+        $table->editColumn('actions', function ($row) {
+            $viewGate      = 'proyecto_show';
+            $editGate      = 'proyecto_edit';
+            $deleteGate    = 'proyecto_delete';
+            $crudRoutePart = 'proyectos';
+
+            return view('partials.datatablesActions', compact(
+                'viewGate',
+                'editGate',
+                'deleteGate',
+                'crudRoutePart',
+                'row'
+            ));
+        });
+
+        $table->editColumn('id', function ($row) {
+            return $row->id ? $row->id : '';
+        });
+        $table->addColumn('id_cliente_nombe_de_fantasia', function ($row) {
+            return $row->id_cliente ? $row->id_cliente->nombe_de_fantasia : '';
+        });
+
+        $table->addColumn('created_at', function ($row) {
+            return $row->created_at ? $row->created_at : '';
+        });
+
+        $table->editColumn('id_cliente.rut', function ($row) {
+            return $row->id_cliente ? (is_string($row->id_cliente) ? $row->id_cliente : $row->id_cliente->rut) : '';
+        });
+        $table->editColumn('id_usuarios_cliente', function ($row) {
+            $labels = [];
+            foreach ($row->id_usuarios_clientes as $id_usuarios_cliente) {
+                $labels[] = sprintf('<span class="label label-info label-many">%s</span>', $id_usuarios_cliente->name);
+            }
+
+            return implode(' ', $labels);
+        });
+        $table->addColumn('sucursal_nombre', function ($row) {
+            return $row->sucursal ? $row->sucursal->nombre : '';
+        });
+
+        $table->editColumn('sucursal.direccion_sucursal', function ($row) {
+            return $row->sucursal ? (is_string($row->sucursal) ? $row->sucursal : $row->sucursal->direccion_sucursal) : '';
+        });
+        $table->editColumn('categoria_proyecto', function ($row) {
+            return $row->categoria_proyecto ? Proyecto::CATEGORIA_PROYECTO_SELECT[$row->categoria_proyecto] : '';
+        });
+        $table->editColumn('estado', function ($row) {
+            return $row->estado ? Proyecto::ESTADO_SELECT[$row->estado] : '';
+        });
+        $table->editColumn('fase', function ($row) {
+            return $row->fase ? Proyecto::FASE_SELECT[$row->fase] : '';
+        });
+        $table->editColumn('nombre_proyecto', function ($row) {
+            return $row->nombre_proyecto ? $row->nombre_proyecto : '';
+        });
+
+        $table->rawColumns(['actions', 'placeholder', 'id_cliente', 'id_usuarios_cliente', 'sucursal']);
+
+        return $table->make(true);
+
     }
+
+    $empresas  = Empresa::orderBy('nombe_de_fantasia', 'asc')->get();
+    $empresas2  = Empresa::orderBy('rut', 'asc')->get();
+    $users     = User::orderBy('name', 'asc')->get();
+    $sucursals = Sucursal::orderBy('nombre', 'asc')->get();
+    return view('admin.proyectos.index', compact('empresas', 'users', 'sucursals', 'empresas2'));
+}
 
     public function getUsuario(Request $request)
     {

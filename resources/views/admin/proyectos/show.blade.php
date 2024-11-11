@@ -92,7 +92,7 @@
                                     <span class="help-block">{{ trans('cruds.faseDiseno.fields.descripcion_helper') }}</span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="imagenes">{{ trans('cruds.faseDiseno.fields.imagenes') }} (Plano, fftt, Presentación, Renders)<br><small style="color:rgba(255, 0, 0, 0.562);"><strong>(Archivos Permitidos: .JPG .PNG .DWG .XLSX)</strong></small></label>
+                                    <label for="imagenes">{{ trans('cruds.faseDiseno.fields.imagenes') }} (Plano, fftt, Presentación, Renders)<br><small style="color:rgba(255, 0, 0, 0.562);"><strong>(Archivos Permitidos: .JPG .PNG .DWG .XLSX .PDF)</strong></small></label>
                                     <div class="needsclick dropzone {{ $errors->has('imagenes') ? 'is-invalid' : '' }}" id="imagenes-dropzone">
                                     </div>
                                     @if($errors->has('imagenes'))
@@ -116,7 +116,7 @@
                                             <tr>
                                                 <td>{{$archivo['file_name']}}</td>
                                                 <td><a href="{{$archivo->getUrl()}}" target="_blank">Ver imagen</a></td>
-                                                <td>{{$archivo['created_at']}}</td>
+                                                <td>{{$archivo['created_at']->format('d-m-Y')}}</td>
                                             </tr>
                                                 
                                             @endforeach
@@ -174,6 +174,17 @@
                                     <label>Monto Neto</label>
                                     <input class="form-control {{ $errors->has('monto') ? 'is-invalid' : '' }}" type="text" name="monto" id="monto" value="{{ old('monto', $proyecto->faseComercial->monto ?? '') }}">     
                                 </div>
+                                <script>
+                                    $('#monto').on('keyup', function() {
+                                        const value = $(this).val();
+                                        // Reemplaza cualquier carácter que no sea un dígito por una cadena vacía
+                                        const filteredValue = value.replace(/\D/g, '');
+                                        // Si el valor ha cambiado, actualiza el campo de entrada
+                                        if (value !== filteredValue) {
+                                          $(this).val(filteredValue);
+                                        }
+                                      });
+                                </script>
                             
                                 <div class="form-group">
                                     <label for="cotizacion">{{ trans('cruds.fasecomercial.fields.cotizacion') }}<br><small style="color:rgba(255, 0, 0, 0.562);"><strong>(Archivos Permitidos: .PDF .XLSX)</strong></small></label>
@@ -198,7 +209,7 @@
                                             <tr>
                                                 <td>{{$archivo['file_name']}}</td>
                                                 <td><a href="{{$archivo['url']}}" target="_blank">Ver Archivo</a></td>
-                                                <td>{{$archivo['created_at']}}</td>
+                                                <td>{{$archivo['created_at']->format('d-m-Y')}}</td>
                                             </tr>
                                                 
                                             @endforeach
@@ -1603,7 +1614,7 @@
         Dropzone.options.imagenesDropzone = {
         url: '{{ route('admin.fase-disenos.storeMedia') }}',
         maxFilesize: 5, // MB
-        acceptedFiles: '.jpg,.png,.dwg,.xlsx',
+        acceptedFiles: '.jpg,.png,.dwg,.xlsx,.pdf',
         addRemoveLinks: true,
         dictInvalidFileType: 'No puedes subir archivos de este tipo.',
         dictCancelUpload: 'Cancelar subida',
@@ -1614,7 +1625,7 @@
         'X-CSRF-TOKEN': "{{ csrf_token() }}"
         },
         params: {
-        size: 10
+        size: 30
         },
         success: function (file, response) {
         $('form').append('<input type="hidden" name="imagenes[]" value="' + response.name + '">')

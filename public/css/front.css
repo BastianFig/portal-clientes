@@ -209,6 +209,14 @@ table {
 .btn-personalizado {
   padding: 0.5rem 1rem !important;
 }
+@media screen and (max-width:500px) {
+  a.btn.btn-success.btn-personalizado {
+    max-width: 80%;
+    white-space: normal !important;
+    text-overflow: ellipsis;
+    text-align: center
+  }
+}
 
 .paginate_button {
   margin: 0 2rem !important;

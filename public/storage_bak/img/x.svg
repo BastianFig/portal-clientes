@@ -1,0 +1,8 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Triángulo amarillo de advertencia con borde negro y padding -->
+  <polygon points="60,20 100,100 20,100" fill="yellow" stroke="black" stroke-width="4" />
+
+  <!-- Signo de exclamación centrado -->
+  <text x="60" y="70" font-size="60" fill="black" text-anchor="middle" alignment-baseline="central">
+    !</text>
+</svg>

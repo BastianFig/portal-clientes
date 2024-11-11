@@ -142,8 +142,13 @@ class UsersController extends Controller
         $empresas = Empresa::orderby('razon_social')->pluck('razon_social', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $sucursals = Sucursal::pluck('nombre', 'id');
+        $user = Auth::user();
+        //dd($user->roles);
+        foreach($user->roles as $rol){
+            $rol_activo =$rol->title;
+        }
 
-        return view('admin.users.create', compact('empresas', 'roles', 'sucursals'));
+        return view('admin.users.create', compact('empresas', 'roles', 'sucursals','rol_activo'));
     }
 
     public function store(StoreUserRequest $request)

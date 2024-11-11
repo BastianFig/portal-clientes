@@ -26,7 +26,7 @@
                                                 <tr class="align-middle">
                                                     <th>Empresa Cliente</th>
                                                     <th>Nombre Proyecto</th>
-                                                    <th>Vendedor</th>
+                                                    <th>Usuario Cliente</th>
                                                     <th>Avance</th>
                                                     <th>Fase Actual</th>
                                                     <th></th>
@@ -235,7 +235,7 @@
                                         <div class="card-body p-4 pb-0 text-center">
                                             <div>
                                                 <div class="fs-4 fw-normal">Proyectos Totales: <span
-                                                        class="fs-4 fw-bold">{{ count($proyectos) }}</span></div>
+                                                        class="fs-4 fw-bold">{{ $p_activos + $p_finalizados}}</span></div>
                                             </div>
                                         </div>
                                     </div>
@@ -345,8 +345,11 @@
                                                                     <td class="col-2">
                                                                         <div
                                                                             class="small text-medium-emphasis text-nowrap fw-bold">
-                                                                            <h6 class="fw-bold">
-                                                                                {{ $item->proyecto->nombre_proyecto }}</h6>
+                                                                            @if($item->proyecto)
+                                                                                <h6 class="fw-bold">{{ $item->proyecto->nombre_proyecto }}</h6>
+                                                                            @else
+                                                                                <h6 class="fw-bold">No Disponible</h6>
+                                                                            @endif
                                                                         </div>
                                                                     </td>
                                                                     <td class="col-3 align-middle">

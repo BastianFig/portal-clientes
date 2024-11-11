@@ -211,46 +211,39 @@
 }
 
     function formatearYValidarRutInput(rut) {
-
-        rut = rut.replace(/[^\dkK]+/g, ''); // Eliminar caracteres no numéricos ni la letra 'k'
-        if (rut.length < 2) {
-            return;
-        }
-
-        var dv = rut.charAt(rut.length - 1);
-        var rutNumeros = parseInt(rut.slice(0, -1), 10);
-        if (isNaN(rutNumeros)) {
-            rut = '';
-            return rut;
-        }
-
-        var suma = 0;
-        var factor = 2;
-
-        // Calcular la suma ponderada de los dígitos del Rut
-        for (var i = rutNumeros.toString().length - 1; i >= 0; i--) {
-            suma += factor * rutNumeros.toString().charAt(i);
-            factor++;
-
-            if (factor > 7) {
-                factor = 2;
-            }
-        }
-
-        var dvEsperado = 11 - (suma % 11);
-        dvEsperado = (dvEsperado === 11) ? 0 : ((dvEsperado === 10) ? 'K' : dvEsperado.toString());
-
-        if (dv.toString().toUpperCase() !== dvEsperado) {
-            rut = '';
-            return rut;
-        }
-        rutTotal=rutNumeros+dvEsperado;
-
-        // Formatear el Rut con puntos y guion
-        rut = rutTotal.toString().replace(/^(\d{1,2})(\d{3})(\d{3})([\dkK0-9]{1})$/, "$1.$2.$3-$4");
-
-        return rut;
+    rut = rut.replace(/[^\dkK]+/g, ''); // Eliminar caracteres no numéricos ni la letra 'k'
+    if (rut.length < 2) {
+        return '';
     }
+
+    var dv = rut.charAt(rut.length - 1).toUpperCase();
+    var rutNumeros = parseInt(rut.slice(0, -1), 10);
+    if (isNaN(rutNumeros)) {
+        return '';
+    }
+
+    var suma = 0;
+    var factor = 2;
+
+    // Calcular la suma ponderada de los dígitos del Rut
+    for (var i = rutNumeros.toString().length - 1; i >= 0; i--) {
+        suma += factor * parseInt(rutNumeros.toString().charAt(i), 10);
+        factor = (factor === 7) ? 2 : factor + 1;
+    }
+
+    var dvEsperado = 11 - (suma % 11);
+    dvEsperado = (dvEsperado === 11) ? '0' : ((dvEsperado === 10) ? 'K' : dvEsperado.toString());
+
+    if (dv !== dvEsperado) {
+        return '';
+    }
+
+    // Formatear el Rut con puntos y guion
+    var rutFormateado = rutNumeros.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    rutFormateado += '-' + dv;
+
+    return rutFormateado;
+}
 
     jQuery( document ).ready(function() {
         jQuery('#rut').on('blur', function() {
