@@ -126,39 +126,68 @@ class HomeController
             ->where('id', $id_rol_usuario)
             ->value('title');
 
+        // Definir todas las fases posibles
+        $fases = [
+            'Fase Diseño',
+            'Fase Propuesta Comercial',
+            'Fase Contable',
+            'Fase Acuerdo Comercial',
+            'Fase Fabricación',
+            'Fase Despachos',
+            'Fase Postventa'
+        ];
+
         if ($rol_usuario == "Admin") {
+            // Obtener los proyectos agrupados
             $proyectosAgrupados = DB::table('proyectos')
-                ->join('users', 'proyectos.id_vendedor', '=', 'users.id') // Join con la tabla de usuarios para obtener el nombre
+                ->join('users', 'proyectos.id_vendedor', '=', 'users.id')
                 ->select(
                     'proyectos.id_vendedor',
                     'users.name as vendedor_nombre',
                     'proyectos.fase',
                     DB::raw('count(proyectos.id) as total_fase')
                 )
-                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
-                ->groupBy('proyectos.id_vendedor', 'proyectos.fase', 'users.name') // Agrupar por vendedor y fase
+                ->whereNull('proyectos.deleted_at')
+                ->groupBy('proyectos.id_vendedor', 'proyectos.fase', 'users.name')
                 ->orderByRaw("FIELD(proyectos.fase, 
-                        'Fase Diseño', 
-                        'Fase Propuesta Comercial', 
-                        'Fase Contable', 
-                        'Fase Acuerdo Comercial', 
-                        'Fase Fabricación', 
-                        'Fase Despachos', 
-                        'Fase Postventa')") // Ordenar las fases de acuerdo al orden específico
+                    'Fase Diseño', 
+                    'Fase Propuesta Comercial', 
+                    'Fase Contable', 
+                    'Fase Acuerdo Comercial', 
+                    'Fase Fabricación', 
+                    'Fase Despachos', 
+                    'Fase Postventa')")
                 ->get();
+
+            // Reorganizar los datos para asegurar que cada fase tenga un valor
+            $proyectosAgrupados = $proyectosAgrupados->groupBy('id_vendedor')->map(function ($proyectos) use ($fases) {
+                $result = [];
+
+                foreach ($fases as $fase) {
+                    // Buscar si la fase existe en los proyectos del vendedor
+                    $proyecto = $proyectos->firstWhere('fase', $fase);
+
+                    // Si existe, usar el total de esa fase, si no, poner 0
+                    $result[] = [
+                        'fase' => $fase,
+                        'total_fase' => $proyecto ? $proyecto->total_fase : 0,
+                        'vendedor_nombre' => $proyectos->first()->vendedor_nombre // Añadir el nombre del vendedor
+                    ];
+                }
+
+                return $result;
+            });
 
             // Obtener el total de proyectos por vendedor
             $totalProyectosPorVendedor = DB::table('proyectos')
                 ->select('id_vendedor', DB::raw('count(id) as total_proyectos'))
-                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
+                ->whereNull('proyectos.deleted_at')
                 ->groupBy('id_vendedor')
                 ->pluck('total_proyectos', 'id_vendedor');
         }
 
-
-
-        //dd($proyectos);
         return view('admin.metricas', compact('proyectosAgrupados', 'totalProyectosPorVendedor'));
     }
+
 
 }
