@@ -135,16 +135,18 @@ class HomeController
                     'proyectos.fase',
                     DB::raw('count(proyectos.id) as total_fase')
                 )
+                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
                 ->groupBy('proyectos.id_vendedor', 'proyectos.fase', 'users.name') // Agrupar por vendedor y fase
                 ->get();
 
             // Obtener el total de proyectos por vendedor
             $totalProyectosPorVendedor = DB::table('proyectos')
                 ->select('id_vendedor', DB::raw('count(id) as total_proyectos'))
+                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
                 ->groupBy('id_vendedor')
                 ->pluck('total_proyectos', 'id_vendedor');
-
         }
+
 
         //dd($proyectos);
         return view('admin.metricas', compact('proyectosAgrupados', 'totalProyectosPorVendedor'));
