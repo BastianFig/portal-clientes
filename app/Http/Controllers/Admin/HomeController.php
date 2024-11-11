@@ -132,7 +132,7 @@ class HomeController
                 ->select(
                     'proyectos.id_vendedor',
                     'users.name as vendedor_nombre',
-                    DB::raw('GROUP_CONCAT(proyectos.fase_actual) as fases'),  // Concatenar todas las fases
+                    DB::raw('GROUP_CONCAT(proyectos.fase) as fases'),  // Concatenar todas las fases
                     DB::raw('count(proyectos.id) as total_proyectos')
                 )
                 ->groupBy('proyectos.id_vendedor', 'users.name') // Agrupar por vendedor
