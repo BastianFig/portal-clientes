@@ -115,13 +115,15 @@ class TicketController extends Controller
                 $deleteGate = 'ticket_delete';
                 $crudRoutePart = 'tickets';
 
-                return view('partials.datatablesActions', compact(
-                    'viewGate',
-                    'editGate',
-                    'deleteGate',
-                    'crudRoutePart',
-                    'row'
-                )
+                return view(
+                    'partials.datatablesActions',
+                    compact(
+                        'viewGate',
+                        'editGate',
+                        'deleteGate',
+                        'crudRoutePart',
+                        'row'
+                    )
                 );
             });
 
@@ -141,11 +143,6 @@ class TicketController extends Controller
             $table->addColumn('user_name', function ($row) {
                 return $row->users ? $row->users->name : '';
             });
-<<<<<<< HEAD
-            
-=======
-
->>>>>>> f8b8892aa497a248de78c3b8d9d63f4ffdcf8d99
 
             $table->rawColumns(['actions', 'placeholder', 'proyecto', 'user']);
 
