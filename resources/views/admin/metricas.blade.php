@@ -23,6 +23,13 @@
             background-color: #019ed5;
             color:white;
         }
+
+        .separator {
+            width: 100%; /* Ocupa todo el ancho disponible */
+            height: 2px; /* Altura de la línea */
+            background-color: rgba(128, 128, 128, 0.2); /* Gris con transparencia */
+            margin: 20px 0; /* Espaciado vertical alrededor de la línea */
+        }
     </style>
 
     <div class="row"> <!-- Contenedor de la fila para las tarjetas -->
@@ -52,6 +59,7 @@
                                                 </div>
                                                 <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
+                                            <div class="separator"></div>
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                         @elseif($proyecto->fase == 'Fase Propuesta Comercial')
                                             <p><strong>Fase Propuesta Comercial</strong></p>
@@ -60,6 +68,7 @@
                                                 </div>
                                                 <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
+                                            <div class="separator"></div>
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                         @elseif($proyecto->fase == 'Fase Contable')
                                             <p><strong>Fase Contable</strong></p>
@@ -68,6 +77,7 @@
                                                 </div>
                                                 <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
+                                            <div class="separator"></div>
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                         @elseif($proyecto->fase == 'Fase Acuerdo Comercial')
                                             <p><strong>Fase Acuerdo Comercial</strong></p>
@@ -76,6 +86,7 @@
                                                 </div>
                                                 <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
+                                            <div class="separator"></div>
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                         @elseif($proyecto->fase == 'Fase Fabricacion')
                                             <p><strong>Fase Fabricación</strong></p>
@@ -84,6 +95,7 @@
                                                 </div>
                                                 <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
+                                            <div class="separator"></div>
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                         @elseif($proyecto->fase == 'Fase Despachos')
                                             <p><strong>Fase Despachos</strong></p>
@@ -92,6 +104,7 @@
                                                 </div>
                                                 <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
+                                            <div class="separator"></div>
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                         @elseif($proyecto->fase == 'Fase Postventa')
                                             <p><strong>Fase Postventa</strong></p>
@@ -100,6 +113,7 @@
                                                 </div>
                                                 <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
+                                            <div class="separator"></div>
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                         @endif
                                     </div>
