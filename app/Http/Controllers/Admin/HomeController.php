@@ -127,7 +127,7 @@ class HomeController
             ->value('title');
 
         if ($rol_usuario == "Admin") {
-            $proyectos = Proyecto::where('id_vendedor', $id_vendedor);
+            $proyectos = Proyecto::where('id_vendedor', $id_vendedor)->get();
         }
 
         dd($proyectos);
