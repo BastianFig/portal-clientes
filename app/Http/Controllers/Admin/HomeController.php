@@ -149,7 +149,8 @@ class HomeController
 
             // Obtener el total de proyectos por vendedor
             $totalProyectosPorVendedor = DB::table('proyectos')
-                ->select('id_vendedor', DB::raw('count(id) as total_proyectos')) // Excluir proyectos eliminados suavemente
+                ->select('id_vendedor', DB::raw('count(id) as total_proyectos'))
+                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
                 ->groupBy('id_vendedor')
                 ->pluck('total_proyectos', 'id_vendedor');
         }
