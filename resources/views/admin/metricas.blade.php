@@ -20,8 +20,6 @@
         }
     </style>
 
-    <h2>Total de Proyectos: {{ $totalProyectosTotales }}</h2> <!-- Mostrar el total de proyectos de todos los vendedores -->
-
     <div class="row"> <!-- Contenedor de la fila para las tarjetas -->
         @foreach ($proyectosAgrupados->groupBy('id_vendedor') as $vendedorId => $proyectosPorVendedor)
             @php
