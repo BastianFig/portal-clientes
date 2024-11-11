@@ -47,10 +47,11 @@
                                     <div class="fase">
                                         @if($proyecto->fase == 'Fase Diseño')
                                             <p><strong>Fase Diseño</strong></p>
-                                            <div class="progress-bar" style="width: {{ $porcentaje }}%">
+                                            <div class="d-flex">
+                                                <div class="progress-bar" style="width: {{ $porcentaje }}%">
+                                                </div>
+                                                <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
-                                            
-                                            <span>{{ number_format($porcentaje, 0) }}%</span>
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                         @elseif($proyecto->fase == 'Fase Propuesta Comercial')
                                             <p><strong>Fase Propuesta Comercial</strong></p>
