@@ -6,7 +6,7 @@
     </div>
     <div class="card-body">
         @foreach ($proyectos as $proyecto)
-            <p>{{$proyecto->id}}
+            <p>{{$proyecto->id}}</p>
         @endforeach
     </div>
     <div class="card-footer">
