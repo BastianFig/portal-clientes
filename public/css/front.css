@@ -218,6 +218,15 @@ table {
   }
 }
 
+@media screen and (max-width:500px) {
+  .btn .btn-success .btn-personalizado {
+    max-width: 80%;
+    white-space: normal !important;
+    text-overflow: ellipsis;
+    text-align: center
+  }
+}
+
 .paginate_button {
   margin: 0 2rem !important;
 }
