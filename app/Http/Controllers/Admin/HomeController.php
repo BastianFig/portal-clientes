@@ -138,13 +138,13 @@ class HomeController
                 ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
                 ->groupBy('proyectos.id_vendedor', 'proyectos.fase', 'users.name') // Agrupar por vendedor y fase
                 ->orderByRaw("FIELD(proyectos.fase, 
-            'Diseño', 
-            'Propuesta Comercial', 
-            'Contable', 
-            'Acuerdo Comercial', 
-            'Fabricación', 
-            'Despachos', 
-            'Postventa')") // Ordenar las fases de acuerdo al orden específico
+                        'Fase Diseño', 
+                        'Fase Propuesta Comercial', 
+                        'Fase Contable', 
+                        'Fase Acuerdo Comercial', 
+                        'Fase Fabricación', 
+                        'Fase Despachos', 
+                        'Fase Postventa')") // Ordenar las fases de acuerdo al orden específico
                 ->get();
 
             // Obtener el total de proyectos por vendedor
