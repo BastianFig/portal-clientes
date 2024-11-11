@@ -12,7 +12,7 @@
 
         .progress-bar {
             height: 20px;
-            background-color: #4caf50; /* Puedes cambiar el color */
+            background-color: #019ed5; /* Puedes cambiar el color */
             text-align: center;
             color: white;
             line-height: 20px;
