@@ -155,9 +155,6 @@ class HomeController
                 ->pluck('total_proyectos', 'id_vendedor');
         }
 
-
-
-        //dd($proyectos);
         return view('admin.metricas', compact('proyectosAgrupados', 'totalProyectosPorVendedor'));
     }
 
