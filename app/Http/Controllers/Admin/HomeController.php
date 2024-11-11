@@ -114,8 +114,23 @@ class HomeController
 
     public function metricas()
     {
-        // Lógica para obtener datos y generar gráficos
-        return view('admin.metricas');
+        $id_vendedor = Auth::user()->id;
+        $id_rol_usuario = DB::table('users')
+            ->join('role_user', 'users.id', '=', 'role_user.user_id')
+            ->where('users.id', $id_vendedor)
+            ->select('role_user.role_id')
+            ->get();
+        $id_rol_usuario = $id_rol_usuario->first()->role_id;
+
+        $rol_usuario = DB::table('roles')
+            ->where('id', $id_rol_usuario)
+            ->value('title');
+
+        if ($rol_usuario == "Admin") {
+            $proyectos = Proyecto::where('id_vendedor', $id_vendedor);
+        }
+
+        return view('admin.metricas', compact('proyectos'));
     }
 
 }
