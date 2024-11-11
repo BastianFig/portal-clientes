@@ -79,7 +79,7 @@
                                             </div>
                                             <p>{{ $proyecto->total_fase }} proyectos</p>
                                             <div class="separator"></div>
-                                        @elseif($proyecto->fase == 'Fase Acuerdo Comercial')
+                                        @elseif($proyecto->fase == 'Fase Comercial')
                                             <p><strong>Fase Acuerdo Comercial</strong></p>
                                             <div class="d-flex">
                                                 <div class="progress-bar mr-2" style="width: {{ $porcentaje }}%">

@@ -141,7 +141,7 @@ class HomeController
                         'Fase Diseño', 
                         'Fase Propuesta Comercial', 
                         'Fase Contable', 
-                        'Fase Acuerdo Comercial', 
+                        'Fase Comercial', 
                         'Fase Fabricación', 
                         'Fase Despachos', 
                         'Fase Postventa')") // Ordenar las fases de acuerdo al orden específico
