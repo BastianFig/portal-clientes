@@ -43,25 +43,25 @@
             'Fase Despachos', 
             'Fase Postventa'
         ];
+        $proyectosAgrupados = collect($proyectosAgrupados); // Convertir a colección para usar first()
     @endphp
 
-    <div class="row"> <!-- Contenedor de la fila para las tarjetas -->
+    <div class="row">
         @foreach ($proyectosAgrupados as $vendedorId => $proyectosPorVendedor)
             @php
                 $totalProyectos = $totalProyectosPorVendedor[$vendedorId] ?? 0;
             @endphp
 
             @if ($totalProyectos > 0)
-                <div class="col-md-4 col-lg-4 mb-4"> <!-- Columna para la tarjeta -->
+                <div class="col-md-4 col-lg-4 mb-4">
                     <div class="card">
                         <div class="card-head p-3 cdh">
-                            <h3>{{ $proyectosPorVendedor->first()['vendedor_nombre'] }}</h3>
+                            <h3>{{ collect($proyectosPorVendedor)->first()['vendedor_nombre'] }}</h3>
                         </div>
                         <div class="card-body">
                             <div class="fase-container">
                                 @foreach ($fases as $fase)
                                     @php
-                                        // Buscar el proyecto de la fase actual
                                         $proyecto = collect($proyectosPorVendedor)->firstWhere('fase', $fase);
                                         $totalFase = $proyecto ? $proyecto['total_fase'] : 0;
                                         $porcentaje = $totalProyectos > 0 ? ($totalFase / $totalProyectos) * 100 : 0;
@@ -88,5 +88,5 @@
                 <p>No hay proyectos para este vendedor.</p>
             @endif
         @endforeach
-    </div> <!-- Fin de la fila -->
+    </div>
 @endsection
