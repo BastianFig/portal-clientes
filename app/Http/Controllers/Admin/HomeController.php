@@ -157,7 +157,7 @@ class HomeController
 
 
 
-        dd($proyectosAgrupados);
+        //fxdd($proyectosAgrupados);
         return view('admin.metricas', compact('proyectosAgrupados', 'totalProyectosPorVendedor'));
     }
 
