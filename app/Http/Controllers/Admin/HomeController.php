@@ -136,6 +136,7 @@ class HomeController
                     DB::raw('count(proyectos.id) as total_fase')
                 )
                 ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
+                ->whereNotIn('proyectos.id_vendedor', [1, 26])
                 ->groupBy('proyectos.id_vendedor', 'proyectos.fase', 'users.name') // Agrupar por vendedor y fase
                 ->orderByRaw("FIELD(proyectos.fase, 
                         'Fase Diseño', 
@@ -151,6 +152,7 @@ class HomeController
             $totalProyectosPorVendedor = DB::table('proyectos')
                 ->select('id_vendedor', DB::raw('count(id) as total_proyectos'))
                 ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
+                ->whereNotIn('proyectos.id_vendedor', [1, 26])
                 ->groupBy('id_vendedor')
                 ->pluck('total_proyectos', 'id_vendedor');
         }
