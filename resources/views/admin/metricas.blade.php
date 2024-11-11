@@ -38,7 +38,7 @@
                             $porcentaje = ($proyecto->total_fase / $totalProyectos) * 100;
                         @endphp
                         <div class="fase">
-                            <p><strong>Fase: {{ $proyecto->fase_actual }}</strong></p>
+                            <p><strong>Fase: {{ $proyecto->fase }}</strong></p>
                             <div class="progress-bar" style="width: {{ $porcentaje }}%">
                                 <span>{{ number_format($porcentaje, 2) }}%</span>
                             </div>
