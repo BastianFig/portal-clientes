@@ -48,7 +48,7 @@
                                         @if($proyecto->fase == 'Fase Diseño')
                                             <p><strong>Fase Diseño</strong></p>
                                             <div class="d-flex">
-                                                <div class="progress-bar" style="width: {{ $porcentaje }}%">
+                                                <div class="progress-bar mr-2" style="width: {{ $porcentaje }}%">
                                                 </div>
                                                 <span>{{ number_format($porcentaje, 0) }}%</span>
                                             </div>
