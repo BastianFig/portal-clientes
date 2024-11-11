@@ -127,7 +127,10 @@ class HomeController
             ->value('title');
 
         if ($rol_usuario == "Admin") {
-            $proyectos = Proyecto::where('id_vendedor', $id_vendedor)->get();
+            $proyectos = Proyecto::select('id_vendedor', DB::raw('count(*) as total'))
+                ->groupBy('id_vendedor')
+                ->get();
+
         }
 
         dd($proyectos);
