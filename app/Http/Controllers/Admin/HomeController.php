@@ -127,21 +127,27 @@ class HomeController
             ->value('title');
 
         if ($rol_usuario == "Admin") {
-            $proyectos = DB::table('proyectos')
+            $proyectosAgrupados = DB::table('proyectos')
                 ->join('users', 'proyectos.id_vendedor', '=', 'users.id') // Join con la tabla de usuarios para obtener el nombre
                 ->select(
                     'proyectos.id_vendedor',
                     'users.name as vendedor_nombre',
-                    DB::raw('GROUP_CONCAT(proyectos.fase) as fases'),  // Concatenar todas las fases
-                    DB::raw('count(proyectos.id) as total_proyectos')
+                    'proyectos.fase',
+                    DB::raw('count(proyectos.id) as total_fase')
                 )
-                ->groupBy('proyectos.id_vendedor', 'users.name') // Agrupar por vendedor
+                ->groupBy('proyectos.id_vendedor', 'proyectos.fase', 'users.name') // Agrupar por vendedor y fase
                 ->get();
+
+            // Obtener el total de proyectos por vendedor
+            $totalProyectosPorVendedor = DB::table('proyectos')
+                ->select('id_vendedor', DB::raw('count(id) as total_proyectos'))
+                ->groupBy('id_vendedor')
+                ->pluck('total_proyectos', 'id_vendedor');
 
         }
 
         //dd($proyectos);
-        return view('admin.metricas', compact('proyectos'));
+        return view('admin.metricas', compact('proyectosAgrupados', 'totalProyectosPorVendedor'));
     }
 
 }
