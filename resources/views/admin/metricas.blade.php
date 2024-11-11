@@ -51,7 +51,7 @@
             @if($totalProyectos > 0) <!-- Asegurarse de que haya proyectos para mostrar -->
                 <div class="col-md-4 col-lg-4 mb-4"> <!-- Columna para la tarjeta -->
                     <div class="card">
-                        <div class="card-head pt-3 pl-3 cdh">
+                        <div class="card-head p-3 cdh">
                             <h3>{{ $proyectosPorVendedor->first()->vendedor_nombre }}</h3>
                         </div>
                         <div class="card-body">
