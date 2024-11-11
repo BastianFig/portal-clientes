@@ -1,57 +1,32 @@
 @extends('layouts.admin')
 
 @section('content')
-    <style>
-        .fase-container {
-            margin-bottom: 20px;
-        }
-
-        .fase {
-            margin-bottom: 10px;
-        }
-
-        .progress-bar {
-            height: 20px;
-            background-color: #4caf50; /* Puedes cambiar el color */
-            text-align: center;
-            color: white;
-            line-height: 20px;
-            border-radius: 5px;
-        }
-
-    </style>
-    @foreach ($proyectosAgrupados->groupBy('id_vendedor') as $vendedorId => $proyectosPorVendedor)
-        @php
-            // Obtener el total de proyectos del vendedor
-            $totalProyectos = $totalProyectosPorVendedor[$vendedorId];
-        @endphp
-
-        <div class="card">
-            <div class="card-head">
-                <h2>{{ $proyectosPorVendedor->first()->vendedor_nombre }}</h2>
-            </div>
-            <div class="card-body">
-                <div class="fase-container">
-                    @foreach ($proyectosPorVendedor as $proyecto)
-                        @php
-                            // Calcular el porcentaje de proyectos en esta fase
-                            $porcentaje = ($proyecto->total_fase / $totalProyectos) * 100;
-                        @endphp
-                        <div class="fase">
-                            <p><strong>Fase: {{ $proyecto->fase }}</strong></p>
-                            <div class="progress-bar" style="width: {{ $porcentaje }}%">
-                                <span>{{ number_format($porcentaje, 2) }}%</span>
+    <div class="row">
+        @foreach ($proyectos as $proyecto)
+            <div class="col-md-4 mb-4"> <!-- Columna para 3 cards -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>{{ $proyecto->vendedor_nombre }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Fase Actual:</strong> {{ $proyecto->fase }}</p>
+                        <p><strong>Total de Proyectos:</strong> {{ $proyecto->total_proyectos }}</p>
+                        
+                        <!-- Barra de Progreso -->
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ $proyecto->fase_porcentaje }}%;" 
+                                 aria-valuenow="{{ $proyecto->fase_porcentaje }}" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                {{ $proyecto->fase_porcentaje }}%
                             </div>
-                            <p>{{ $proyecto->total_fase }} proyectos</p>
                         </div>
-                    @endforeach
+                    </div>
+                    <div class="card-footer">
+                        <!-- Opcional: Aquí puedes poner más detalles si es necesario -->
+                    </div>
                 </div>
-                <p><strong>Total Proyectos:</strong> {{ $totalProyectos }}</p>
             </div>
-            <div class="card-footer">
-                <!-- Aquí puedes agregar algún botón o enlace si es necesario -->
-            </div>
-        </div>
-    @endforeach
+        @endforeach
+    </div>
 @endsection
-
