@@ -37,7 +37,6 @@
         @foreach ($proyectosAgrupados->groupBy('id_vendedor') as $vendedorId => $proyectosPorVendedor)
             @php
                 $totalProyectos = $totalProyectosPorVendedor[$vendedorId] ?? 0; // Control de error en caso de no tener proyectos
-                
                 // Ordenar los proyectos por las fases según el orden definido
                 $proyectosPorVendedor = $proyectosPorVendedor->sortBy(function ($proyecto) use ($ordenFases) {
                     return array_search($proyecto->fase, $ordenFases);
