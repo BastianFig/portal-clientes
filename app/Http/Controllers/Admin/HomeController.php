@@ -130,6 +130,7 @@ class HomeController
             $proyectos = Proyecto::where('id_vendedor', $id_vendedor);
         }
 
+        dd($proyectos);
         return view('admin.metricas', compact('proyectos'));
     }
 
