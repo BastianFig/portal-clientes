@@ -127,13 +127,20 @@ class HomeController
             ->value('title');
 
         if ($rol_usuario == "Admin") {
-            $proyectos = Proyecto::select('id_vendedor', DB::raw('count(*) as total'))
-                ->groupBy('id_vendedor')
+            $proyectos = DB::table('proyectos')
+                ->join('users', 'proyectos.id_vendedor', '=', 'users.id') // Join con la tabla de usuarios para obtener el nombre
+                ->select(
+                    'proyectos.id_vendedor',
+                    'users.name as vendedor_nombre',
+                    'proyectos.fase_actual',
+                    DB::raw('count(proyectos.id) as total_proyectos')
+                )
+                ->groupBy('proyectos.id_vendedor', 'proyectos.fase_actual', 'users.name') // Agrupar por vendedor y fase actual
                 ->get();
 
         }
 
-        dd($proyectos);
+        //dd($proyectos);
         return view('admin.metricas', compact('proyectos'));
     }
 
