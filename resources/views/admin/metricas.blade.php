@@ -50,7 +50,7 @@
                                 @foreach ($proyectosPorVendedor as $proyecto)
                                     @php
                                         $porcentaje = ($proyecto->total_fase / $totalProyectos) * 100;
-                                        echo $porcentaje.'<br>';
+                                        echo $proyecto->total_fase.'<br>';
                                     @endphp
                                     <div class="fase">
                                         @if($proyecto->fase == 'Fase Diseño')
@@ -74,7 +74,7 @@
                                             
                                         @elseif($proyecto->fase == 'Fase Propuesta Comercial')
                                             <p><strong>Fase Propuesta Comercial</strong></p>
-                                            @if($porcentaje == 0 || $porcentaje == null)
+                                            @if($proyecto->total_fase == 0 || $proyecto->total_fase == null)
                                                 <div class="d-flex">
                                                     <div class="progress-bar mr-2" style="width: 0%">
                                                     </div>
