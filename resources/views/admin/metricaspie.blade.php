@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 @section('content')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <h2>Distribución de Proyectos en Porcentaje por Fase para Cada Vendedor</h2>
     <div class="d-flex">
         @foreach($proyectosConPorcentaje->groupBy('vendedor_nombre') as $vendedor => $proyectos)
         <div class="col-md-3 col-lg-3 mb-3">
@@ -72,6 +71,21 @@
         .chart-item {
             width: 100%;
             height: 300px;
+        }
+        #sidebar{
+            display: none;
+        }
+
+        .c-wrapper{
+            margin-left: 0px !important;
+        }
+
+        .c-header.c-header-fixed.px-3{
+            display: none;
+        }
+
+        .c-main{
+            padding-top: 1rem !important;
         }
     </style>
 
