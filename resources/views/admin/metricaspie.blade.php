@@ -2,10 +2,12 @@
 <h2>Distribución de Proyectos en Porcentaje por Fase para Cada Vendedor</h2>
     <div class="chart-container">
         @foreach($proyectosConPorcentaje->groupBy('vendedor_nombre') as $vendedor => $proyectos)
-        <div class="card">
-            <div class="chart-item">
-                <h3>{{ $vendedor }}</h3>
-                <canvas id="chart_{{ Str::slug(Str::lower($vendedor), '_') }}"></canvas> <!-- ID en minúsculas -->
+        <div class="col-md-3 col-lg-3 mb-3">
+            <div class="card">
+                <div class="chart-item">
+                    <h3>{{ $vendedor }}</h3>
+                    <canvas id="chart_{{ Str::slug(Str::lower($vendedor), '_') }}"></canvas> <!-- ID en minúsculas -->
+                </div>
             </div>
         </div>
         @endforeach
