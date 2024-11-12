@@ -66,7 +66,7 @@
                                     label: (tooltipItem) => {
                                         const fase = tooltipItem.label;
                                         const porcentaje = Math.round(tooltipItem.raw); // Redondeo del porcentaje
-                                        const cantidad = counts[fase]; // Cantidad de proyectos en esa fase
+                                        const cantidad = tooltipItem.dataset.counts[fase] || 0; // Obtener cantidad desde el dataset
                                         return `${fase}: ${porcentaje}% (${cantidad} proyectos)`;
                                     }
                                 }
