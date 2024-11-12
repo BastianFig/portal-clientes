@@ -39,10 +39,16 @@
 
             if (!acc[vendedor]) acc[vendedor] = { labels: [], data: [], backgroundColors: [], counts: {}, total: 0 };
 
-            acc[vendedor].labels.push(fase);
-            acc[vendedor].data.push(porcentaje);
-            acc[vendedor].backgroundColors.push(fasesColores[fase]);
-            acc[vendedor].counts[fase] = (acc[vendedor].counts[fase] || 0) + 1; // Contar proyectos por fase
+            // Si la fase no existe en el array de etiquetas, la agregamos
+            if (!acc[vendedor].labels.includes(fase)) {
+                acc[vendedor].labels.push(fase);
+                acc[vendedor].data.push(porcentaje);
+                acc[vendedor].backgroundColors.push(fasesColores[fase]);
+            }
+
+            // Incrementar la cantidad de proyectos por fase
+            acc[vendedor].counts[fase] = (acc[vendedor].counts[fase] || 0) + 1; // Sumar proyectos en la fase
+
             acc[vendedor].total += 1; // Contar total de proyectos por vendedor
 
             return acc;
