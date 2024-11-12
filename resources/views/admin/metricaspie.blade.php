@@ -31,30 +31,25 @@
             'Fase Postventa': '#FF6384'
         };
 
-        // Datos de proyectos y porcentaje
         const proyectosConPorcentaje = @json($proyectosConPorcentaje);
+        const totalProyectosPorVendedor = @json($totalProyectosPorVendedor); // Asegúrate de tener esta variable
 
         const datosPorVendedor = proyectosConPorcentaje.reduce((acc, proyecto) => {
             const { vendedor_nombre: vendedor, fase, porcentaje_fase: porcentaje } = proyecto;
+            if (!acc[vendedor]) acc[vendedor] = { labels: [], data: [], backgroundColors: [], cantidadProyectos: [] };
+            
+            const totalProyectos = totalProyectosPorVendedor[proyecto.id_vendedor] || 0;
+            const cantidadProyectosPorFase = Math.round((porcentaje / 100) * totalProyectos);
 
-            if (!acc[vendedor]) acc[vendedor] = { labels: [], data: [], backgroundColors: [], counts: {}, total: 0 };
-
-            // Si la fase no existe en el array de etiquetas, la agregamos
-            if (!acc[vendedor].labels.includes(fase)) {
-                acc[vendedor].labels.push(fase);
-                acc[vendedor].data.push(porcentaje);
-                acc[vendedor].backgroundColors.push(fasesColores[fase]);
-            }
-
-            // Incrementar la cantidad de proyectos por fase
-            acc[vendedor].counts[fase] = (acc[vendedor].counts[fase] || 0) + 1; // Sumar proyectos en la fase
-
-            acc[vendedor].total += 1; // Contar total de proyectos por vendedor
+            acc[vendedor].labels.push(fase);
+            acc[vendedor].data.push(porcentaje);
+            acc[vendedor].backgroundColors.push(fasesColores[fase]);
+            acc[vendedor].cantidadProyectos.push(cantidadProyectosPorFase);
 
             return acc;
         }, {});
 
-        Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data, backgroundColors, counts, total }]) => {
+        Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data, backgroundColors, cantidadProyectos }]) => {
             const canvasId = `chart_${vendedor.toLowerCase().replace(/\s+/g, '_')}`;
             const canvasElement = document.getElementById(canvasId);
 
@@ -66,9 +61,7 @@
                         labels: labels,
                         datasets: [{
                             data: data,
-                            backgroundColor: backgroundColors, // Colores consistentes para cada fase
-                            counts: counts, // Añadir counts al dataset
-                            total: total // Total de proyectos por vendedor
+                            backgroundColor: backgroundColors
                         }]
                     },
                     options: {
@@ -79,9 +72,8 @@
                                 callbacks: {
                                     label: (tooltipItem) => {
                                         const fase = tooltipItem.label;
-                                        const porcentaje = Math.round(tooltipItem.raw); // Redondeo del porcentaje
-                                        // Asegurarse de que counts[fase] esté definido antes de acceder
-                                        const cantidad = tooltipItem.dataset.counts[fase] || 0;
+                                        const porcentaje = Math.round(tooltipItem.raw);
+                                        const cantidad = cantidadProyectos[tooltipItem.dataIndex];
                                         return `${fase}: ${porcentaje}% (${cantidad} proyectos)`;
                                     }
                                 }
@@ -114,11 +106,10 @@
         .c-main{
             padding-top: 1rem !important;
         }
+
         .cdh {
             background-color: #019ed5;
             color: white;
         }
     </style>
-
-
 @endsection
