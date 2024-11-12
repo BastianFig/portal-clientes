@@ -63,7 +63,12 @@
                             legend: { position: 'top' },
                             tooltip: {
                                 callbacks: {
-                                    label: (tooltipItem) => `${tooltipItem.label}: ${Math.round(tooltipItem.raw)}%`
+                                    label: (tooltipItem) => {
+                                        const fase = tooltipItem.label;
+                                        const porcentaje = Math.round(tooltipItem.raw); // Redondeo del porcentaje
+                                        const cantidad = counts[fase]; // Cantidad de proyectos en esa fase
+                                        return `${fase}: ${porcentaje}% (${cantidad} proyectos)`;
+                                    }
                                 }
                             }
                         }
