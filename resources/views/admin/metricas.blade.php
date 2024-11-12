@@ -50,6 +50,7 @@
                                 @foreach ($proyectosPorVendedor as $proyecto)
                                     @php
                                         $porcentaje = ($proyecto->total_fase / $totalProyectos) * 100;
+                                        echo $porcentaje.'<br>';
                                     @endphp
                                     <div class="fase">
                                         @if($proyecto->fase == 'Fase Diseño')
