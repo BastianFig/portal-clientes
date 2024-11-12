@@ -5,8 +5,12 @@
         @foreach($proyectosConPorcentaje->groupBy('vendedor_nombre') as $vendedor => $proyectos)
         <div class="col-md-3 col-lg-3 mb-3">
             <div class="card">
-                <h3>{{ $vendedor }}</h3>
-                <canvas id="chart_{{ Str::slug(Str::lower($vendedor), '_') }}" class="chart-item"></canvas>
+                <div class="card-head p-3 cdh">
+                    <h3>{{ $vendedor }}</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="chart_{{ Str::slug(Str::lower($vendedor), '_') }}" class="chart-item"></canvas>
+                </div>
             </div>
         </div>
         @endforeach
@@ -86,6 +90,10 @@
 
         .c-main{
             padding-top: 1rem !important;
+        }
+        .cdh {
+            background-color: #019ed5;
+            color: white;
         }
     </style>
 
