@@ -1,48 +1,61 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<h2>Distribución de Proyectos por Fase</h2>
-    <canvas id="proyectosPieChart"></canvas>
+<h2>Distribución de Proyectos por Fase para Cada Vendedor</h2>
+    <div class="chart-container">
+        @foreach($proyectosAgrupados->groupBy('vendedor_nombre') as $vendedor => $proyectos)
+            <div class="chart-item">
+                <h3>{{ $vendedor }}</h3>
+                <canvas id="chart_{{ Str::slug($vendedor) }}"></canvas>
+            </div>
+        @endforeach
+    </div>
 
     <script>
-        // Procesar datos de proyectosAgrupados en formato adecuado para el gráfico
+        // Datos agrupados de proyectos por vendedor en JSON
         const proyectosAgrupados = @json($proyectosAgrupados);
-        const fases = [...new Set(proyectosAgrupados.map(proyecto => proyecto.fase))]; // Extraer fases
-        const vendedores = [...new Set(proyectosAgrupados.map(proyecto => proyecto.vendedor_nombre))]; // Extraer vendedores
+        
+        // Extraer fases de los proyectos
+        const fases = [
+            'Fase Diseño',
+            'Fase Propuesta Comercial',
+            'Fase Contable',
+            'Fase Comercial',
+            'Fase Fabricación',
+            'Fase Despachos',
+            'Fase Postventa'
+        ];
 
-        // Crear datasets para cada vendedor
-        const datasets = vendedores.map(vendedor => {
-            const data = fases.map(fase => {
-                const proyecto = proyectosAgrupados.find(p => p.fase === fase && p.vendedor_nombre === vendedor);
-                return proyecto ? proyecto.total_fase : 0;
-            });
-            return {
-                label: vendedor,
-                data: data,
-                backgroundColor: '#' + Math.floor(Math.random()*16777215).toString(16), // Color aleatorio para cada vendedor
-            };
-        });
+        // Generar un gráfico de pastel para cada vendedor
+        proyectosAgrupados.reduce((acc, proyecto) => {
+            const { vendedor_nombre: vendedor, fase, total_fase: totalFase } = proyecto;
+            if (!acc[vendedor]) acc[vendedor] = { labels: [], data: [] };
+            acc[vendedor].labels.push(fase);
+            acc[vendedor].data.push(totalFase);
+            return acc;
+        }, {});
 
-        // Configuración del gráfico de pastel
-        const ctx = document.getElementById('proyectosPieChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: fases,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: (tooltipItem) => {
-                                return tooltipItem.label + ': ' + tooltipItem.raw;
+        // Configuración y creación de gráficos
+        Object.entries(acc).forEach(([vendedor, { labels, data }]) => {
+            const ctx = document.getElementById(`chart_${vendedor}`).getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: labels.map(() => '#' + Math.floor(Math.random()*16777215).toString(16)), // Colores aleatorios
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw}`
                             }
                         }
                     }
                 }
-            }
+            });
         });
     </script>
