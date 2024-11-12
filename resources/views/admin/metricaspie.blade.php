@@ -5,11 +5,14 @@
         @foreach($proyectosConPorcentaje->groupBy('vendedor_nombre') as $vendedor => $proyectos)
         <div class="col-md-3 col-lg-3 mb-3">
             <div class="card">
-                <div class="card-head p-3 cdh">
+                <div class="card-head p-3 cdh text-center">
                     <h3>{{ $vendedor }}</h3>
                 </div>
                 <div class="card-body">
                     <canvas id="chart_{{ Str::slug(Str::lower($vendedor), '_') }}" class="chart-item"></canvas>
+                </div>
+                <div class="card-footer">
+                    <h4><strong>Total Proyectos:</strong> {{ $totalProyectos }}</h4>
                 </div>
             </div>
         </div>
