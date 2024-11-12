@@ -65,7 +65,6 @@
                                     <p><strong>{{ $fase }}</strong></p>
                                     <div class="d-flex">
                                         <div class="progress-bar mr-2" style="width: {{ $porcentaje }}%">
-                                            {{ number_format($porcentaje, 0) }}%
                                         </div>
                                         <span>{{ number_format($porcentaje, 0) }}%</span>
                                     </div>
