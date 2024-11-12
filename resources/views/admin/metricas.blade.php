@@ -2,6 +2,18 @@
 @extends('layouts.admin')
 @section('content')
     <style>
+        #sidebar{
+            display: none;
+        }
+
+        .c-wrapper{
+            margin-left: 0px;
+        }
+
+        .c-header.c-header-fixed.px-3{
+            display: none;s
+        }
+
         .fase-container {
             margin-bottom: 20px;
         }
