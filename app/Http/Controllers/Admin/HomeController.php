@@ -127,25 +127,36 @@ class HomeController
             ->value('title');
 
         if ($rol_usuario == "Admin") {
+            $fases = [
+                'Fase Diseño',
+                'Fase Propuesta Comercial',
+                'Fase Contable',
+                'Fase Comercial',
+                'Fase Fabricación',
+                'Fase Despachos',
+                'Fase Postventa'
+            ];
+
             $proyectosAgrupados = DB::table('proyectos')
-                ->join('users', 'proyectos.id_vendedor', '=', 'users.id') // Join con la tabla de usuarios para obtener el nombre
+                ->join('users', 'proyectos.id_vendedor', '=', 'users.id') // Join con la tabla de usuarios
+                ->rightJoin(DB::raw('(SELECT "' . implode('" as fase UNION SELECT "', $fases) . '" as fase) as todas_fases'), 'todas_fases.fase', '=', 'proyectos.fase')
                 ->select(
                     'proyectos.id_vendedor',
                     'users.name as vendedor_nombre',
-                    'proyectos.fase',
-                    DB::raw('count(proyectos.id) as total_fase')
+                    'todas_fases.fase',
+                    DB::raw('IFNULL(count(proyectos.id), 0) as total_fase')
                 )
-                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
-                ->whereNotIn('proyectos.id_vendedor', [1, 26])
-                ->groupBy('proyectos.id_vendedor', 'proyectos.fase', 'users.name') // Agrupar por vendedor y fase
-                ->orderByRaw("FIELD(proyectos.fase, 
+                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados
+                ->whereNotIn('proyectos.id_vendedor', [1, 26]) // Excluir vendedores específicos
+                ->groupBy('proyectos.id_vendedor', 'todas_fases.fase', 'users.name') // Agrupar por vendedor y fase
+                ->orderByRaw("FIELD(todas_fases.fase, 
                         'Fase Diseño', 
                         'Fase Propuesta Comercial', 
                         'Fase Contable', 
                         'Fase Comercial', 
                         'Fase Fabricación', 
                         'Fase Despachos', 
-                        'Fase Postventa')") // Ordenar las fases de acuerdo al orden específico
+                        'Fase Postventa')") // Orden específico de fases
                 ->get();
 
             // Obtener el total de proyectos por vendedor
