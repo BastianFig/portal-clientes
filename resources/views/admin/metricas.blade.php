@@ -7,11 +7,11 @@
         }
 
         .c-wrapper{
-            margin-left: 0px;
+            margin-left: 0px !important;
         }
 
         .c-header.c-header-fixed.px-3{
-            display: none;s
+            display: none;
         }
 
         .fase-container {
