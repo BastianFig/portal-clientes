@@ -236,7 +236,7 @@ class HomeController
             });
         }
 
-        return view('admin.metricaspie', compact('proyectosConPorcentaje'));
+        return view('admin.metricaspie', compact('proyectosConPorcentaje', 'totalProyectosPorVendedor'));
     }
 
 
