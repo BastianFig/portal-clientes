@@ -63,7 +63,7 @@
                             legend: { position: 'top' },
                             tooltip: {
                                 callbacks: {
-                                    label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw.toFixed(2)}%`
+                                    label: (tooltipItem) => `${tooltipItem.label}: ${Math.round(tooltipItem.raw)}%`
                                 }
                             }
                         }
