@@ -4,16 +4,15 @@
         @foreach($proyectosConPorcentaje->groupBy('vendedor_nombre') as $vendedor => $proyectos)
             <div class="chart-item">
                 <h3>{{ $vendedor }}</h3>
-                <canvas id="chart_{{ Str::slug($vendedor, '_') }}"></canvas>
+                <canvas id="chart_{{ Str::slug(Str::lower($vendedor), '_') }}"></canvas> <!-- ID en minúsculas -->
             </div>
         @endforeach
     </div>
 
     <script>
-        // Datos agrupados de proyectos con porcentaje por vendedor en JSON
+        // Ejecutar el código JavaScript después de que el DOM esté completamente cargado
         const proyectosConPorcentaje = @json($proyectosConPorcentaje);
         
-        // Agrupar los datos por vendedor para crear el conjunto de datos de cada gráfico
         const datosPorVendedor = proyectosConPorcentaje.reduce((acc, proyecto) => {
             const { vendedor_nombre: vendedor, fase, porcentaje_fase: porcentaje } = proyecto;
             if (!acc[vendedor]) acc[vendedor] = { labels: [], data: [] };
@@ -22,13 +21,11 @@
             return acc;
         }, {});
 
-        // Configuración y creación de gráficos
         Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data }]) => {
-            // Reemplazamos caracteres no válidos en el ID
-            const canvasId = `chart_${vendedor.replace(/\s+/g, '_')}`;
+            // Convertimos el nombre del vendedor a minúsculas para coincidir con el ID en el HTML
+            const canvasId = `chart_${vendedor.toLowerCase().replace(/\s+/g, '_')}`;
             const canvasElement = document.getElementById(canvasId);
             
-            // Verificamos que el elemento canvas existe antes de intentar crear el gráfico
             if (canvasElement) {
                 const ctx = canvasElement.getContext('2d');
                 new Chart(ctx, {
@@ -37,7 +34,7 @@
                         labels: labels,
                         datasets: [{
                             data: data,
-                            backgroundColor: labels.map(() => '#' + Math.floor(Math.random() * 16777215).toString(16)), // Colores aleatorios
+                            backgroundColor: labels.map(() => '#' + Math.floor(Math.random() * 16777215).toString(16)), 
                         }]
                     },
                     options: {
