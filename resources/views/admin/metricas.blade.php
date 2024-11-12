@@ -55,7 +55,7 @@
                                     <div class="fase">
                                         @if($proyecto->fase == 'Fase Diseño')
                                             <p><strong>Fase Diseño</strong></p>
-                                            @if($porcentaje == 0)
+                                            @if($porcentaje == 0 ||)
                                                 <div class="d-flex">
                                                     <div class="progress-bar mr-2" style="width: 0%">
                                                     </div>
@@ -74,7 +74,7 @@
                                             
                                         @elseif($proyecto->fase == 'Fase Propuesta Comercial')
                                             <p><strong>Fase Propuesta Comercial</strong></p>
-                                            @if($porcentaje == 0)
+                                            @if($porcentaje == 0 || $porcentaje == null)
                                                 <div class="d-flex">
                                                     <div class="progress-bar mr-2" style="width: 0%">
                                                     </div>
