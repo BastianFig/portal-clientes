@@ -2,7 +2,7 @@
 @section('content')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <h2>Distribución de Proyectos en Porcentaje por Fase para Cada Vendedor</h2>
-    <div class="chart-container">
+    <div class="d-flex">
         @foreach($proyectosConPorcentaje->groupBy('vendedor_nombre') as $vendedor => $proyectos)
         <div class="col-md-3 col-lg-3 mb-3">
             <div class="card">
@@ -69,12 +69,6 @@
         });
     </script>
     <style>
-        .chart-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 columnas */
-            gap: 20px;
-            margin: 20px;
-        }
         .chart-item {
             width: 100%;
             height: 300px;
