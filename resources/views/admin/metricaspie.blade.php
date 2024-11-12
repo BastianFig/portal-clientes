@@ -24,8 +24,8 @@
             'Fase Postventa'
         ];
 
-        // Generar un gráfico de pastel para cada vendedor
-        proyectosAgrupados.reduce((acc, proyecto) => {
+        // Agrupar los datos por vendedor para crear el conjunto de datos de cada gráfico
+        const datosPorVendedor = proyectosAgrupados.reduce((acc, proyecto) => {
             const { vendedor_nombre: vendedor, fase, total_fase: totalFase } = proyecto;
             if (!acc[vendedor]) acc[vendedor] = { labels: [], data: [] };
             acc[vendedor].labels.push(fase);
@@ -34,8 +34,8 @@
         }, {});
 
         // Configuración y creación de gráficos
-        Object.entries(acc).forEach(([vendedor, { labels, data }]) => {
-            const ctx = document.getElementById(`chart_${vendedor}`).getContext('2d');
+        Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data }]) => {
+            const ctx = document.getElementById(`chart_${vendedor.replace(/\s+/g, '-')}`).getContext('2d');
             new Chart(ctx, {
                 type: 'pie',
                 data: {
