@@ -1,5 +1,5 @@
 
-@extends('layouts.admin')
+@section('content')
     <style>
         .fase-container {
             margin-bottom: 20px;
@@ -79,3 +79,4 @@
             </div>
         @endforeach
     </div>
+@endsection
