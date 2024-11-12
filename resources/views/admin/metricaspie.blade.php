@@ -12,7 +12,7 @@
                     <canvas id="chart_{{ Str::slug(Str::lower($vendedor), '_') }}" class="chart-item"></canvas>
                 </div>
                 <div class="card-footer">
-                    <h4><strong>Total Proyectos:</strong> {{ $totalProyectosPorVendedor  }}</h4>
+                    <h4><strong>Total Proyectos:</strong> {{ $totalProyectosPorVendedor[$proyectos->first()->id_vendedor] ?? 0 }}f</h4>
                 </div>
             </div>
         </div>
