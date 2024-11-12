@@ -31,18 +31,24 @@
             'Fase Postventa': '#FF6384'
         };
 
+        // Datos de proyectos y porcentaje
         const proyectosConPorcentaje = @json($proyectosConPorcentaje);
 
         const datosPorVendedor = proyectosConPorcentaje.reduce((acc, proyecto) => {
             const { vendedor_nombre: vendedor, fase, porcentaje_fase: porcentaje } = proyecto;
-            if (!acc[vendedor]) acc[vendedor] = { labels: [], data: [], backgroundColors: [] };
+
+            if (!acc[vendedor]) acc[vendedor] = { labels: [], data: [], backgroundColors: [], counts: {}, total: 0 };
+
             acc[vendedor].labels.push(fase);
             acc[vendedor].data.push(porcentaje);
             acc[vendedor].backgroundColors.push(fasesColores[fase]);
+            acc[vendedor].counts[fase] = (acc[vendedor].counts[fase] || 0) + 1; // Contar proyectos por fase
+            acc[vendedor].total += 1; // Contar total de proyectos por vendedor
+
             return acc;
         }, {});
 
-        Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data, backgroundColors }]) => {
+        Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data, backgroundColors, counts, total }]) => {
             const canvasId = `chart_${vendedor.toLowerCase().replace(/\s+/g, '_')}`;
             const canvasElement = document.getElementById(canvasId);
 
@@ -54,7 +60,9 @@
                         labels: labels,
                         datasets: [{
                             data: data,
-                            backgroundColor: backgroundColors // Colores consistentes para cada fase
+                            backgroundColor: backgroundColors, // Colores consistentes para cada fase
+                            counts: counts, // Añadir counts al dataset
+                            total: total // Total de proyectos por vendedor
                         }]
                     },
                     options: {
@@ -66,7 +74,8 @@
                                     label: (tooltipItem) => {
                                         const fase = tooltipItem.label;
                                         const porcentaje = Math.round(tooltipItem.raw); // Redondeo del porcentaje
-                                        const cantidad = tooltipItem.dataset.counts[fase] || 0; // Obtener cantidad desde el dataset
+                                        // Asegurarse de que counts[fase] esté definido antes de acceder
+                                        const cantidad = tooltipItem.dataset.counts[fase] || 0;
                                         return `${fase}: ${porcentaje}% (${cantidad} proyectos)`;
                                     }
                                 }
