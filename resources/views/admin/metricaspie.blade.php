@@ -59,3 +59,15 @@
             });
         });
     </script>
+     <style>
+        .chart-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columnas */
+            gap: 20px;
+            margin: 20px;
+        }
+        .chart-item {
+            width: 100%;
+            height: 300px;
+        }
+    </style>
