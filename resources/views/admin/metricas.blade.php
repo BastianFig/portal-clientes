@@ -62,13 +62,12 @@
                                 @endphp
 
                                 <div class="fase">
-                                    <p><strong>{{ $fase }}</strong></p>
+                                    <p><strong>{{ $fase }} - {{ $totalFase }} proyectos</strong></p>
                                     <div class="d-flex">
                                         <div class="progress-bar mr-2" style="width: {{ $porcentaje }}%">
                                         </div>
                                         <span>{{ number_format($porcentaje, 0) }}%</span>
                                     </div>
-                                    <p>{{ $totalFase }} proyectos</p>
                                     <div class="separator"></div>
                                 </div>
                             @endforeach
