@@ -14,6 +14,10 @@
             display: none;
         }
 
+        .c-main{
+            padding-top: 1rem !important;
+        }
+
         .fase-container {
             margin-bottom: 20px;
         }
