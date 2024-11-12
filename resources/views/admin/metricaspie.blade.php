@@ -4,7 +4,7 @@
         @foreach($proyectosConPorcentaje->groupBy('vendedor_nombre') as $vendedor => $proyectos)
             <div class="chart-item">
                 <h3>{{ $vendedor }}</h3>
-                <canvas id="chart_{{ Str::slug($vendedor) }}"></canvas>
+                <canvas id="chart_{{ Str::slug($vendedor, '_') }}"></canvas>
             </div>
         @endforeach
     </div>
@@ -24,28 +24,37 @@
 
         // Configuración y creación de gráficos
         Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data }]) => {
-            const ctx = document.getElementById(`chart_${vendedor.replace(/\s+/g, '-')}`).getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: labels.map(() => '#' + Math.floor(Math.random()*16777215).toString(16)), // Colores aleatorios
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'top' },
-                        tooltip: {
-                            callbacks: {
-                                label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw.toFixed(2)}%`
+            // Reemplazamos caracteres no válidos en el ID
+            const canvasId = `chart_${vendedor.replace(/\s+/g, '_')}`;
+            const canvasElement = document.getElementById(canvasId);
+            
+            // Verificamos que el elemento canvas existe antes de intentar crear el gráfico
+            if (canvasElement) {
+                const ctx = canvasElement.getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: labels.map(() => '#' + Math.floor(Math.random() * 16777215).toString(16)), // Colores aleatorios
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw.toFixed(2)}%`
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
+            } else {
+                console.warn(`Elemento <canvas> con id "${canvasId}" no encontrado`);
+            }
         });
     </script>
  <style>
