@@ -200,7 +200,7 @@ class HomeController
             ];
 
             $proyectosAgrupados = DB::table('proyectos')
-                ->join('users', 'proyectos.id_vendedor', '=', 'users.id') // Join con la tabla de usuarios
+                ->join('users', 'proyectos.id_vendedor', '=', 'users.id')
                 ->rightJoin(DB::raw('(SELECT "' . implode('" as fase UNION SELECT "', $fases) . '" as fase) as todas_fases'), 'todas_fases.fase', '=', 'proyectos.fase')
                 ->select(
                     'proyectos.id_vendedor',
@@ -208,33 +208,37 @@ class HomeController
                     'todas_fases.fase',
                     DB::raw('IFNULL(count(proyectos.id), 0) as total_fase')
                 )
-                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados
-                ->whereNotIn('proyectos.id_vendedor', [1, 26]) // Excluir vendedores específicos
-                ->groupBy('proyectos.id_vendedor', 'todas_fases.fase', 'users.name') // Agrupar por vendedor y fase
+                ->whereNull('proyectos.deleted_at')
+                ->whereNotIn('proyectos.id_vendedor', [1, 26])
+                ->groupBy('proyectos.id_vendedor', 'todas_fases.fase', 'users.name')
                 ->orderByRaw("FIELD(todas_fases.fase, 
-                        'Fase Diseño', 
-                        'Fase Propuesta Comercial', 
-                        'Fase Contable', 
-                        'Fase Comercial', 
-                        'Fase Fabricación', 
-                        'Fase Despachos', 
-                        'Fase Postventa')") // Orden específico de fases
+                    'Fase Diseño', 
+                    'Fase Propuesta Comercial', 
+                    'Fase Contable', 
+                    'Fase Comercial', 
+                    'Fase Fabricación', 
+                    'Fase Despachos', 
+                    'Fase Postventa')")
                 ->get();
 
-            // Obtener el total de proyectos por vendedor
             $totalProyectosPorVendedor = DB::table('proyectos')
                 ->select('id_vendedor', DB::raw('count(id) as total_proyectos'))
-                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
+                ->whereNull('proyectos.deleted_at')
                 ->whereNotIn('proyectos.id_vendedor', [1, 26])
                 ->groupBy('id_vendedor')
                 ->pluck('total_proyectos', 'id_vendedor');
+
+            // Calcular porcentajes para cada fase y vendedor
+            $proyectosConPorcentaje = $proyectosAgrupados->map(function ($proyecto) use ($totalProyectosPorVendedor) {
+                $totalProyectos = $totalProyectosPorVendedor[$proyecto->id_vendedor] ?? 1; // Evitar división por cero
+                $proyecto->porcentaje_fase = ($proyecto->total_fase / $totalProyectos) * 100;
+                return $proyecto;
+            });
         }
 
-
-
-        //fxdd($proyectosAgrupados);
-        return view('admin.metricaspie', compact('proyectosAgrupados', 'totalProyectosPorVendedor'));
+        return view('admin.metricaspie', compact('proyectosConPorcentaje'));
     }
+
 
 
 }
