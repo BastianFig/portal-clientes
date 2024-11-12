@@ -174,4 +174,67 @@ class HomeController
         return view('admin.metricas', compact('proyectosAgrupados', 'totalProyectosPorVendedor'));
     }
 
+    public function metricaspie()
+    {
+        $id_vendedor = Auth::user()->id;
+        $id_rol_usuario = DB::table('users')
+            ->join('role_user', 'users.id', '=', 'role_user.user_id')
+            ->where('users.id', $id_vendedor)
+            ->select('role_user.role_id')
+            ->get();
+        $id_rol_usuario = $id_rol_usuario->first()->role_id;
+
+        $rol_usuario = DB::table('roles')
+            ->where('id', $id_rol_usuario)
+            ->value('title');
+
+        if ($rol_usuario == "Admin") {
+            $fases = [
+                'Fase Diseño',
+                'Fase Propuesta Comercial',
+                'Fase Contable',
+                'Fase Comercial',
+                'Fase Fabricación',
+                'Fase Despachos',
+                'Fase Postventa'
+            ];
+
+            $proyectosAgrupados = DB::table('proyectos')
+                ->join('users', 'proyectos.id_vendedor', '=', 'users.id') // Join con la tabla de usuarios
+                ->rightJoin(DB::raw('(SELECT "' . implode('" as fase UNION SELECT "', $fases) . '" as fase) as todas_fases'), 'todas_fases.fase', '=', 'proyectos.fase')
+                ->select(
+                    'proyectos.id_vendedor',
+                    'users.name as vendedor_nombre',
+                    'todas_fases.fase',
+                    DB::raw('IFNULL(count(proyectos.id), 0) as total_fase')
+                )
+                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados
+                ->whereNotIn('proyectos.id_vendedor', [1, 26]) // Excluir vendedores específicos
+                ->groupBy('proyectos.id_vendedor', 'todas_fases.fase', 'users.name') // Agrupar por vendedor y fase
+                ->orderByRaw("FIELD(todas_fases.fase, 
+                        'Fase Diseño', 
+                        'Fase Propuesta Comercial', 
+                        'Fase Contable', 
+                        'Fase Comercial', 
+                        'Fase Fabricación', 
+                        'Fase Despachos', 
+                        'Fase Postventa')") // Orden específico de fases
+                ->get();
+
+            // Obtener el total de proyectos por vendedor
+            $totalProyectosPorVendedor = DB::table('proyectos')
+                ->select('id_vendedor', DB::raw('count(id) as total_proyectos'))
+                ->whereNull('proyectos.deleted_at') // Excluir proyectos eliminados suavemente
+                ->whereNotIn('proyectos.id_vendedor', [1, 26])
+                ->groupBy('id_vendedor')
+                ->pluck('total_proyectos', 'id_vendedor');
+        }
+
+
+
+        //fxdd($proyectosAgrupados);
+        return view('admin.metricaspie', compact('proyectosAgrupados', 'totalProyectosPorVendedor'));
+    }
+
+
 }

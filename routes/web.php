@@ -10,6 +10,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('/', 'HomeController@index')->name('home');
     Route::get('/kpis', 'HomeController@kpis')->name('kpis');
     Route::get('/metricas', 'HomeController@metricas')->name('metricas');
+    Route::get('/metricas-pie', 'HomeController@metricaspie')->name('metricaspie');
 
     // Permissions
     Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
