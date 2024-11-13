@@ -50,41 +50,54 @@
         }, {});
 
         Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data, backgroundColors, cantidadProyectos }]) => {
-            const canvasId = `chart_${vendedor.toLowerCase().replace(/\s+/g, '_')}`;
-            const canvasElement = document.getElementById(canvasId);
+    const canvasId = `chart_${vendedor.toLowerCase().replace(/\s+/g, '_')}`;
+    const canvasElement = document.getElementById(canvasId);
 
-            if (canvasElement) {
-                const ctx = canvasElement.getContext('2d');
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: backgroundColors
-                        }]
+    if (canvasElement) {
+        const ctx = canvasElement.getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels.map((label, index) => `${label}: ${data[index]}% (${cantidadProyectos[index]} proyectos)`),
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColors
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { 
+                        position: 'top',
+                        labels: {
+                            generateLabels: (chart) => {
+                                return chart.data.labels.map((label, i) => ({
+                                    text: label,
+                                    fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                    strokeStyle: chart.data.datasets[0].backgroundColor[i],
+                                    index: i
+                                }));
+                            }
+                        }
                     },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { position: 'top' },
-                            tooltip: {
-                                callbacks: {
-                                    label: (tooltipItem) => {
-                                        const fase = tooltipItem.label;
-                                        const porcentaje = Math.round(tooltipItem.raw);
-                                        const cantidad = cantidadProyectos[tooltipItem.dataIndex];
-                                        return `${fase}: ${porcentaje}% (${cantidad} proyectos)`;
-                                    }
-                                }
+                    tooltip: {
+                        callbacks: {
+                            label: (tooltipItem) => {
+                                const fase = tooltipItem.label;
+                                const porcentaje = Math.round(tooltipItem.raw);
+                                const cantidad = cantidadProyectos[tooltipItem.dataIndex];
+                                return `${fase}: ${porcentaje}% (${cantidad} proyectos)`;
                             }
                         }
                     }
-                });
-            } else {
-                console.warn(`Elemento <canvas> con id "${canvasId}" no encontrado`);
+                }
             }
         });
+    } else {
+        console.warn(`Elemento <canvas> con id "${canvasId}" no encontrado`);
+    }
+});
+
     </script>
     <style>
         .chart-item {
