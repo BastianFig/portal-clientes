@@ -102,7 +102,7 @@
     <style>
         .chart-item {
             width: 100% !important;
-            height: 500px !important;
+            height: 300px !important;
         }
         #sidebar{
             display: none;
