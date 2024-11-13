@@ -101,8 +101,8 @@
     </script>
     <style>
         .chart-item {
-            width: 100%;
-            height: 500px;
+            width: 100% !important;
+            height: 500px !important;
         }
         #sidebar{
             display: none;
