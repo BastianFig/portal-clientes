@@ -50,54 +50,54 @@
         }, {});
 
         Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data, backgroundColors, cantidadProyectos }]) => {
-    const canvasId = `chart_${vendedor.toLowerCase().replace(/\s+/g, '_')}`;
-    const canvasElement = document.getElementById(canvasId);
+            const canvasId = `chart_${vendedor.toLowerCase().replace(/\s+/g, '_')}`;
+            const canvasElement = document.getElementById(canvasId);
 
-    if (canvasElement) {
-        const ctx = canvasElement.getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels.map((label, index) => `${label}: ${Math.round(data[index])}% - ${cantidadProyectos[index]} proyectos`),
-                datasets: [{
-                    data: data,
-                    backgroundColor: backgroundColors
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { 
-                        position: 'top',
-                        labels: {
-                            generateLabels: (chart) => {
-                                return chart.data.labels.map((label, i) => ({
-                                    text: label,
-                                    fillStyle: chart.data.datasets[0].backgroundColor[i],
-                                    strokeStyle: chart.data.datasets[0].backgroundColor[i],
-                                    index: i
-                                }));
-                            }
-                        }
+            if (canvasElement) {
+                const ctx = canvasElement.getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels.map((label, index) => `${label}: ${Math.round(data[index])}% - ${cantidadProyectos[index]} proyectos`),
+                        datasets: [{
+                            data: data,
+                            backgroundColor: backgroundColors
+                        }]
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: (tooltipItem) => {
-                                const fase = tooltipItem.label;
-                                const porcentaje = Math.round(tooltipItem.raw);
-                                //const cantidad = cantidadProyectos[tooltipItem.dataIndex];
-                                //return `${fase}: ${porcentaje}% (${cantidad} proyectos)`;
-                                return `${fase}: ${porcentaje}%`;
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { 
+                                position: 'top',
+                                labels: {
+                                    // Mantiene el formato completo solo en la leyenda del gráfico
+                                    generateLabels: (chart) => {
+                                        return chart.data.labels.map((label, i) => ({
+                                            text: label,
+                                            fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                            strokeStyle: chart.data.datasets[0].backgroundColor[i],
+                                            index: i
+                                        }));
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    // Muestra solo el porcentaje en el tooltip
+                                    label: (tooltipItem) => {
+                                        const porcentaje = Math.round(tooltipItem.raw);
+                                        return `${porcentaje}%`;
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                });
+            } else {
+                console.warn(`Elemento <canvas> con id "${canvasId}" no encontrado`);
             }
         });
-    } else {
-        console.warn(`Elemento <canvas> con id "${canvasId}" no encontrado`);
-    }
-});
+
 
     </script>
     <style>
