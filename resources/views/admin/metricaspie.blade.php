@@ -55,10 +55,15 @@
 
             if (canvasElement) {
                 const ctx = canvasElement.getContext('2d');
+
+                // Etiquetas personalizadas para la leyenda y el tooltip
+                const legendLabels = labels.map((label, index) => `${label}: ${Math.round(data[index])}% - ${cantidadProyectos[index]} proyectos`);
+                const tooltipLabels = labels.map((label, index) => `${label}: ${Math.round(data[index])}%`);
+
                 new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: labels.map((label, index) => `${label}: ${Math.round(data[index])}% - ${cantidadProyectos[index]} proyectos`),
+                        labels: legendLabels, // Solo se usa para la leyenda
                         datasets: [{
                             data: data,
                             backgroundColor: backgroundColors
@@ -71,7 +76,7 @@
                                 position: 'top',
                                 labels: {
                                     generateLabels: (chart) => {
-                                        return chart.data.labels.map((label, i) => ({
+                                        return legendLabels.map((label, i) => ({
                                             text: label,
                                             fillStyle: chart.data.datasets[0].backgroundColor[i],
                                             strokeStyle: chart.data.datasets[0].backgroundColor[i],
@@ -83,9 +88,8 @@
                             tooltip: {
                                 callbacks: {
                                     label: (tooltipItem) => {
-                                        const fase = labels[tooltipItem.dataIndex];
-                                        const porcentaje = Math.round(tooltipItem.raw);
-                                        return `${fase}: ${porcentaje}%`;
+                                        // Utiliza las etiquetas del tooltip
+                                        return tooltipLabels[tooltipItem.dataIndex];
                                     }
                                 }
                             }
@@ -96,6 +100,7 @@
                 console.warn(`Elemento <canvas> con id "${canvasId}" no encontrado`);
             }
         });
+
 
 
 
