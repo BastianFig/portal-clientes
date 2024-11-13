@@ -58,6 +58,7 @@
                 new Chart(ctx, {
                     type: 'doughnut',
                     data: {
+                        labels: labels.map((label, index) => `${label}: ${Math.round(data[index])}% - ${cantidadProyectos[index]} proyectos`),
                         datasets: [{
                             data: data,
                             backgroundColor: backgroundColors
@@ -67,17 +68,7 @@
                         responsive: true,
                         plugins: {
                             legend: { 
-                                position: 'top',
-                                labels: {
-                                    generateLabels: (chart) => {
-                                        return chart.data.labels.map((label, i) => ({
-                                            text: label,
-                                            fillStyle: chart.data.datasets[0].backgroundColor[i],
-                                            strokeStyle: chart.data.datasets[0].backgroundColor[i],
-                                            index: i
-                                        }));
-                                    }
-                                }
+                                position: 'top'
                             },
                             tooltip: {
                                 callbacks: {
