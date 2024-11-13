@@ -68,7 +68,17 @@
                         responsive: true,
                         plugins: {
                             legend: { 
-                                position: 'top'
+                                position: 'top',
+                                labels: {
+                                    generateLabels: (chart) => {
+                                        return chart.data.labels.map((label, i) => ({
+                                            text: label,
+                                            fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                            strokeStyle: chart.data.datasets[0].backgroundColor[i],
+                                            index: i
+                                        }));
+                                    }
+                                }
                             },
                             tooltip: {
                                 callbacks: {
