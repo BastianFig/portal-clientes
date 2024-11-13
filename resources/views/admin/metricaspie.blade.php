@@ -68,7 +68,7 @@
                         responsive: true,
                         plugins: {
                             legend: { 
-                                position: 'bottom',
+                                position: 'top',
                                 labels: {
                                     generateLabels: (chart) => {
                                         return chart.data.labels.map((label, i) => ({
@@ -77,15 +77,6 @@
                                             strokeStyle: chart.data.datasets[0].backgroundColor[i],
                                             index: i
                                         }));
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: (tooltipItem) => {
-                                        const fase = labels[tooltipItem.dataIndex];
-                                        const porcentaje = Math.round(tooltipItem.raw);
-                                        return `${fase}: ${porcentaje}%`;
                                     }
                                 }
                             }
