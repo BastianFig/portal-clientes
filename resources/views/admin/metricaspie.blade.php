@@ -58,7 +58,7 @@
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: labels.map((label, index) => `${label}: ${Math.round(data[index])}% (${cantidadProyectos[index]} proyectos)`),
+                labels: labels.map((label, index) => `${label}: ${Math.round(data[index])}% - ${cantidadProyectos[index]} proyectos`),
                 datasets: [{
                     data: data,
                     backgroundColor: backgroundColors
@@ -85,8 +85,9 @@
                             label: (tooltipItem) => {
                                 const fase = tooltipItem.label;
                                 const porcentaje = Math.round(tooltipItem.raw);
-                                const cantidad = cantidadProyectos[tooltipItem.dataIndex];
-                                return `${fase}: ${porcentaje}% (${cantidad} proyectos)`;
+                                //const cantidad = cantidadProyectos[tooltipItem.dataIndex];
+                                //return `${fase}: ${porcentaje}% (${cantidad} proyectos)`;
+                                return `${fase}: ${porcentaje}%`;
                             }
                         }
                     }
