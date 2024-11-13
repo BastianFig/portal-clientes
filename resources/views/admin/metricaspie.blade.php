@@ -70,7 +70,6 @@
                             legend: { 
                                 position: 'top',
                                 labels: {
-                                    // Mantiene el formato completo solo en la leyenda del gráfico
                                     generateLabels: (chart) => {
                                         return chart.data.labels.map((label, i) => ({
                                             text: label,
@@ -83,10 +82,10 @@
                             },
                             tooltip: {
                                 callbacks: {
-                                    // Muestra solo el porcentaje en el tooltip
                                     label: (tooltipItem) => {
+                                        const fase = labels[tooltipItem.dataIndex];
                                         const porcentaje = Math.round(tooltipItem.raw);
-                                        return `${porcentaje}%`;
+                                        return `${fase}: ${porcentaje}%`;
                                     }
                                 }
                             }
@@ -97,6 +96,7 @@
                 console.warn(`Elemento <canvas> con id "${canvasId}" no encontrado`);
             }
         });
+
 
 
     </script>
