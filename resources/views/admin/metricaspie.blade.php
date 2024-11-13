@@ -6,7 +6,7 @@
         <div class="col-md-3 col-lg-3 mb-3">
             <div class="card">
                 <div class="card-head p-3 cdh text-center">
-                    <h3>{{ explode(' ', trim($vendedor))[0] }}</h3>
+                    <h3>{{ ucfirst(strtolower(explode(' ', trim($vendedor))[0])) }}</h3>
                 </div>
                 <div class="card-body">
                     <canvas id="chart_{{ Str::slug(Str::lower($vendedor), '_') }}" class="chart-item"></canvas>
