@@ -58,7 +58,7 @@
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: labels.map((label, index) => `${label}: ${data[index]}% (${cantidadProyectos[index]} proyectos)`),
+                labels: labels.map((label, index) => `${label}: ${Math.round(data[index])}% (${cantidadProyectos[index]} proyectos)`),
                 datasets: [{
                     data: data,
                     backgroundColor: backgroundColors
