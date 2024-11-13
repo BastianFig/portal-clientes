@@ -49,7 +49,7 @@
             return acc;
         }, {});
 
-        Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data, backgroundColors, cantidadProyectos }]) => {
+        Object.entries(datosPorVendedor).forEach(([vendedor, { labels, data, backgroundColors }]) => {
             const canvasId = `chart_${vendedor.toLowerCase().replace(/\s+/g, '_')}`;
             const canvasElement = document.getElementById(canvasId);
 
@@ -58,7 +58,7 @@
                 new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: labels.map((label, index) => `${label}: ${Math.round(data[index])}% - ${cantidadProyectos[index]} proyectos`),
+                        labels: labels, // Usa solo el nombre de la fase aquí
                         datasets: [{
                             data: data,
                             backgroundColor: backgroundColors
@@ -71,10 +71,11 @@
                                 position: 'top',
                                 labels: {
                                     generateLabels: (chart) => {
-                                        return chart.data.labels.map((label, i) => ({
-                                            text: label,
-                                            fillStyle: chart.data.datasets[0].backgroundColor[i],
-                                            strokeStyle: chart.data.datasets[0].backgroundColor[i],
+                                        // Personaliza la leyenda para incluir porcentaje y cantidad de proyectos
+                                        return labels.map((label, i) => ({
+                                            text: `${label}: ${Math.round(data[i])}% - ${cantidadProyectos[i]} proyectos`,
+                                            fillStyle: backgroundColors[i],
+                                            strokeStyle: backgroundColors[i],
                                             index: i
                                         }));
                                     }
@@ -83,6 +84,7 @@
                             tooltip: {
                                 callbacks: {
                                     label: (tooltipItem) => {
+                                        // Muestra solo el nombre de la fase y el porcentaje en el tooltip
                                         const fase = labels[tooltipItem.dataIndex];
                                         const porcentaje = Math.round(tooltipItem.raw);
                                         return `${fase}: ${porcentaje}%`;
