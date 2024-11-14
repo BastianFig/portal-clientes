@@ -1506,9 +1506,10 @@ class ProyectoController extends Controller
         $proyecto->id_usuarios_clientes()->sync($request->input('id_usuarios_clientes', []));
 
         $userId = Auth::id();
-        $nombre_empresa = Empresa::select('razon_social')->where('id', $request->id_cliente_id)->frst();
-        $rut_empresa = Empresa::select('rut')->where('id', $request->id_cliente_id)->first();
-        $nombre_vendedor = User::select('name')->where('id', $userId)->first();
+        $nombre_empresa = Empresa::where('id', $request->id_cliente_id)->value('razon_social');
+        $rut_empresa = Empresa::where('id', $request->id_cliente_id)->value('rut');
+        $nombre_vendedor = User::where('id', $userId)->value('name');
+
 
         // Definir la ruta donde se quiere crear la carpeta
         $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$request->nombre_proyecto}/{$nombre_vendedor}";
