@@ -1512,19 +1512,17 @@ class ProyectoController extends Controller
         $nombre_vendedor = User::where('id', $userId)->value('name');
 
 
-        // Definir la ruta donde se quiere crear la carpeta
-
-        //dd($rutaDirectorio);
-
-        // Crear la carpeta si no existe
-        /*if (!file_exists($rutaDirectorio)) {
-            mkdir($rutaDirectorio, 0777, true); // 0777 otorga permisos completos, y 'true' permite crear directorios recursivamente
-        }*/
-
         try {
+            // Definir la ruta donde se quiere crear la carpeta
             $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$request->nombre_proyecto}/{$nombre_vendedor}";
             if (!file_exists($rutaDirectorio)) {
-                mkdir($rutaDirectorio, 0777, true);
+                mkdir($rutaDirectorio . '/COMERCIAL\/01 COTIZACION', 0777, true);
+                mkdir($rutaDirectorio . '/COMERCIAL\/02 NOTA DE VENTA', 0777, true);
+                mkdir($rutaDirectorio . '/COMERCIAL\/03 ORDEN DE COMPRA', 0777, true);
+                mkdir($rutaDirectorio . '/COMERCIAL\/04 DISENO', 0777, true);
+                mkdir($rutaDirectorio . '/COMERCIAL\/05 CURSE', 0777, true);
+                mkdir($rutaDirectorio . '/COMERCIAL\/06 FACTURAS', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO', 0777, true);
                 echo "Directorio creado exitosamente";
             } else {
                 echo "El directorio ya existe";
