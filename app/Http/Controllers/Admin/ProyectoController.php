@@ -1506,15 +1506,16 @@ class ProyectoController extends Controller
         $proyecto->id_usuarios_clientes()->sync($request->input('id_usuarios_clientes', []));
 
         $userId = Auth::id();
-        $nombre_empresa = Empresa::where('id', $request->id_cliente_id)->value('razon_social');
+        //$nombre_empresa = Empresa::where('id', $request->id_cliente_id)->value('razon_social');
+        $nombre_empresa = strtoupper(str_replace(' ', '_', Empresa::where('id', $request->id_cliente_id)->value('razon_social')));
         $rut_empresa = Empresa::where('id', $request->id_cliente_id)->value('rut');
-        $nombre_vendedor = strtoupper(str_replace(' ', '_', User::where('id', $userId)->value('name')));
+        $nombre_vendedor = User::where('id', $userId)->value('name');
 
 
         // Definir la ruta donde se quiere crear la carpeta
         $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$request->nombre_proyecto}/{$nombre_vendedor}";
-
         dd($rutaDirectorio);
+
         // Crear la carpeta si no existe
         if (!file_exists($rutaDirectorio)) {
             mkdir($rutaDirectorio, 0777, true); // 0777 otorga permisos completos, y 'true' permite crear directorios recursivamente
