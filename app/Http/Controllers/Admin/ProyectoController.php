@@ -1506,7 +1506,7 @@ class ProyectoController extends Controller
         $proyecto->id_usuarios_clientes()->sync($request->input('id_usuarios_clientes', []));
 
         $userId = Auth::id();
-        $nombre_empresa = Empresa::select('nombre_fantasia')->where('id', $request->id_cliente_id)->get();
+        $nombre_empresa = Empresa::select('razon_social')->where('id', $request->id_cliente_id)->get();
         $rut_empresa = Empresa::select('rut')->where('id', $request->id_cliente_id)->get();
         $nombre_vendedor = User::select('name')->where('id', $userId)->get();
 
