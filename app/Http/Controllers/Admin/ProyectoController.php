@@ -1512,7 +1512,7 @@ class ProyectoController extends Controller
 
         // Definir la ruta donde se quiere crear la carpeta
         $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$request->nombre_proyecto}/{$nombre_vendedor}";
-
+        dd($rutaDirectorio);
         // Crear la carpeta si no existe
         if (!file_exists($rutaDirectorio)) {
             mkdir($rutaDirectorio, 0777, true); // 0777 otorga permisos completos, y 'true' permite crear directorios recursivamente
