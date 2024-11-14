@@ -1517,8 +1517,20 @@ class ProyectoController extends Controller
         dd($rutaDirectorio);
 
         // Crear la carpeta si no existe
-        if (!file_exists($rutaDirectorio)) {
+        /*if (!file_exists($rutaDirectorio)) {
             mkdir($rutaDirectorio, 0777, true); // 0777 otorga permisos completos, y 'true' permite crear directorios recursivamente
+        }*/
+
+        try {
+            $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/123";
+            if (!file_exists($rutaDirectorio)) {
+                mkdir($rutaDirectorio, 0777, true);
+                echo "Directorio creado exitosamente";
+            } else {
+                echo "El directorio ya existe";
+            }
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
         }
 
         return redirect()->route('admin.proyectos.index');
