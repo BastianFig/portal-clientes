@@ -6,10 +6,12 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Proyecto extends Model
+class Proyecto extends Model implements HasMedia
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, InteractsWithMedia;
 
     public $table = 'proyectos';
 
@@ -17,73 +19,6 @@ class Proyecto extends Model
         'created_at',
         'updated_at',
         'deleted_at',
-    ];
-
-    public const DISENADOR_SELECT = [
-        'Constanza Díaz'     => 'Constanza Díaz' ,
-        'Gabriel Moya'=>'Gabriel Moya',
-        'Rodrigo Calderón' => 'Rodrigo Calderón',
-        'Rodrigo González' => 'Rodrigo González',
-    ];
-
-    public const INSTALADOR_SELECT = [
-        'Gabriel Gallegos'     => 'Gabriel Gallegos' ,
-        'Diego Gallegos' => 'Diego Gallegos',
-        'Jonathan Urbina' => 'Jonathan Urbina',
-    ];
-
-    public const ESTADO_SELECT = [
-        'Negocio Ganado'     => 'Negocio Ganado',
-        'Proyecto Caliente' => 'Proyecto Caliente',
-        'Proyecto Interesante' => 'Proyecto Interesante',
-        'Proyecto Potencial' => 'Proyecto Potencial',
-        'Negocio Perdido' => 'Negocio Perdido',
-    ];
-
-    public const CATEGORIA_PROYECTO_SELECT = [
-        'Agrícola' => 'Agrícola',
-        'Alimentos'    => 'Alimentos',
-        'Arquitectura'    => 'Arquitectura',
-        'Aseo'    => 'Aseo',
-        'Asesorias Empresariales'    => 'Asesorías Empresariales',
-        'Automotriz'    => 'Automotriz',
-        'Banca'    => 'Banca',
-        'Capacitación'    => 'Capacitación',
-        'Construcción'    => 'Construcción',
-        'Educación'    => 'Educación',
-        'Energía'    => 'Energía',
-        'Financiera'    => 'Financiera',
-        'Industrial'    => 'Industrial',
-        'Minera'    => 'Minera',
-        'Notarias'    => 'Notarias',
-        'Particular'    => 'Particular',
-        'Pinturas'    => 'Pinturas',
-        'Química'    => 'Química',
-        'Salud'    => 'Salud',
-        'Seguridad'    => 'Seguridad',
-        'Seguros'    => 'Seguros',
-        'Tecnología'    => 'Tecnología',
-        'Telecomunicaciones'    => 'Telecomunicaciones',
-        'Transporte Y Logística'    => 'Transporte Y Logística',
-        'Otros'    => 'Otros',
-    ];
-    
-    public const TIPO_PROYECTO_SELECT = [
-        'Silla' => 'Silla',
-        'Mobiliario'    => 'Mobiliario',
-        'Silla y Mobiliario' => 'Silla y Mobiliario',
-
-    ];
-
-
-    public const FASE_SELECT = [
-        'Fase Diseño' => 'Fase Diseño',
-        'Fase Propuesta Comercial' => 'Fase Propuesta Comercial',
-        'Fase Contable' => 'Fase Contable',
-        'Fase Comercial' => 'Fase Comercial',
-        'Fase Fabricacion' => 'Fase Fabricacion',
-        'Fase Despacho' => 'Fase Despacho',
-        'Fase Postventa' => 'Fase Postventa',
     ];
 
     protected $fillable = [
@@ -103,6 +38,12 @@ class Proyecto extends Model
         'disenador',
         'instalador'
     ];
+
+    // Registra las colecciones de medios
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('cotizacion')->useDisk('public');  // Usar el disco 'public' para almacenar los archivos
+    }
 
     public function vendedor()
     {
@@ -173,6 +114,7 @@ class Proyecto extends Model
     {
         return $this->belongsTo(Facturacion::class, 'facturacion_id');
     }
+
     public function encuesta()
     {
         return $this->belongsTo(Encuestum::class, 'encuesta_id');
