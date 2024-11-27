@@ -1575,8 +1575,8 @@ class ProyectoController extends Controller
         $proyecto->load('id_cliente', 'id_usuarios_clientes', 'sucursal', 'fasediseno', 'fasecomercial', 'fasecomercialproyecto', 'fasecontable', 'fasedespacho', 'fasefabrica', 'fasepostventa', 'carpetacliente');
 
         // Definir la ruta del directorio basado en los atributos del proyecto
-        $rut_empresa = $proyecto->id_cliente_id->rut_empresa; // Asumiendo que existe este campo relacionado
-        $nombre_empresa = $proyecto->id_cliente_id->nombre_empresa;
+        $rut_empresa = $proyecto->id_cliente_id->rut; // Asumiendo que existe este campo relacionado
+        $nombre_empresa = $proyecto->id_cliente_id->razon_social;
         $nombre_proyecto = $proyecto->nombre;
 
         $userId = $proyecto->id_vendedor;
