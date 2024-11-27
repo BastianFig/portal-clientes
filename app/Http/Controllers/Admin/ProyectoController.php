@@ -1612,7 +1612,7 @@ class ProyectoController extends Controller
                         Storage::disk('public')->put($destino, file_get_contents($rutaCompleta));
 
                         // Guardar en la tabla `medios` usando Media Library, asociando el archivo a 'Fasecomercial'
-                        $media = $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino)) // Asocia con fasecomercial
+                        $media = $proyecto->addMedia(storage_path('app/public/' . $destino)) // Asocia con fasecomercial
                             ->toMediaCollection('cotizacion'); // Almacenar en la colección 'cotizacion'
 
                         // Mover el archivo desde la carpeta temporal a una nueva carpeta con el ID del archivo
