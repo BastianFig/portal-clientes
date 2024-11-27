@@ -41,6 +41,8 @@ use App\Mail\ConfirmaHorario;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Storage;
+
 
 
 class ProyectoController extends Controller
@@ -1586,15 +1588,11 @@ class ProyectoController extends Controller
         $rut_empresa = $proyecto->id_cliente->rut; // Asumiendo que existe este campo relacionado
         $nombre_empresa = strtoupper(str_replace(' ', '_', ($proyecto->id_cliente->razon_social)));
         $nombre_proyecto = $proyecto->nombre_proyecto;
-        //dd($proyecto);
 
         $userId = $proyecto->id_vendedor;
         $nombre_vendedor = User::where('id', $userId)->value('name');
 
-        //dd($nombre_empresa);
-
         $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}/{$nombre_vendedor}/COMERCIAL/01 COTIZACION";
-
 
         // Listar archivos del directorio
         $archivos = [];
@@ -1603,22 +1601,28 @@ class ProyectoController extends Controller
                 $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']); // Excluir "." y ".."
                 $archivos = array_map(function ($archivo) use ($rutaDirectorio) {
                     $rutaCompleta = $rutaDirectorio . DIRECTORY_SEPARATOR . $archivo;
+                    $destino = 'temporal/' . $archivo; // Ruta destino en storage/app/public/temporal
+
+                    // Copiar el archivo a la carpeta temporal
+                    if (file_exists($rutaCompleta)) {
+                        // Copiar el archivo a storage/app/public/temporal
+                        Storage::disk('public')->put($destino, file_get_contents($rutaCompleta));
+                    }
+
                     return [
                         'nombre' => $archivo,
-                        'ruta' => str_replace('\\', '/', $rutaCompleta), // Convertir backslashes a slashes
+                        'ruta' => str_replace('\\', '/', Storage::disk('public')->url($destino)), // URL pública
                     ];
                 }, $archivos);
-
             }
         } catch (\Exception $e) {
             // Manejar errores si es necesario
             $archivos = [];
         }
 
-
-
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
+
 
 
     public function destroy(Proyecto $proyecto)

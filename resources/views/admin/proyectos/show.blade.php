@@ -221,25 +221,7 @@
                                             </tr>
                                         @endif
                                     </table>
-                                </div>    
-                
-                                <div class="form-group">
-                                        <h3>Archivos de la Cotización</h3>
-                                        @if(!empty($archivos))
-                                            <ul>
-                                                @foreach($archivos as $archivo)
-                                                    <li>
-                                                        <a href="{{ route('admin.descargar.archivo', ['file' => $archivo['ruta']]) }}" target="_blank">
-                                                            {{ $archivo['nombre'] }}
-                                                        </a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        @else
-                                            <p>No hay archivos disponibles en la carpeta de cotizaciones.</p>
-                                        @endif
-                                    </div>
-                                    
+                                </div>                                       
                                     
 
                                 <div class="form-group">
