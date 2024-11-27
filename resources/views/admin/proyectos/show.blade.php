@@ -229,7 +229,7 @@
                                             <ul>
                                                 @foreach($archivos as $archivo)
                                                     <li>
-                                                        <a href="{{ url('proyectos/descarga?file=' . urlencode($archivo['ruta'])) }}" target="_blank">
+                                                        <a href="{{ route('descargar.archivo', ['file' => urlencode($archivo['ruta'])]) }}" target="_blank">
                                                             {{ $archivo['nombre'] }}
                                                         </a>
                                                     </li>
@@ -239,6 +239,7 @@
                                             <p>No hay archivos disponibles en la carpeta de cotizaciones.</p>
                                         @endif
                                     </div>
+                                    
                                     
 
                                 <div class="form-group">

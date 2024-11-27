@@ -57,8 +57,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('/proyectos/descargar', function (Request $request) {
         $filePath = $request->query('file');
 
-        if (file_exists($filePath)) {
-            return response()->file($filePath);
+        // Validar que el archivo existe y está dentro de un directorio permitido
+        $baseDirectory = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/";
+        $realPath = realpath($filePath);
+
+        if (!$realPath || !str_starts_with($realPath, realpath($baseDirectory))) {
+            abort(403, 'Acceso no permitido.');
+        }
+
+        if (file_exists($realPath)) {
+            return response()->file($realPath);
         }
 
         abort(404, 'Archivo no encontrado');
