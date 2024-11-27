@@ -260,14 +260,14 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
         'HomeController@soporte'
     )->name('soporte');*/
 
-    /* Route::get('/migrate', function () {
-          //$exitCode = Artisan::call('make:migration add_tipo_empresa_to_empresas_table');
-          $exitCode = Artisan::call('storage:link');
-      
-          // Puedes manejar la salida del comando si es necesario
-          $output = Artisan::output();
-      
-          return "Migration completed. Exit code: $exitCode\n$output";
-      });*/
+    Route::get('/migrate', function () {
+        //$exitCode = Artisan::call('make:migration add_tipo_empresa_to_empresas_table');
+        $exitCode = Artisan::call('route:cache');
+
+        // Puedes manejar la salida del comando si es necesario
+        $output = Artisan::output();
+
+        return "Migration completed. Exit code: $exitCode\n$output";
+    });
 
 });
