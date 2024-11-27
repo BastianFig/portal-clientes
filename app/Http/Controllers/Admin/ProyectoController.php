@@ -45,6 +45,7 @@ use Illuminate\Support\Facades\Storage;
 
 
 
+
 class ProyectoController extends Controller
 {
     use MediaUploadingTrait;
@@ -1577,9 +1578,6 @@ class ProyectoController extends Controller
     //     //  dd($proyecto);
     //     return view('admin.proyectos.show', compact('proyecto'));
     // }
-
-    use Spatie\MediaLibrary\Models\Media; // Importar el modelo Media
-    use Illuminate\Support\Facades\Storage;
 
     public function show(Proyecto $proyecto)
     {
