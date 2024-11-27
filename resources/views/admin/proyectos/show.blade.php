@@ -229,7 +229,7 @@
                                             <ul>
                                                 @foreach($archivos as $archivo)
                                                     <li>
-                                                        <a href="{{ $archivo['ruta'] }}" target="_blank">
+                                                        <a href="{{ route('admin.descargar.archivo', ['file' => $archivo['ruta']]) }}" target="_blank">
                                                             {{ $archivo['nombre'] }}
                                                         </a>
                                                     </li>
