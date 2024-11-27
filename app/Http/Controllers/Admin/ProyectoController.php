@@ -1602,11 +1602,13 @@ class ProyectoController extends Controller
             if (file_exists($rutaDirectorio)) {
                 $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']); // Excluir "." y ".."
                 $archivos = array_map(function ($archivo) use ($rutaDirectorio) {
+                    $rutaCompleta = $rutaDirectorio . DIRECTORY_SEPARATOR . $archivo;
                     return [
                         'nombre' => $archivo,
-                        'ruta' => asset("proyectos/descargar?file=" . urlencode($rutaDirectorio . DIRECTORY_SEPARATOR . $archivo))
+                        'ruta' => str_replace('\\', '/', $rutaCompleta), // Convertir backslashes a slashes
                     ];
                 }, $archivos);
+
             }
         } catch (\Exception $e) {
             // Manejar errores si es necesario
