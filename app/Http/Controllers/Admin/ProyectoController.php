@@ -1586,7 +1586,7 @@ class ProyectoController extends Controller
         $proyecto->load('id_cliente', 'id_usuarios_clientes', 'sucursal', 'fasediseno', 'fasecomercial', 'fasecomercialproyecto', 'fasecontable', 'fasedespacho', 'fasefabrica', 'fasepostventa', 'carpetacliente');
 
         // Definir la ruta del directorio basado en los atributos del proyecto
-        $rut_empresa = $proyecto->id_cliente->rut; // Asumiendo que existe este campo relacionado
+        $rut_empresa = $proyecto->id_cliente->rut;
         $nombre_empresa = strtoupper(str_replace(' ', '_', ($proyecto->id_cliente->razon_social)));
         $nombre_proyecto = $proyecto->nombre_proyecto;
 
@@ -1612,6 +1612,27 @@ class ProyectoController extends Controller
                         // Guardar en la tabla `medios` usando Media Library
                         $media = $proyecto->addMedia(storage_path('app/public/' . $destino))
                             ->toMediaCollection('cotizacion');
+
+                        // Mover el archivo desde la carpeta temporal a una nueva carpeta con el ID del archivo
+                        $newPath = storage_path('app/public/media/' . $media->id);  // Carpeta con el id del archivo
+                        $newFilePath = $newPath . '/' . $media->file_name;         // Archivo con el nombre original
+
+                        // Crear la carpeta si no existe
+                        if (!file_exists($newPath)) {
+                            mkdir($newPath, 0777, true);
+                        }
+
+                        // Mover el archivo desde temporal
+                        $oldFilePath = storage_path('app/public/temporal/' . basename($destino));
+                        if (file_exists($oldFilePath)) {
+                            rename($oldFilePath, $newFilePath); // Mover el archivo
+                        }
+
+                        // Actualizar la ruta en la tabla 'medios' si es necesario
+                        $media->update([
+                            'disk' => 'public',
+                            'path' => 'media/' . $media->id . '/' . $media->file_name,  // Actualizar el path en la base de datos
+                        ]);
                     }
 
                     return [
@@ -1627,6 +1648,7 @@ class ProyectoController extends Controller
 
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
+
 
 
 
