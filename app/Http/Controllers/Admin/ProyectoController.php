@@ -1582,10 +1582,11 @@ class ProyectoController extends Controller
         $userId = $proyecto->id_vendedor;
         $nombre_vendedor = User::where('id', $userId)->value('name');
 
-        dd($nombre_empresa);
+        //dd($nombre_empresa);
 
         $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}/{$nombre_vendedor}/COMERCIAL/01 COTIZACION";
 
+        dd($rutaDirectorio);
         // Listar archivos del directorio
         $archivos = [];
         try {
