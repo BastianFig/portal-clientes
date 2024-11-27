@@ -1583,6 +1583,7 @@ class ProyectoController extends Controller
     {
         abort_if(Gate::denies('proyecto_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        // Cargar relaciones necesarias
         $proyecto->load('id_cliente', 'id_usuarios_clientes', 'sucursal', 'fasediseno', 'fasecomercial', 'fasecomercialproyecto', 'fasecontable', 'fasedespacho', 'fasefabrica', 'fasepostventa', 'carpetacliente');
 
         // Definir la ruta del directorio basado en los atributos del proyecto
@@ -1593,6 +1594,7 @@ class ProyectoController extends Controller
         $userId = $proyecto->id_vendedor;
         $nombre_vendedor = User::where('id', $userId)->value('name');
 
+        // Definir la ruta del directorio original
         $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}/{$nombre_vendedor}/COMERCIAL/01 COTIZACION";
 
         // Listar archivos del directorio
@@ -1609,20 +1611,20 @@ class ProyectoController extends Controller
                         // Copiar el archivo a storage/app/public/temporal
                         Storage::disk('public')->put($destino, file_get_contents($rutaCompleta));
 
-                        // Guardar en la tabla `medios` usando Media Library
-                        $media = $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino))
-                            ->toMediaCollection('cotizacion');
+                        // Guardar en la tabla `medios` usando Media Library, asociando el archivo a 'Fasecomercial'
+                        $media = $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino)) // Asocia con fasecomercial
+                            ->toMediaCollection('cotizacion'); // Almacenar en la colección 'cotizacion'
 
                         // Mover el archivo desde la carpeta temporal a una nueva carpeta con el ID del archivo
-                        $newPath = storage_path('app/public/media/' . $media->id);  // Carpeta con el id del archivo
+                        $newPath = storage_path('app/public/media/' . $media->id);  // Carpeta con el ID del archivo
                         $newFilePath = $newPath . '/' . $media->file_name;         // Archivo con el nombre original
 
                         // Crear la carpeta si no existe
                         if (!file_exists($newPath)) {
-                            mkdir($newPath, 0777, true);
+                            mkdir($newPath, 0777, true); // Crear carpeta si no existe
                         }
 
-                        // Mover el archivo desde temporal
+                        // Mover el archivo desde la carpeta temporal
                         $oldFilePath = storage_path('app/public/temporal/' . basename($destino));
                         if (file_exists($oldFilePath)) {
                             rename($oldFilePath, $newFilePath); // Mover el archivo
@@ -1635,6 +1637,7 @@ class ProyectoController extends Controller
                         ]);
                     }
 
+                    // Preparar la información del archivo para mostrar en la vista
                     return [
                         'nombre' => $archivo,
                         'ruta' => str_replace('\\', '/', Storage::disk('public')->url($destino)), // URL pública
@@ -1646,8 +1649,10 @@ class ProyectoController extends Controller
             $archivos = [];
         }
 
+        // Pasar la información a la vista
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
+
 
 
 
