@@ -1761,7 +1761,6 @@
 
     <script>
         /* FASE PROPUESTA COMERCIAL */
-         var uploadedCotizacionMap = {}
          Dropzone.options.cotizacionDropzone = {
         url: '{{ route('admin.fasecomercials.storeMedia') }}',
         maxFilesize: 4, // MB
