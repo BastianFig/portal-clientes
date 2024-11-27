@@ -224,21 +224,22 @@
                                 </div>    
                 
                                 <div class="form-group">
-                                    <h3>Archivos de la Cotización</h3>
-                                    @if(!empty($archivos))
-                                        <ul>
-                                            @foreach($archivos as $archivo)
-                                                <li>
-                                                    <a href="{{ url('proyectos/descarga?file=' . urlencode($archivo)) }}" target="_blank">
-                                                        {{ $archivo }}
-                                                    </a>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    @else
-                                        <p>No hay archivos disponibles en la carpeta de cotizaciones.</p>
-                                    @endif
-                                </div>
+                                        <h3>Archivos de la Cotización</h3>
+                                        @if(!empty($archivos))
+                                            <ul>
+                                                @foreach($archivos as $archivo)
+                                                    <li>
+                                                        <a href="{{ url('ruta-a-endpoint-de-descarga?file=' . urlencode($archivo['ruta'])) }}" target="_blank">
+                                                            {{ $archivo['nombre'] }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            <p>No hay archivos disponibles en la carpeta de cotizaciones.</p>
+                                        @endif
+                                    </div>
+                                    
 
                                 <div class="form-group">
                                     <label for="oc">Orden de Compra <br><small style="color:rgba(255, 0, 0, 0.562);"><strong>(Archivos Permitidos: .PDF)</strong></small></label>
