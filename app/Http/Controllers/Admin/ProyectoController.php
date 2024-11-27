@@ -1665,6 +1665,7 @@ class ProyectoController extends Controller
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
 
+
     public function destroy(Proyecto $proyecto)
     {
         abort_if(Gate::denies('proyecto_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
