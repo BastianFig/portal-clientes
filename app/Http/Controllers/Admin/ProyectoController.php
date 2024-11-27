@@ -1558,15 +1558,45 @@ class ProyectoController extends Controller
         return redirect()->route('admin.proyectos.index');
     }
 
+    // public function show(Proyecto $proyecto)
+    // {
+    //     abort_if(Gate::denies('proyecto_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+    //     $proyecto->load('id_cliente', 'id_usuarios_clientes', 'sucursal', 'fasediseno', 'fasecomercial', 'fasecomercialproyecto', 'fasecontable', 'fasedespacho', 'fasefabrica', 'fasepostventa', 'carpetacliente');
+
+    //     //  dd($proyecto);
+    //     return view('admin.proyectos.show', compact('proyecto'));
+    // }
+
     public function show(Proyecto $proyecto)
     {
         abort_if(Gate::denies('proyecto_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $proyecto->load('id_cliente', 'id_usuarios_clientes', 'sucursal', 'fasediseno', 'fasecomercial', 'fasecomercialproyecto', 'fasecontable', 'fasedespacho', 'fasefabrica', 'fasepostventa', 'carpetacliente');
 
-        //  dd($proyecto);
-        return view('admin.proyectos.show', compact('proyecto'));
+        // Definir la ruta del directorio basado en los atributos del proyecto
+        $rut_empresa = $proyecto->id_cliente->rut_empresa; // Asumiendo que existe este campo relacionado
+        $nombre_empresa = $proyecto->id_cliente->nombre_empresa;
+        $nombre_proyecto = $proyecto->nombre;
+        $nombre_vendedor = $proyecto->id_usuarios_clientes->nombre;
+        dd($nombre_empresa);
+
+        $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}/{$nombre_vendedor}/COMERCIAL/01 COTIZACION";
+
+        // Listar archivos del directorio
+        $archivos = [];
+        try {
+            if (file_exists($rutaDirectorio)) {
+                $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']); // Excluir "." y ".."
+            }
+        } catch (\Exception $e) {
+            // Manejar errores si es necesario
+            $archivos = [];
+        }
+
+        return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
+
 
     public function destroy(Proyecto $proyecto)
     {
