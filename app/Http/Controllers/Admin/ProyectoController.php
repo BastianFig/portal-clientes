@@ -1605,7 +1605,7 @@ class ProyectoController extends Controller
                 $archivos = array_map(function ($archivo) use ($rutaDirectorio, $proyecto) {
                     $rutaCompleta = $rutaDirectorio . DIRECTORY_SEPARATOR . $archivo;
                     $destino = 'temporal/' . $archivo; // Ruta destino en storage/app/public/temporal
-
+                    dd($proyecto->fasecomercial);
                     // Copiar el archivo a la carpeta temporal
                     if (file_exists($rutaCompleta)) {
                         // Copiar el archivo a storage/app/public/temporal
