@@ -1577,8 +1577,8 @@ class ProyectoController extends Controller
         // Definir la ruta del directorio basado en los atributos del proyecto
         $rut_empresa = $proyecto->id_cliente->rut; // Asumiendo que existe este campo relacionado
         $nombre_empresa = strtoupper(str_replace(' ', '_', ($proyecto->id_cliente->razon_social)));
-        $nombre_proyecto = $proyecto->nombre;
-        dd($proyecto);
+        $nombre_proyecto = $proyecto->nombre_proyecto;
+        //dd($proyecto);
 
         $userId = $proyecto->id_vendedor;
         $nombre_vendedor = User::where('id', $userId)->value('name');
