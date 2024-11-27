@@ -1614,6 +1614,7 @@ class ProyectoController extends Controller
         try {
             if (file_exists($rutaDirectorio)) {
                 $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']); // Excluir "." y ".."
+                dd($archivos);
                 $archivos = array_map(function ($archivo) use ($rutaDirectorio, $proyecto) {
                     $rutaCompleta = $rutaDirectorio . DIRECTORY_SEPARATOR . $archivo;
                     $destino = 'temporal/' . $archivo; // Ruta destino en storage/app/public/temporal
