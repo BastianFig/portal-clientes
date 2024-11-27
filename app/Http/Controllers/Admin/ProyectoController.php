@@ -1587,7 +1587,7 @@ class ProyectoController extends Controller
 
         $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}/{$nombre_vendedor}/COMERCIAL/01 COTIZACION";
 
-        dd($rutaDirectorio);
+
         // Listar archivos del directorio
         $archivos = [];
         try {
@@ -1598,6 +1598,8 @@ class ProyectoController extends Controller
             // Manejar errores si es necesario
             $archivos = [];
         }
+
+        dd($archivos);
 
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
