@@ -47,18 +47,18 @@ class ProyectoController extends Controller
 {
     use MediaUploadingTrait;
 
-    public function Alerta_modifica($id_proyecto, $texto)
-    {
-        $proyecto_info = Proyecto::with('id_usuarios_clientes')->find($id_proyecto);
-        $data_alerta = ["alert_text" => $texto, "aler_link" => "test test test"];
-        $i = 0;
-        foreach ($proyecto_info->id_usuarios_clientes as $usuario_cliente) {
-            $data_alert_users = ["i" => $usuario_cliente->id];
-            $i = $i + 1;
-        }
-        $userAlert = UserAlert::create($data_alerta);
-        $userAlert->users()->sync($data_alert_users);
-    }
+    // public function Alerta_modifica($id_proyecto, $texto)
+    // {
+    //     $proyecto_info = Proyecto::with('id_usuarios_clientes')->find($id_proyecto);
+    //     $data_alerta = ["alert_text" => $texto, "aler_link" => "test test test"];
+    //     $i = 0;
+    //     foreach ($proyecto_info->id_usuarios_clientes as $usuario_cliente) {
+    //         $data_alert_users = ["i" => $usuario_cliente->id];
+    //         $i = $i + 1;
+    //     }
+    //     $userAlert = UserAlert::create($data_alerta);
+    //     $userAlert->users()->sync($data_alert_users);
+    // }
 
     public function storeFasediseno(StoreFaseDisenoRequest $request)
     {
