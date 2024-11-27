@@ -21,6 +21,73 @@ class Proyecto extends Model implements HasMedia
         'deleted_at',
     ];
 
+    public const DISENADOR_SELECT = [
+        'Constanza Díaz' => 'Constanza Díaz',
+        'Gabriel Moya' => 'Gabriel Moya',
+        'Rodrigo Calderón' => 'Rodrigo Calderón',
+        'Rodrigo González' => 'Rodrigo González',
+    ];
+
+    public const INSTALADOR_SELECT = [
+        'Gabriel Gallegos' => 'Gabriel Gallegos',
+        'Diego Gallegos' => 'Diego Gallegos',
+        'Jonathan Urbina' => 'Jonathan Urbina',
+    ];
+
+    public const ESTADO_SELECT = [
+        'Negocio Ganado' => 'Negocio Ganado',
+        'Proyecto Caliente' => 'Proyecto Caliente',
+        'Proyecto Interesante' => 'Proyecto Interesante',
+        'Proyecto Potencial' => 'Proyecto Potencial',
+        'Negocio Perdido' => 'Negocio Perdido',
+    ];
+
+    public const CATEGORIA_PROYECTO_SELECT = [
+        'Agrícola' => 'Agrícola',
+        'Alimentos' => 'Alimentos',
+        'Arquitectura' => 'Arquitectura',
+        'Aseo' => 'Aseo',
+        'Asesorias Empresariales' => 'Asesorías Empresariales',
+        'Automotriz' => 'Automotriz',
+        'Banca' => 'Banca',
+        'Capacitación' => 'Capacitación',
+        'Construcción' => 'Construcción',
+        'Educación' => 'Educación',
+        'Energía' => 'Energía',
+        'Financiera' => 'Financiera',
+        'Industrial' => 'Industrial',
+        'Minera' => 'Minera',
+        'Notarias' => 'Notarias',
+        'Particular' => 'Particular',
+        'Pinturas' => 'Pinturas',
+        'Química' => 'Química',
+        'Salud' => 'Salud',
+        'Seguridad' => 'Seguridad',
+        'Seguros' => 'Seguros',
+        'Tecnología' => 'Tecnología',
+        'Telecomunicaciones' => 'Telecomunicaciones',
+        'Transporte Y Logística' => 'Transporte Y Logística',
+        'Otros' => 'Otros',
+    ];
+
+    public const TIPO_PROYECTO_SELECT = [
+        'Silla' => 'Silla',
+        'Mobiliario' => 'Mobiliario',
+        'Silla y Mobiliario' => 'Silla y Mobiliario',
+
+    ];
+
+
+    public const FASE_SELECT = [
+        'Fase Diseño' => 'Fase Diseño',
+        'Fase Propuesta Comercial' => 'Fase Propuesta Comercial',
+        'Fase Contable' => 'Fase Contable',
+        'Fase Comercial' => 'Fase Comercial',
+        'Fase Fabricacion' => 'Fase Fabricacion',
+        'Fase Despacho' => 'Fase Despacho',
+        'Fase Postventa' => 'Fase Postventa',
+    ];
+
     protected $fillable = [
         'id_cliente_id',
         'sucursal_id',
