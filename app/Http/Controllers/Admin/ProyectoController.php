@@ -50,13 +50,21 @@ class ProyectoController extends Controller
     public function Alerta_modifica($id_proyecto, $texto)
     {
         $proyecto_info = Proyecto::with('id_usuarios_clientes')->find($id_proyecto);
+
+        // Datos básicos de la alerta
         $data_alerta = ["alert_text" => $texto, "aler_link" => "test test test"];
-        $i = 0;
+
+        // Acumular los IDs de los usuarios clientes
+        $data_alert_users = []; // Inicializamos como un array vacío
+
         foreach ($proyecto_info->id_usuarios_clientes as $usuario_cliente) {
-            $data_alert_users = ["i" => $usuario_cliente->id];
-            $i = $i + 1;
+            $data_alert_users[] = $usuario_cliente->id; // Añadimos el ID al array
         }
+
+        // Crear la alerta de usuario
         $userAlert = UserAlert::create($data_alerta);
+
+        // Asociar los usuarios a la alerta
         $userAlert->users()->sync($data_alert_users);
     }
 
