@@ -1586,6 +1586,18 @@ class ProyectoController extends Controller
         // Cargar relaciones necesarias
         $proyecto->load('id_cliente', 'id_usuarios_clientes', 'sucursal', 'fasediseno', 'fasecomercial', 'fasecomercialproyecto', 'fasecontable', 'fasedespacho', 'fasefabrica', 'fasepostventa', 'carpetacliente');
 
+        // Verificar si no existe una fase comercial
+        if ($proyecto->fasecomercial == null) {
+            // Crear una nueva fase comercial y asignarle un ID basado en el siguiente disponible
+            $nuevaFaseComercial = Fasecomercial::create([
+                'id_proyecto_id' => $proyecto->id, // Asignar el proyecto actual
+                // Otros campos necesarios, si es necesario agregar más campos
+            ]);
+
+            // Asignar la nueva instancia de fase comercial al proyecto
+            $proyecto->fasecomercial = $nuevaFaseComercial;
+        }
+
         // Definir la ruta del directorio basado en los atributos del proyecto
         $rut_empresa = $proyecto->id_cliente->rut;
         $nombre_empresa = strtoupper(str_replace(' ', '_', ($proyecto->id_cliente->razon_social)));
@@ -1612,7 +1624,7 @@ class ProyectoController extends Controller
                         Storage::disk('public')->put($destino, file_get_contents($rutaCompleta));
 
                         // Guardar en la tabla `medios` usando Media Library, asociando el archivo a 'Fasecomercial'
-                        $media = $proyecto->addMedia(storage_path('app/public/' . $destino)) // Asocia con fasecomercial
+                        $media = $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino)) // Asocia con fasecomercial
                             ->toMediaCollection('cotizacion'); // Almacenar en la colección 'cotizacion'
 
                         // Mover el archivo desde la carpeta temporal a una nueva carpeta con el ID del archivo
@@ -1652,10 +1664,6 @@ class ProyectoController extends Controller
         // Pasar la información a la vista
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
-
-
-
-
 
     public function destroy(Proyecto $proyecto)
     {
