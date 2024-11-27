@@ -1578,6 +1578,9 @@ class ProyectoController extends Controller
     //     return view('admin.proyectos.show', compact('proyecto'));
     // }
 
+    use Spatie\MediaLibrary\Models\Media; // Importar el modelo Media
+    use Illuminate\Support\Facades\Storage;
+
     public function show(Proyecto $proyecto)
     {
         abort_if(Gate::denies('proyecto_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -1599,7 +1602,7 @@ class ProyectoController extends Controller
         try {
             if (file_exists($rutaDirectorio)) {
                 $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']); // Excluir "." y ".."
-                $archivos = array_map(function ($archivo) use ($rutaDirectorio) {
+                $archivos = array_map(function ($archivo) use ($rutaDirectorio, $proyecto) {
                     $rutaCompleta = $rutaDirectorio . DIRECTORY_SEPARATOR . $archivo;
                     $destino = 'temporal/' . $archivo; // Ruta destino en storage/app/public/temporal
 
@@ -1607,6 +1610,10 @@ class ProyectoController extends Controller
                     if (file_exists($rutaCompleta)) {
                         // Copiar el archivo a storage/app/public/temporal
                         Storage::disk('public')->put($destino, file_get_contents($rutaCompleta));
+
+                        // Guardar en la tabla `medios` usando Media Library
+                        $media = $proyecto->addMedia(storage_path('app/public/' . $destino))
+                            ->toMediaCollection('cotizacion');
                     }
 
                     return [
