@@ -1613,60 +1613,37 @@ class ProyectoController extends Controller
         $archivos = [];
         try {
             if (file_exists($rutaDirectorio)) {
-                // Obtener todos los archivos excepto "." y ".."
-                $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']);
+                $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']); // Excluir "." y ".."
+                $archivos = array_map(function ($archivo) use ($rutaDirectorio, $proyecto) {
+                    $rutaCompleta = $rutaDirectorio . DIRECTORY_SEPARATOR . $archivo;
+                    $destino = 'temporal/' . $archivo; // Ruta destino en storage/app/public/temporal
 
-                // Comprobar si hay archivos para procesar
-                if (count($archivos) > 0) {
-                    foreach ($archivos as $archivo) {
-                        $rutaCompleta = $rutaDirectorio . DIRECTORY_SEPARATOR . $archivo;
-                        $destino = 'temporal/' . $archivo; // Ruta destino en storage/app/public/temporal
+                    // Copiar el archivo a la carpeta temporal
+                    if (file_exists($rutaCompleta)) {
+                        // Copiar el archivo a storage/app/public/temporal
+                        Storage::disk('public')->put($destino, file_get_contents($rutaCompleta));
 
-                        // Copiar el archivo a la carpeta temporal
-                        if (file_exists($rutaCompleta)) {
-                            // Copiar el archivo a storage/app/public/temporal
-                            Storage::disk('public')->put($destino, file_get_contents($rutaCompleta));
-
-                            // Guardar en la tabla `medios` usando Media Library, asociando el archivo a 'Fasecomercial'
-                            $media = $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino)) // Asocia con fasecomercial
-                                ->toMediaCollection('cotizacion'); // Almacenar en la colección 'cotizacion'
-
-                            // Mover el archivo desde la carpeta temporal a una nueva carpeta con el ID del archivo
-                            $newPath = storage_path('app/public/media/' . $media->id);  // Carpeta con el ID del archivo
-                            $newFilePath = $newPath . '/' . $media->file_name;         // Archivo con el nombre original
-
-                            // Crear la carpeta si no existe
-                            if (!file_exists($newPath)) {
-                                mkdir($newPath, 0777, true); // Crear carpeta si no existe
-                            }
-
-                            // Mover el archivo desde la carpeta temporal
-                            $oldFilePath = storage_path('app/public/temporal/' . basename($destino));
-                            if (file_exists($oldFilePath)) {
-                                rename($oldFilePath, $newFilePath); // Mover el archivo
-                            }
-
-                            // Actualizar la ruta en la tabla 'medios' si es necesario
-                            $media->update([
-                                'disk' => 'public',
-                                'path' => 'media/' . $media->id . '/' . $media->file_name,  // Actualizar el path en la base de datos
-                            ]);
-                        }
+                        // Guardar el archivo en la colección 'cotizacion' de la fase comercial
+                        $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino)) // Asocia con fasecomercial
+                            ->toMediaCollection('cotizacion'); // Almacenar en la colección 'cotizacion'
                     }
-                } else {
-                    // Manejo si no hay archivos en el directorio
-                    dd("No se encontraron archivos en el directorio.");
-                }
+
+                    // Preparar la información del archivo para mostrar en la vista
+                    return [
+                        'nombre' => $archivo,
+                        'ruta' => str_replace('\\', '/', Storage::disk('public')->url($destino)), // URL pública
+                    ];
+                }, $archivos);
             }
         } catch (\Exception $e) {
             // Manejar errores si es necesario
             $archivos = [];
-            dd($e->getMessage());
         }
 
         // Pasar la información a la vista
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
+
 
 
 
