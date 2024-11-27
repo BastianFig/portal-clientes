@@ -1604,7 +1604,7 @@ class ProyectoController extends Controller
                 $archivos = array_map(function ($archivo) use ($rutaDirectorio) {
                     return [
                         'nombre' => $archivo,
-                        'ruta' => asset("proyectos/descargar-arhivo?file=" . urlencode($rutaDirectorio . DIRECTORY_SEPARATOR . $archivo))
+                        'ruta' => asset("proyectos/descargar?file=" . urlencode($rutaDirectorio . DIRECTORY_SEPARATOR . $archivo))
                     ];
                 }, $archivos);
             }
