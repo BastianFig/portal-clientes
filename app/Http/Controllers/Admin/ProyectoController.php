@@ -1578,7 +1578,7 @@ class ProyectoController extends Controller
         $rut_empresa = $proyecto->id_cliente->rut_empresa; // Asumiendo que existe este campo relacionado
         $nombre_empresa = $proyecto->id_cliente->nombre_empresa;
         $nombre_proyecto = $proyecto->nombre;
-        $nombre_vendedor = $proyecto->id_usuarios_clientes->nombre;
+        $nombre_vendedor = $proyecto->id_usuarios_clientes->name;
         dd($nombre_empresa);
 
         $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}/{$nombre_vendedor}/COMERCIAL/01 COTIZACION";
