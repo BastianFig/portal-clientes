@@ -54,6 +54,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('proyectos/destroy', 'ProyectoController@massDestroy')->name('proyectos.massDestroy');
     Route::post('proyectos/getusuario', 'ProyectoController@getUsuario')->name('proyectos.getUsuario');
     Route::resource('proyectos', 'ProyectoController');
+    Route::get('/proyectos/descargar-archivo', function (Request $request) {
+        $filePath = $request->query('file');
+
+        if (file_exists($filePath)) {
+            return response()->file($filePath);
+        }
+
+        abort(404, 'Archivo no encontrado');
+    })->name('descargar.archivo');
+
 
     // Fase Diseno
     Route::delete('fase-disenos/destroy', 'FaseDisenoController@massDestroy')->name('fase-disenos.massDestroy');

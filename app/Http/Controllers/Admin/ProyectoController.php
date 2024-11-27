@@ -1593,13 +1593,19 @@ class ProyectoController extends Controller
         try {
             if (file_exists($rutaDirectorio)) {
                 $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']); // Excluir "." y ".."
+                $archivos = array_map(function ($archivo) use ($rutaDirectorio) {
+                    return [
+                        'nombre' => $archivo,
+                        'ruta' => asset("proyectos/descargar-arhivo?file=" . urlencode($rutaDirectorio . DIRECTORY_SEPARATOR . $archivo))
+                    ];
+                }, $archivos);
             }
         } catch (\Exception $e) {
             // Manejar errores si es necesario
             $archivos = [];
         }
 
-        dd($archivos);
+
 
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }

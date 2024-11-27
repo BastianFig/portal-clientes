@@ -1763,81 +1763,57 @@
         /* FASE PROPUESTA COMERCIAL */
          var uploadedCotizacionMap = {}
          Dropzone.options.cotizacionDropzone = {
-            url: '{{ route('admin.fasecomercials.storeMedia') }}',
-            maxFilesize: 4, // MB
-            //maxFiles: 1,
-            addRemoveLinks: true,
-            acceptedFiles: '.pdf,.xlsx',
-            dictInvalidFileType: 'No puedes subir archivos de este tipo.',
-            dictCancelUpload: 'Cancelar subida',
-            dictCancelUploadConfirmation: '¿Estás seguro que quieres cancelar esta subida?',
-            dictRemoveFile: 'Eliminar archivo',
-            dictMaxFilesExceeded: 'Ya has alcanzado el límite de archivos permitidos.',
-            headers: {
+        url: '{{ route('admin.fasecomercials.storeMedia') }}',
+        maxFilesize: 4, // MB
+        addRemoveLinks: true,
+        acceptedFiles: '.pdf,.xlsx',
+        headers: {
             'X-CSRF-TOKEN': "{{ csrf_token() }}"
-            },
-            params: {
+        },
+        params: {
             size: 30
-            },
-            success: function (file, response) {
-            $('form').find('input[name="cotizacion"]').remove()
-            $('form').append('<input type="hidden" name="cotizacion[]" value="' + response.name + '">')
-            },
-            removedfile: function (file) {
-                console.log(file);
-            file.previewElement.remove()
-            var name = ''
-            if (typeof file.file_name !== 'undefined') {
-                name = file.file_name
-            } else {
-                name = uploadedCotizacionMap[file.name]
-            }
-            $('form').find('input[name="cotizacion[]"][value="' + name + '"]').remove()
-            },
-            init: function () {
-            @if(isset($proyecto->faseComercial) && $proyecto->faseComercial->cotizacion)
-            var files = {!! json_encode($proyecto->faseComercial->cotizacion) !!}
-            for (var i in files){
-                var file = files[i]
-                this.options.addedfile.call(this, file)
-                this.options.thumbnail.call(this, file, file.preview ?? file.preview_url)
-                //file.previewElement.classList.add('dz-complete')
-                $('form').append('<input type="hidden" name="cotizacion[]" value="' + file.file_name + '">')
-                 // Obtener el último elemento <a> con la clase "dz-remove"
-                var lastAnchor = $('#cotizacion-dropzone').find('a.dz-remove').last();
-                
-                // Crear el nuevo enlace
-                var newLink = $('<a>', {
-                    href: file.original_url,
-                    class: 'dz-ver',
-                    target: '_blank',
-                    text: 'Ver Archivo'
-                });
-                
-                // Insertar el nuevo enlace después del último elemento <a> con la clase "dz-remove"
-                lastAnchor.after(newLink);
-            }
-                
-            @endif
-            },
-            error: function (file, response) {
-                if ($.type(response) === 'string') {
-                    var message = response //dropzone sends it's own error messages in string
-                } else {
-                    var message = response.errors.file
-                }
-                file.previewElement.classList.add('dz-error')
-                _ref = file.previewElement.querySelectorAll('[data-dz-errormessage]')
-                _results = []
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    node = _ref[_i]
-                    _results.push(node.textContent = message)
-                }
+        },
+        success: function (file, response) {
+            $('form').append('<input type="hidden" name="cotizacion[]" value="' + response.name + '">');
+        },
+        removedfile: function (file) {
+            file.previewElement.remove();
+            $('form').find('input[name="cotizacion[]"][value="' + file.name + '"]').remove();
+        },
+        init: function () {
+            let dropzone = this;
 
-                return _results
-            }
+            // Lista de archivos pasados desde el backend
+            let archivos = @json($archivos);
+
+            archivos.forEach(function (archivo) {
+                let mockFile = {
+                    name: archivo.nombre,
+                    size: 0, // Tamaño en bytes (puedes calcular si es necesario)
+                    accepted: true
+                };
+
+                // Simular archivo cargado
+                dropzone.emit("addedfile", mockFile);
+                dropzone.emit("complete", mockFile);
+                dropzone.emit("success", mockFile, { name: archivo.nombre });
+
+                // Opcional: Agregar enlace para ver archivo
+                let lastAnchor = dropzone.getAcceptedFiles()
+                    .map(file => file.previewElement.querySelector('.dz-remove'))
+                    .slice(-1)[0];
+
+                if (lastAnchor) {
+                    let newLink = document.createElement('a');
+                    newLink.href = archivo.ruta;
+                    newLink.target = '_blank';
+                    newLink.innerText = 'Ver Archivo';
+                    lastAnchor.parentNode.appendChild(newLink);
+                }
+            });
         }
-        
+    };
+
         
         
         Dropzone.options.ocDropzone = {
