@@ -1610,7 +1610,7 @@ class ProyectoController extends Controller
         $userId = $proyecto->id_vendedor;
         $nombre_vendedor = User::where('id', $userId)->value('name');
 
-        $identifierPath = "{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}/{$nombre_vendedor}";
+        $identifierPath = "{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}/{$nombre_vendedor}/COMERCIAL/01 COTIZACION";
 
         $archivos = $this->cleanAndMoveFiles($basePath, $proyecto, $identifierPath);
 
