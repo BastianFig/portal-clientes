@@ -1611,39 +1611,72 @@ class ProyectoController extends Controller
 
         // Listar archivos del directorio
         $archivos = [];
-        try {
-            if (file_exists($rutaDirectorio)) {
-                $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']); // Excluir "." y ".."
-                $archivos = array_map(function ($archivo) use ($rutaDirectorio, $proyecto) {
-                    $rutaCompleta = $rutaDirectorio . DIRECTORY_SEPARATOR . $archivo;
-                    $destino = 'temporal/' . $archivo; // Ruta destino en storage/app/public/temporal
+        // try {
+        //     if (file_exists($rutaDirectorio)) {
+        //         $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']); // Excluir "." y ".."
+        //         $archivos = array_map(function ($archivo) use ($rutaDirectorio, $proyecto) {
+        //             $rutaCompleta = $rutaDirectorio . DIRECTORY_SEPARATOR . $archivo;
+        //             $destino = 'temporal/' . $archivo; // Ruta destino en storage/app/public/temporal
 
-                    // Copiar el archivo a la carpeta temporal
-                    if (file_exists($rutaCompleta)) {
-                        // Copiar el archivo a storage/app/public/temporal
-                        Storage::disk('public')->put($destino, file_get_contents($rutaCompleta));
+        //             // Copiar el archivo a la carpeta temporal
+        //             if (file_exists($rutaCompleta)) {
+        //                 // Copiar el archivo a storage/app/public/temporal
+        //                 Storage::disk('public')->put($destino, file_get_contents($rutaCompleta));
 
-                        // Guardar el archivo en la colección 'cotizacion' de la fase comercial
-                        $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino)) // Asocia con fasecomercial
-                            ->toMediaCollection('cotizacion'); // Almacenar en la colección 'cotizacion'
-                    }
+        //                 // Guardar el archivo en la colección 'cotizacion' de la fase comercial
+        //                 $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino)) // Asocia con fasecomercial
+        //                     ->toMediaCollection('cotizacion'); // Almacenar en la colección 'cotizacion'
+        //             }
 
-                    // Preparar la información del archivo para mostrar en la vista
-                    return [
-                        'nombre' => $archivo,
-                        'ruta' => str_replace('\\', '/', Storage::disk('public')->url($destino)), // URL pública
-                    ];
-                }, $archivos);
-            }
-        } catch (\Exception $e) {
-            // Manejar errores si es necesario
-            $archivos = [];
-        }
+        //             // Preparar la información del archivo para mostrar en la vista
+        //             return [
+        //                 'nombre' => $archivo,
+        //                 'ruta' => str_replace('\\', '/', Storage::disk('public')->url($destino)), // URL pública
+        //             ];
+        //         }, $archivos);
+        //     }
+        // } catch (\Exception $e) {
+        //     // Manejar errores si es necesario
+        //     $archivos = [];
+        // }
 
         // Pasar la información a la vista
+
+        // Llamada a la función
+        $basePath = 'E:\\OHFFICE\\Usuarios\\TI_Ohffice\\Proyecto_temp';
+        $this->cleanEmptyFolders($basePath);
+
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
 
+    public function cleanEmptyFolders($basePath)
+    {
+        try {
+            // Verificar si la ruta existe
+            if (!file_exists($basePath) || !is_dir($basePath)) {
+                throw new \Exception("La ruta especificada no existe o no es un directorio.");
+            }
+
+            // Obtener las carpetas dentro del directorio base
+            $items = array_diff(scandir($basePath), ['.', '..']);
+
+            foreach ($items as $item) {
+                $itemPath = $basePath . DIRECTORY_SEPARATOR . $item;
+
+                // Si el elemento es una carpeta, llamamos a la función recursivamente
+                if (is_dir($itemPath)) {
+                    $this->cleanEmptyFolders($itemPath);
+
+                    // Después de procesar la carpeta, verificar si está vacía
+                    if (count(array_diff(scandir($itemPath), ['.', '..'])) === 0) {
+                        rmdir($itemPath); // Eliminar la carpeta si está vacía
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Manejar errores si es necesario
+        }
+    }
 
 
 
