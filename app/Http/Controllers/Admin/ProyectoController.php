@@ -1650,6 +1650,7 @@ class ProyectoController extends Controller
                         $destino = 'temporal/' . basename($itemPath);
                         Storage::disk('public')->put($destino, file_get_contents($itemPath));
 
+                        //DEBEMOS SABER EL NOMBRE DE LA CARPETA QUE TIENE EL ARCHIVO APRA SABER QUE TOMEDIACOLLECTION UTILIZAR
                         // Guardar el archivo en la colección 'cotizacion' de la fase comercial
                         $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino))
                             ->toMediaCollection('cotizacion');
