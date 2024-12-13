@@ -1606,6 +1606,7 @@ class ProyectoController extends Controller
         $nombre_empresa = strtoupper(str_replace(' ', '_', ($proyecto->id_cliente->razon_social)));
         $nombre_proyecto = $proyecto->nombre_proyecto;
         $identifierPath = "{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}";
+        dd($identifierPath);
 
         $archivos = $this->cleanAndMoveFiles($basePath, $proyecto, $identifierPath);
 
