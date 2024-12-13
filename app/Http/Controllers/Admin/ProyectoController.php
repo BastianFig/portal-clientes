@@ -1579,6 +1579,8 @@ class ProyectoController extends Controller
     //     return view('admin.proyectos.show', compact('proyecto'));
     // }
 
+
+
     public function show(Proyecto $proyecto)
     {
         abort_if(Gate::denies('proyecto_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -1600,13 +1602,18 @@ class ProyectoController extends Controller
 
         // Limpiar y mover archivos desde la ruta temporal
         $basePath = 'E:\\OHFFICE\\Usuarios\\TI_Ohffice\\Proyecto_temp';
-        $archivos = $this->cleanAndMoveFiles($basePath, $proyecto);
+        $rut_empresa = $proyecto->id_cliente->rut;
+        $nombre_empresa = strtoupper(str_replace(' ', '_', ($proyecto->id_cliente->razon_social)));
+        $nombre_proyecto = $proyecto->nombre_proyecto;
+        $identifierPath = "{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}";
+
+        $archivos = $this->cleanAndMoveFiles($basePath, $proyecto, $identifierPath);
 
         // Pasar la información a la vista
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
 
-    public function cleanAndMoveFiles($basePath, $proyecto)
+    public function cleanAndMoveFiles($basePath, $proyecto, $identifierPath)
     {
         $archivos = [];
 
@@ -1624,7 +1631,7 @@ class ProyectoController extends Controller
 
                 // Si el elemento es una carpeta
                 if (is_dir($itemPath)) {
-                    $archivosSubcarpeta = $this->cleanAndMoveFiles($itemPath, $proyecto);
+                    $archivosSubcarpeta = $this->cleanAndMoveFiles($itemPath, $proyecto, $identifierPath);
 
                     // Después de procesar la carpeta, verificar si está vacía
                     if (count(array_diff(scandir($itemPath), ['.', '..'])) === 0) {
@@ -1633,22 +1640,25 @@ class ProyectoController extends Controller
                         $archivos = array_merge($archivos, $archivosSubcarpeta);
                     }
                 } else {
-                    // Si es un archivo, moverlo a storage/app/public/temporal
-                    $destino = 'temporal/' . basename($itemPath);
-                    Storage::disk('public')->put($destino, file_get_contents($itemPath));
+                    // Verificar si la ruta del archivo contiene el identificador
+                    if (strpos($itemPath, $identifierPath) !== false) {
+                        // Si coincide, moverlo a storage/app/public/temporal
+                        $destino = 'temporal/' . basename($itemPath);
+                        Storage::disk('public')->put($destino, file_get_contents($itemPath));
 
-                    // Guardar el archivo en la colección 'cotizacion' de la fase comercial
-                    $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino))
-                        ->toMediaCollection('cotizacion');
+                        // Guardar el archivo en la colección 'cotizacion' de la fase comercial
+                        $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino))
+                            ->toMediaCollection('cotizacion');
 
-                    // Registrar el archivo en la lista para la vista
-                    $archivos[] = [
-                        'nombre' => basename($itemPath),
-                        'ruta' => str_replace('\\', '/', Storage::disk('public')->url($destino)),
-                    ];
+                        // Registrar el archivo en la lista para la vista
+                        $archivos[] = [
+                            'nombre' => basename($itemPath),
+                            'ruta' => str_replace('\\', '/', Storage::disk('public')->url($destino)),
+                        ];
 
-                    // Eliminar el archivo original
-                    unlink($itemPath);
+                        // Eliminar el archivo original
+                        unlink($itemPath);
+                    }
                 }
             }
         } catch (\Exception $e) {
@@ -1658,6 +1668,7 @@ class ProyectoController extends Controller
 
         return $archivos;
     }
+
 
 
 
