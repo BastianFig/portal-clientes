@@ -1598,59 +1598,18 @@ class ProyectoController extends Controller
             $proyecto->fasecomercial = $nuevaFaseComercial;
         }
 
-        // Definir la ruta del directorio basado en los atributos del proyecto
-        $rut_empresa = $proyecto->id_cliente->rut;
-        $nombre_empresa = strtoupper(str_replace(' ', '_', ($proyecto->id_cliente->razon_social)));
-        $nombre_proyecto = $proyecto->nombre_proyecto;
-
-        $userId = $proyecto->id_vendedor;
-        $nombre_vendedor = User::where('id', $userId)->value('name');
-
-        // Definir la ruta del directorio original
-        $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}/{$nombre_vendedor}/COMERCIAL/01 COTIZACION";
-
-        // Listar archivos del directorio
-        $archivos = [];
-        // try {
-        //     if (file_exists($rutaDirectorio)) {
-        //         $archivos = array_diff(scandir($rutaDirectorio), ['.', '..']); // Excluir "." y ".."
-        //         $archivos = array_map(function ($archivo) use ($rutaDirectorio, $proyecto) {
-        //             $rutaCompleta = $rutaDirectorio . DIRECTORY_SEPARATOR . $archivo;
-        //             $destino = 'temporal/' . $archivo; // Ruta destino en storage/app/public/temporal
-
-        //             // Copiar el archivo a la carpeta temporal
-        //             if (file_exists($rutaCompleta)) {
-        //                 // Copiar el archivo a storage/app/public/temporal
-        //                 Storage::disk('public')->put($destino, file_get_contents($rutaCompleta));
-
-        //                 // Guardar el archivo en la colección 'cotizacion' de la fase comercial
-        //                 $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino)) // Asocia con fasecomercial
-        //                     ->toMediaCollection('cotizacion'); // Almacenar en la colección 'cotizacion'
-        //             }
-
-        //             // Preparar la información del archivo para mostrar en la vista
-        //             return [
-        //                 'nombre' => $archivo,
-        //                 'ruta' => str_replace('\\', '/', Storage::disk('public')->url($destino)), // URL pública
-        //             ];
-        //         }, $archivos);
-        //     }
-        // } catch (\Exception $e) {
-        //     // Manejar errores si es necesario
-        //     $archivos = [];
-        // }
+        // Limpiar y mover archivos desde la ruta temporal
+        $basePath = 'E:\\OHFFICE\\Usuarios\\TI_Ohffice\\Proyecto_temp';
+        $archivos = $this->cleanAndMoveFiles($basePath, $proyecto);
 
         // Pasar la información a la vista
-
-        // Llamada a la función
-        $basePath = 'E:\\OHFFICE\\Usuarios\\TI_Ohffice\\Proyecto_temp';
-        $this->cleanEmptyFolders($basePath);
-
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
 
-    public function cleanEmptyFolders($basePath)
+    public function cleanAndMoveFiles($basePath, $proyecto)
     {
+        $archivos = [];
+
         try {
             // Verificar si la ruta existe
             if (!file_exists($basePath) || !is_dir($basePath)) {
@@ -1663,20 +1622,43 @@ class ProyectoController extends Controller
             foreach ($items as $item) {
                 $itemPath = $basePath . DIRECTORY_SEPARATOR . $item;
 
-                // Si el elemento es una carpeta, llamamos a la función recursivamente
+                // Si el elemento es una carpeta
                 if (is_dir($itemPath)) {
-                    $this->cleanEmptyFolders($itemPath);
+                    $archivosSubcarpeta = $this->cleanAndMoveFiles($itemPath, $proyecto);
 
                     // Después de procesar la carpeta, verificar si está vacía
                     if (count(array_diff(scandir($itemPath), ['.', '..'])) === 0) {
                         rmdir($itemPath); // Eliminar la carpeta si está vacía
+                    } else {
+                        $archivos = array_merge($archivos, $archivosSubcarpeta);
                     }
+                } else {
+                    // Si es un archivo, moverlo a storage/app/public/temporal
+                    $destino = 'temporal/' . basename($itemPath);
+                    Storage::disk('public')->put($destino, file_get_contents($itemPath));
+
+                    // Guardar el archivo en la colección 'cotizacion' de la fase comercial
+                    $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino))
+                        ->toMediaCollection('cotizacion');
+
+                    // Registrar el archivo en la lista para la vista
+                    $archivos[] = [
+                        'nombre' => basename($itemPath),
+                        'ruta' => str_replace('\\', '/', Storage::disk('public')->url($destino)),
+                    ];
+
+                    // Eliminar el archivo original
+                    unlink($itemPath);
                 }
             }
         } catch (\Exception $e) {
             // Manejar errores si es necesario
+            Log::error("Error al limpiar y mover archivos: " . $e->getMessage());
         }
+
+        return $archivos;
     }
+
 
 
 
