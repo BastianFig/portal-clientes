@@ -42,6 +42,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 
 
@@ -1608,7 +1609,7 @@ class ProyectoController extends Controller
         $identifierPath = "{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}";
 
         $archivos = $this->cleanAndMoveFiles($basePath, $proyecto, $identifierPath);
-        dd($archivos);
+
         // Pasar la información a la vista
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
