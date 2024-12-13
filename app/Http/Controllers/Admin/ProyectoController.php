@@ -1593,8 +1593,7 @@ class ProyectoController extends Controller
         if ($proyecto->fasecomercial == null) {
             // Crear una nueva fase comercial y asignarle un ID basado en el siguiente disponible
             $nuevaFaseComercial = Fasecomercial::create([
-                'id_proyecto_id' => $proyecto->id, // Asignar el proyecto actual
-                // Otros campos necesarios, si es necesario agregar más campos
+                'id_proyecto_id' => $proyecto->id,
             ]);
 
             // Asignar la nueva instancia de fase comercial al proyecto
@@ -1606,12 +1605,9 @@ class ProyectoController extends Controller
         $rut_empresa = $proyecto->id_cliente->rut;
         $nombre_empresa = strtoupper(str_replace(' ', '_', ($proyecto->id_cliente->razon_social)));
         $nombre_proyecto = $proyecto->nombre_proyecto;
+        $identifierPath = "{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}";
 
-        $userId = $proyecto->id_vendedor;
-        $nombre_vendedor = User::where('id', $userId)->value('name');
-
-        $identifierPath = "{$rut_empresa}_{$nombre_empresa}/{$nombre_proyecto}/{$nombre_vendedor}/COMERCIAL/01 COTIZACION";
-
+        // Mover archivos y limpiar carpetas
         $archivos = $this->cleanAndMoveFiles($basePath, $proyecto, $identifierPath);
 
         // Pasar la información a la vista
@@ -1625,10 +1621,10 @@ class ProyectoController extends Controller
         try {
             // Verificar si la ruta existe
             if (!file_exists($basePath) || !is_dir($basePath)) {
-                throw new \Exception("La ruta especificada no existe o no es un directorio.");
+                throw new \Exception("La ruta especificada no existe o no es un directorio: {$basePath}");
             }
 
-            // Obtener las carpetas dentro del directorio base
+            // Obtener los elementos dentro del directorio base
             $items = array_diff(scandir($basePath), ['.', '..']);
 
             foreach ($items as $item) {
@@ -1646,7 +1642,10 @@ class ProyectoController extends Controller
                     }
                 } else {
                     // Verificar si la ruta del archivo contiene el identificador
-                    if (strpos($itemPath, $identifierPath) !== false) {
+                    $normalizedItemPath = str_replace('\\', '/', $itemPath);
+                    if (strpos($normalizedItemPath, $identifierPath) !== false) {
+                        Log::info("Archivo coincide con el identificador: {$normalizedItemPath}");
+
                         // Si coincide, moverlo a storage/app/public/temporal
                         $destino = 'temporal/' . basename($itemPath);
                         Storage::disk('public')->put($destino, file_get_contents($itemPath));
@@ -1663,16 +1662,18 @@ class ProyectoController extends Controller
 
                         // Eliminar el archivo original
                         unlink($itemPath);
+                    } else {
+                        Log::info("Archivo ignorado: {$normalizedItemPath}");
                     }
                 }
             }
         } catch (\Exception $e) {
-            // Manejar errores si es necesario
             Log::error("Error al limpiar y mover archivos: " . $e->getMessage());
         }
 
         return $archivos;
     }
+
 
 
 
