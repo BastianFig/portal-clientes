@@ -1539,7 +1539,7 @@ class ProyectoController extends Controller
             } else {
                 echo "El directorio ya existe";
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "Error: " . $e->getMessage();
         }
 
