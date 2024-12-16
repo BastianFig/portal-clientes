@@ -1597,8 +1597,10 @@ class ProyectoController extends Controller
                 'id_proyecto_id' => $proyecto->id,
             ]);
 
+            $nuevaFaseComercial->save();
+
             // Asignar la nueva instancia de fase comercial al proyecto
-            $proyecto->fasecomercial = $nuevaFaseComercial;
+            $proyecto->fasecomercial()->associate($nuevaFaseComercial);
             $proyecto->save();
         }
 
