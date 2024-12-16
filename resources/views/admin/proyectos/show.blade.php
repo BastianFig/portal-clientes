@@ -237,29 +237,9 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <table id="tabla_archivos" class="table table-bordered">
-                                        <thead>
-                                            <th>Archivo</th>
-                                            <th>URL</th>
-                                            <th>Fecha de Carga</th>
-                                        </thead>
-                                        @if($proyecto->fasecomercial)
-                                            @foreach($proyecto->fasecomercial->oc as $archivo)
-                                            <tr>
-                                                <td>{{$archivo['file_name']}}</td>
-                                                <td><a href="{{$archivo['url']}}" target="_blank">Ver Archivo</a></td>
-                                                <td>{{$archivo['created_at']->format('d-m-Y')}}</td>
-                                            </tr>
-                                                
-                                            @endforeach
-                                        @else
-                                            <tr>
-                                                <td> No Disponible</td>
-                                                <td> No Disponible</td>
-                                                <td> No Disponible</td>
-                                            </tr>
-                                        @endif
-                                    </table>
+                                    
+                                    {{$proyecto->fasecomercial->oc }}
+                                          
                                 </div>   
                                 <div class="form-group">
                                     <input class="form-control {{ $errors->has('estado') ? 'is-invalid' : '' }}" type="hidden" name="estado" id="estado" value="{{ old('estado', $proyecto->fasecomercial->estado ?? '') }}">
