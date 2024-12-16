@@ -1604,6 +1604,20 @@ class ProyectoController extends Controller
             $proyecto->save();
         }
 
+        if ($proyecto->fasecomercialproyecto == null) {
+            // Crear una nueva fase comercial y asignarle un ID basado en el siguiente disponible
+
+            $nuevaFaseComercialproyecto = Fasecomercialproyecto::create([
+                'id_proyecto_id' => $proyecto->id,
+            ]);
+
+            $nuevaFaseComercialproyecto->save();
+
+            // Asignar la nueva instancia de fase comercial al proyecto
+            $proyecto->fasecomercialproyecto()->associate($nuevaFaseComercialproyecto);
+            $proyecto->save();
+        }
+
         // Limpiar y mover archivos desde la ruta temporal
         $basePath = 'E:\\OHFFICE\\Usuarios\\TI_Ohffice\\Proyecto_temp';
         $rut_empresa = $proyecto->id_cliente->rut;
