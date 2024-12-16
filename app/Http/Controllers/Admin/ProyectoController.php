@@ -1646,14 +1646,23 @@ class ProyectoController extends Controller
                     if (strpos($normalizedItemPath, $identifierPath) !== false) {
                         Log::info("Archivo coincide con el identificador: {$normalizedItemPath}");
 
+                        // Obtener el nombre de la carpeta padre del archivo
+                        $carpetaPadre = basename(dirname($itemPath));
+
                         // Si coincide, moverlo a storage/app/public/temporal
                         $destino = 'temporal/' . basename($itemPath);
                         Storage::disk('public')->put($destino, file_get_contents($itemPath));
 
-                        //DEBEMOS SABER EL NOMBRE DE LA CARPETA QUE TIENE EL ARCHIVO APRA SABER QUE TOMEDIACOLLECTION UTILIZAR
-                        // Guardar el archivo en la colección 'cotizacion' de la fase comercial
-                        $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino))
-                            ->toMediaCollection('cotizacion');
+                        // Determinar qué colección usar según la carpeta padre
+                        if ($carpetaPadre === '01 COTIZACION') {
+                            $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino))
+                                ->toMediaCollection('cotizacion');
+                        } elseif ($carpetaPadre === '03 ORDEN DE COMPRA') {
+                            $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino))
+                                ->toMediaCollection('oc');
+                        } else {
+                            Log::warning("Carpeta no reconocida: {$carpetaPadre}. Archivo no se asignó a ninguna colección.");
+                        }
 
                         // Registrar el archivo en la lista para la vista
                         $archivos[] = [
