@@ -1610,7 +1610,7 @@ class ProyectoController extends Controller
         // Mover archivos y limpiar carpetas
         $archivos = $this->cleanAndMoveFiles($basePath, $proyecto, $identifierPath);
 
-        dd($proyecto);
+        dd($proyecto->fasecomercial);
         // Pasar la información a la vista
         return view('admin.proyectos.show', compact('proyecto', 'archivos'));
     }
