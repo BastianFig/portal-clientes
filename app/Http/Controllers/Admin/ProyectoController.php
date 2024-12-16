@@ -1678,7 +1678,7 @@ class ProyectoController extends Controller
                         } elseif ($carpetaPadre === '03 ORDEN DE COMPRA') {
                             $proyecto->fasecomercial->addMedia(storage_path('app/public/' . $destino))
                                 ->toMediaCollection('oc');
-                        } elseif ($carpetaPadre === '02 NOTA DE  VENTA') {
+                        } elseif ($carpetaPadre === '02 NOTA DE VENTA') {
                             $proyecto->fasecomercialproyecto->addMedia(storage_path('app/public/' . $destino))
                                 ->toMediaCollection('nota_venta');
                         } elseif ($carpetaPadre === '06 FACTURAS') {
