@@ -228,7 +228,7 @@ class ProyectoController extends Controller
 
                         DB::update('UPDATE proyectos SET id_fasecomercial = ' . $faseComercial->id . ' WHERE id = ' . $request->id_proyecto_id);
                         if ($email) {
-                            Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto, $estado));
+                            Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto));
                         }
                     }
                 }
@@ -319,7 +319,7 @@ class ProyectoController extends Controller
                         $name = $user->name;
                         DB::update('UPDATE proyectos SET id_fasecomercial = ' . $faseComercial->id . ' WHERE id = ' . $request->id_proyecto_id);
                         if ($email) {
-                            Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto, $txt));
+                            Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto));
                         }
                     }
                 }
