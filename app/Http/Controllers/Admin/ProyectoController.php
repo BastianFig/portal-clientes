@@ -1592,6 +1592,7 @@ class ProyectoController extends Controller
         // Verificar si no existe una fase comercial
         if ($proyecto->fasecomercial == null) {
             // Crear una nueva fase comercial y asignarle un ID basado en el siguiente disponible
+            dd($proyecto->fasecomercial);
             $nuevaFaseComercial = Fasecomercial::create([
                 'id_proyecto_id' => $proyecto->id,
             ]);
