@@ -1534,7 +1534,20 @@ class ProyectoController extends Controller
                 mkdir($rutaDirectorio . '/COMERCIAL\/04 DISENO', 0777, true);
                 mkdir($rutaDirectorio . '/COMERCIAL\/05 CURSE', 0777, true);
                 mkdir($rutaDirectorio . '/COMERCIAL\/06 FACTURAS', 0777, true);
-                mkdir($rutaDirectorio . '/DISEÑO', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_CLTS\/DWG', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_CLTS\/PDF', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_CLTS\/PRESENTACIONES', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/DWG\/ISO', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/DWG\/PLANTA', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/FFTT', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/PCON', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/PRESENTACIONES', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/RENDER', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/SKP', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/PDF\/01 FFTT', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/PDF\/02 ISO', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/PDF\/03 PLANTA', 0777, true);
+                mkdir($rutaDirectorio . '/DISEÑO\/INFO_OHFFICE\/PDF\/04 PRESENTACION', 0777, true);
                 echo "Directorio creado exitosamente";
             } else {
                 echo "El directorio ya existe";
@@ -1570,17 +1583,6 @@ class ProyectoController extends Controller
         return redirect()->route('admin.proyectos.index');
     }
 
-    // public function show(Proyecto $proyecto)
-    // {
-    //     abort_if(Gate::denies('proyecto_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-    //     $proyecto->load('id_cliente', 'id_usuarios_clientes', 'sucursal', 'fasediseno', 'fasecomercial', 'fasecomercialproyecto', 'fasecontable', 'fasedespacho', 'fasefabrica', 'fasepostventa', 'carpetacliente');
-
-    //     //  dd($proyecto);
-    //     return view('admin.proyectos.show', compact('proyecto'));
-    // }
-
-
 
     public function show(Proyecto $proyecto)
     {
@@ -1588,6 +1590,21 @@ class ProyectoController extends Controller
 
         // Cargar relaciones necesarias
         $proyecto->load('id_cliente', 'id_usuarios_clientes', 'sucursal', 'fasediseno', 'fasecomercial', 'fasecomercialproyecto', 'fasecontable', 'fasedespacho', 'fasefabrica', 'fasepostventa', 'carpetacliente');
+
+
+        if ($proyecto->fasediseno == null) {
+            // Crear una nueva fase comercial y asignarle un ID basado en el siguiente disponible
+
+            $nuevaFaseDiseno = FaseDiseno::create([
+                'id_proyecto_id' => $proyecto->id,
+            ]);
+
+            $nuevaFaseDiseno->save();
+
+            // Asignar la nueva instancia de fase comercial al proyecto
+            $proyecto->fasediseno()->associate($nuevaFaseDiseno);
+            $proyecto->save();
+        }
 
         // Verificar si no existe una fase comercial
         if ($proyecto->fasecomercial == null) {
@@ -1684,6 +1701,18 @@ class ProyectoController extends Controller
                         } elseif ($carpetaPadre === '06 FACTURAS') {
                             $proyecto->fasecomercialproyecto->addMedia(storage_path('app/public/' . $destino))
                                 ->toMediaCollection('facturas');
+                        } elseif ($carpetaPadre === '01 FFTT') {
+                            $proyecto->fasediseno->addMedia(storage_path('app/public/' . $destino))
+                                ->toMediaCollection('imagenes');
+                        } elseif ($carpetaPadre === '03 PLANTA') {
+                            $proyecto->fasediseno->addMedia(storage_path('app/public/' . $destino))
+                                ->toMediaCollection('imagenes');
+                        } elseif ($carpetaPadre === '04 PRESENTACION') {
+                            $proyecto->fasediseno->addMedia(storage_path('app/public/' . $destino))
+                                ->toMediaCollection('imagenes');
+                        } elseif ($carpetaPadre === '02 ISO') {
+                            $proyecto->fasediseno->addMedia(storage_path('app/public/' . $destino))
+                                ->toMediaCollection('propuesta');
                         } else {
                             Log::warning("Carpeta no reconocida: {$carpetaPadre}. Archivo no se asignó a ninguna colección.");
                         }
