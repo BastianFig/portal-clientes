@@ -1302,9 +1302,9 @@
                                                         @if ($proyecto->fasecontable && $proyecto->fasecontable->anticipo40)
                                                             <a href="{{ $proyecto->fasecontable->anticipo40->getFullUrl() }}" class="btn btn-success btn-personalizado" target="_blank">Ver pago</a>
                                                         @elseif ($proyecto->fasecontable)
-                                                            <p class="text-danger text-start">Comprobante de pago pendiente</p>
+                                                            <p class="text-danger text-start"> No hay Pago disponible</p>
                                                         @else
-                                                            <p class="text-warning text-start">Fase contable no definida</p>
+                                                            <p class="text-warning text-start"> No hay Pago disponible</p>
                                                         @endif
                                                     @else
                                                         <p class="text-success">Pago en siguientes fases</p>
