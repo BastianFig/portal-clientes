@@ -1299,15 +1299,18 @@
                                                 @endif
                                                 <td>
                                                     @if ($proyecto->fasecomercialproyecto)
-                                                        @if ($proyecto->fasecontable->anticipo40)
+                                                        @if ($proyecto->fasecontable && $proyecto->fasecontable->anticipo40)
                                                             <a href="{{ $proyecto->fasecontable->anticipo40->getFullUrl() }}" class="btn btn-success btn-personalizado" target="_blank">Ver pago</a>
+                                                        @elseif ($proyecto->fasecontable)
+                                                            <p class="text-danger text-start">Comprobante de pago pendiente</p>
                                                         @else
-                                                            <p class=" text-danger text-start">Comprobante de pago pendiente</p>
+                                                            <p class="text-warning text-start">Fase contable no definida</p>
                                                         @endif
                                                     @else
-                                                        <p class="text-success">Pago en siguentes fases</p>
+                                                        <p class="text-success">Pago en siguientes fases</p>
                                                     @endif
                                                 </td>
+                                                
                                             </tr>
                                         
                                         @endif
