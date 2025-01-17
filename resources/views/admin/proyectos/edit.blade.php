@@ -64,7 +64,7 @@
                 @endif
             </div>
             <div class="form-group">
-                <label class="required" for="orden">Número de Orden</label>
+                <label class="required" for="orden">Nota de Venta</label>
                 <input class="form-control {{ $errors->has('orden') ? 'is-invalid' : '' }}" type="text" name="orden"
                     id="orden" value="{{ old('orden', $proyecto->orden) }}">
                 @if($errors->has('orden'))
@@ -78,7 +78,8 @@
                 <select class="form-control {{ $errors->has('categoria_proyecto') ? 'is-invalid' : '' }}"
                     name="categoria_proyecto" id="categoria_proyecto">
                     <option value disabled {{ old('categoria_proyecto', null) === null ? 'selected' : '' }}>
-                        {{ trans('global.pleaseSelect') }}</option>
+                        {{ trans('global.pleaseSelect') }}
+                    </option>
                     @foreach(App\Models\Proyecto::CATEGORIA_PROYECTO_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('categoria_proyecto', $proyecto->categoria_proyecto) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
@@ -95,7 +96,8 @@
                 <select class="form-control {{ $errors->has('tipo_proyecto') ? 'is-invalid' : '' }}"
                     name="tipo_proyecto" id="tipo_proyecto">
                     <option value disabled {{ old('tipo_proyecto', null) === null ? 'selected' : '' }}>
-                        {{ trans('global.pleaseSelect') }}</option>
+                        {{ trans('global.pleaseSelect') }}
+                    </option>
                     @foreach(App\Models\Proyecto::TIPO_PROYECTO_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('tipo_proyecto', $proyecto->tipo_proyecto) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
@@ -111,10 +113,12 @@
                 <label>{{ trans('cruds.proyecto.fields.estado') }}</label>
                 <select class="form-control {{ $errors->has('estado') ? 'is-invalid' : '' }}" name="estado" id="estado">
                     <option value disabled {{ old('estado', null) === null ? 'selected' : '' }}>
-                        {{ trans('global.pleaseSelect') }}</option>
+                        {{ trans('global.pleaseSelect') }}
+                    </option>
                     @foreach(App\Models\Proyecto::ESTADO_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('estado', $proyecto->estado) === (string) $key ? 'selected' : '' }}>
-                            {{ $label }}</option>
+                            {{ $label }}
+                        </option>
                     @endforeach
                 </select>
                 @if($errors->has('estado'))
@@ -128,10 +132,12 @@
                 <label>{{ trans('cruds.proyecto.fields.fase') }}</label>
                 <select class="form-control {{ $errors->has('fase') ? 'is-invalid' : '' }}" name="fase" id="fase">
                     <option value disabled {{ old('fase', null) === null ? 'selected' : '' }}>
-                        {{ trans('global.pleaseSelect') }}</option>
+                        {{ trans('global.pleaseSelect') }}
+                    </option>
                     @foreach(App\Models\Proyecto::FASE_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('fase', $proyecto->fase) === (string) $key ? 'selected' : '' }}>
-                            {{ $label }}</option>
+                            {{ $label }}
+                        </option>
                     @endforeach
                 </select>
                 @if($errors->has('fase'))
@@ -160,7 +166,8 @@
                 <select class="form-control {{ $errors->has('disenador') ? 'is-invalid' : '' }}" name="disenador"
                     id="disenador">
                     <option value disabled {{ old('disenador', null) === null ? 'selected' : '' }}>
-                        {{ trans('global.pleaseSelect') }}</option>
+                        {{ trans('global.pleaseSelect') }}
+                    </option>
                     @foreach(App\Models\Proyecto::DISENADOR_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('disenador', $proyecto->disenador) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach

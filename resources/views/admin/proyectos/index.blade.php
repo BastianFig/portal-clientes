@@ -30,7 +30,7 @@
                         {{ trans('cruds.proyecto.fields.nombre_proyecto') }}
                     </th>
                     <th>
-                        Número de Orden
+                        Nota de Venta
                     </th>
                     <th>
                         Fecha

@@ -58,7 +58,7 @@
                 <span class="help-block">{{ trans('cruds.proyecto.fields.id_usuarios_cliente_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="orden">Número de Orden</label>
+                <label class="required" for="orden">Nota de Venta</label>
                 <input class="form-control {{ $errors->has('orden') ? 'is-invalid' : '' }}" type="text" name="orden"
                     id="orden" value="{{ old('orden', '') }}">
                 @if($errors->has('orden'))
