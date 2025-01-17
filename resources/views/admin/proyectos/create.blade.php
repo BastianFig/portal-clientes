@@ -60,7 +60,7 @@
             <div class="form-group">
                 <label class="required" for="orden">Número de Orden</label>
                 <input class="form-control {{ $errors->has('orden') ? 'is-invalid' : '' }}" type="text" name="orden"
-                    id="orden" value="{{ old('orden', '') }}" required>
+                    id="orden" value="{{ old('orden', '') }}">
                 @if($errors->has('orden'))
                     <div class="invalid-feedback">
                         {{ $errors->first('orden') }}
@@ -180,18 +180,6 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.proyecto.fields.fase_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required"
-                    for="nombre_proyecto">{{ trans('cruds.proyecto.fields.nombre_proyecto') }}</label>
-                <input class="form-control {{ $errors->has('nombre_proyecto') ? 'is-invalid' : '' }}" type="text"
-                    name="nombre_proyecto" id="nombre_proyecto" value="{{ old('nombre_proyecto', '') }}" required>
-                @if($errors->has('nombre_proyecto'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('nombre_proyecto') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.proyecto.fields.nombre_proyecto_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

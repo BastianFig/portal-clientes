@@ -103,7 +103,8 @@ class Proyecto extends Model implements HasMedia
         'id_vendedor',
         'encuesta_id',
         'disenador',
-        'instalador'
+        'instalador',
+        'orden'
     ];
 
     // Registra las colecciones de medios
