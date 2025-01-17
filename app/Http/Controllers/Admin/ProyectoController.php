@@ -1522,11 +1522,12 @@ class ProyectoController extends Controller
         $nombre_empresa = strtoupper(str_replace(' ', '_', Empresa::where('id', $request->id_cliente_id)->value('razon_social')));
         $rut_empresa = Empresa::where('id', $request->id_cliente_id)->value('rut');
         $nombre_vendedor = User::where('id', $userId)->value('name');
+        $anioActual = date("Y");
 
 
         try {
             // Definir la ruta donde se quiere crear la carpeta
-            $rutaDirectorio = "E:/OHFFICE/Usuarios/TI_Ohffice/Proyectos/PROYECTOS/{$rut_empresa}_{$nombre_empresa}/{$request->nombre_proyecto}/{$nombre_vendedor}";
+            $rutaDirectorio = "E:/OHFFICE/OHFFICE OFICIAL/06-PROYECTOS/{$anioActual}/{$rut_empresa}_{$nombre_empresa}/{$request->nombre_proyecto}/{$nombre_vendedor}";
             if (!file_exists($rutaDirectorio)) {
                 mkdir($rutaDirectorio . '/COMERCIAL\/01 COTIZACION', 0777, true);
                 mkdir($rutaDirectorio . '/COMERCIAL\/02 NOTA DE VENTA', 0777, true);
