@@ -1467,6 +1467,9 @@ class ProyectoController extends Controller
             $table->editColumn('nombre_proyecto', function ($row) {
                 return $row->nombre_proyecto ? $row->nombre_proyecto : '';
             });
+            $table->editColumn('orden', function ($row) {
+                return $row->orden ? $row->orden : '';
+            });
 
             $table->rawColumns(['actions', 'placeholder', 'id_cliente', 'id_usuarios_cliente', 'sucursal']);
 
