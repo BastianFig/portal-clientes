@@ -218,7 +218,7 @@
             },
             {
                 data: 'actions',
-                name: 'id'
+                name: 'actions'
             },
             {
                 data: 'nombre_proyecto',
