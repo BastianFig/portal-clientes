@@ -551,6 +551,11 @@ class ProyectoController extends Controller
         //dd($request->all());
         if (empty($request->input('id_fasecomercialproyectos'))) {
 
+            if ($request->has('orden')) {
+                $proyecto->orden = $request->input('orden');
+                $proyecto->save();
+            }
+
             if ($request->input('nota_venta') != NULL && $request->fecha_despacho != NULL) {
                 $faseComercialproyecto = Fasecomercialproyecto::create($request->all());
 
@@ -680,6 +685,11 @@ class ProyectoController extends Controller
             }
 
         } else {    //CUANDO EXISTE, MODIFICA.
+
+            if ($request->has('orden')) {
+                $proyecto->orden = $request->input('orden');
+                $proyecto->save();
+            }
             $faseComercialproyecto = Fasecomercialproyecto::find($request->input('id_fasecomercialproyectos'));
             $faseComercialproyecto->update($request->all());
 
