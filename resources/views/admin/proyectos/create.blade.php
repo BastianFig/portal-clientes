@@ -58,16 +58,6 @@
                 <span class="help-block">{{ trans('cruds.proyecto.fields.id_usuarios_cliente_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="" for="orden">Nota de Venta</label>
-                <input class="form-control {{ $errors->has('orden') ? 'is-invalid' : '' }}" type="text" name="orden"
-                    id="orden" value="{{ old('orden', '') }}">
-                @if($errors->has('orden'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('orden') }}
-                    </div>
-                @endif
-            </div>
-            <div class="form-group">
                 <label>Categoria Proyecto</label>
                 <select class="form-control {{ $errors->has('categoria_proyecto') ? 'is-invalid' : '' }}"
                     name="categoria_proyecto" id="categoria_proyecto">
@@ -152,6 +142,16 @@
                 @if($errors->has('disenador'))
                     <div class="invalid-feedback">
                         {{ $errors->first('disenador') }}
+                    </div>
+                @endif
+            </div>
+            <div class="form-group">
+                <label class="" for="orden">Nota de Venta</label>
+                <input class="form-control {{ $errors->has('orden') ? 'is-invalid' : '' }}" type="text" name="orden"
+                    id="orden" value="{{ old('orden', '') }}">
+                @if($errors->has('orden'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('orden') }}
                     </div>
                 @endif
             </div>
