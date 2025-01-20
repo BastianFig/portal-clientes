@@ -1399,11 +1399,19 @@ class ProyectoController extends Controller
                 $query->orderBy('created_at', 'desc');
                 $table = Datatables::of($query);
             } else {
+                // $query = Proyecto::with(['id_cliente', 'id_usuarios_clientes', 'sucursal'])
+                //     ->where('id_vendedor', auth()->id()) // Filtrar proyectos por el usuario conectado
+                //     ->orWhere('disenador', auth()->user()->name)
+                //     ->select(sprintf('%s.*', (new Proyecto)->table));
+                // $query->orderBy('created_at', 'desc');
+
                 $query = Proyecto::with(['id_cliente', 'id_usuarios_clientes', 'sucursal'])
-                    ->where('id_vendedor', auth()->id()) // Filtrar proyectos por el usuario conectado
-                    ->orWhere('disenador', auth()->user()->name)
+                    ->where(function ($query) {
+                        $query->where('id_vendedor', auth()->id())
+                            ->orWhere('disenador', auth()->user()->name);
+                    })
                     ->select(sprintf('%s.*', (new Proyecto)->table));
-                $query->orderBy('created_at', 'desc');
+
                 $table = Datatables::of($query);
             }
 
