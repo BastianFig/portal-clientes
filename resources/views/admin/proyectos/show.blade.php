@@ -430,7 +430,8 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="myModalLabel">{{ trans('global.create') }}
-                                        {{ trans('cruds.carpetacliente.title_singular') }}</h5>
+                                        {{ trans('cruds.carpetacliente.title_singular') }}
+                                    </h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -555,7 +556,8 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="myModalLabel">{{ trans('global.show') }}
-                                        {{ trans('cruds.carpetacliente.title') }}</h5>
+                                        {{ trans('cruds.carpetacliente.title') }}
+                                    </h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -762,6 +764,20 @@
                             </div>
                             <div class="form-group">
                                 <label
+                                    for="orden">{{ trans('cruds.fasecomercialproyecto.fields.nota_venta') }}<br><small
+                                        style="color:rgba(255, 0, 0, 0.562);"><strong>(Archivos Permitidos:
+                                            .PDF)</strong></small></label>
+                                <input type="text" id="orden" name="orden" class="form-control"
+                                    value="{{ old('orden', $proyecto->orden ?? '') }}">
+
+                                @if($errors->has('nota_venta'))
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('nota_venta') }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <label
                                     for="nota_venta">{{ trans('cruds.fasecomercialproyecto.fields.nota_venta') }}<br><small
                                         style="color:rgba(255, 0, 0, 0.562);"><strong>(Archivos Permitidos:
                                             .PDF)</strong></small></label>
@@ -816,7 +832,8 @@
                                 <select class="form-control {{ $errors->has('fase') ? 'is-invalid' : '' }}" name="fase"
                                     id="fase">
                                     <option value disabled {{ old('fase', null) === null ? 'selected' : '' }}>
-                                        {{ trans('global.pleaseSelect') }} una alternativa</option>
+                                        {{ trans('global.pleaseSelect') }} una alternativa
+                                    </option>
                                     @foreach(App\Models\Fasefabrica::FASE as $key => $label)
                                         <option value="{{ $key }}" {{ old('fase', $proyecto->fasefabrica->fase ?? '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                                     @endforeach
@@ -960,7 +977,8 @@
                                     <select class="form-control {{ $errors->has('horario') ? 'is-invalid' : '' }}"
                                         name="horario" id="horario">
                                         <option value disabled {{ old('horario', null) === null ? 'selected' : '' }}>
-                                            {{ trans('global.pleaseSelect') }} una alternativa</option>
+                                            {{ trans('global.pleaseSelect') }} una alternativa
+                                        </option>
                                         @foreach(App\Models\Fasedespacho::HORARIO_SELECT as $key => $label)
                                             <option value="{{ $key }}" {{ old('horario', $proyecto->fasedespacho->horario ?? '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                                         @endforeach
@@ -1261,7 +1279,8 @@
                                 <select class="form-control {{ $errors->has('recibe_conforme') ? 'is-invalid' : '' }}"
                                     name="recibe_conforme" id="recibe_conforme">
                                     <option value disabled {{ old('recibe_conforme', null) === null ? 'selected' : '' }}>
-                                        {{ trans('global.pleaseSelect') }} una alternativa</option>
+                                        {{ trans('global.pleaseSelect') }} una alternativa
+                                    </option>
                                     @foreach(App\Models\Fasedespacho::RECIBE_CONFORME_SELECT as $key => $label)
                                         <option value="{{ $key }}" {{ old('recibe_conforme', $proyecto->fasedespacho->recibe_conforme ?? '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                                     @endforeach

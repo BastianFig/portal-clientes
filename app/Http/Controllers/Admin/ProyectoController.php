@@ -654,7 +654,7 @@ class ProyectoController extends Controller
                 if ($request->input('nota_venta') == NULL && $request->tipo_proyecto == NULL) {
                     $mensaje_aux = "Debe llenar los campos Nota de Venta y Tipo de Proyecto para continuar a la siguiente fase.";
                 } elseif ($request->input('nota_venta') == NULL && $request->fecha_despacho == NULL) {
-                    $mensaje_aux = "Debe llenar los campos Nota de Venta y Fecha de Despacho para continuar a la siguiente fase.";
+                    $mensaje_aux = "Debe llenar los campos Nota de Venta y Plazo de Entrega para continuar a la siguiente fase.";
                 } elseif ($request->tipo_proyecto == NULL && $request->fecha_despacho == NULL) {
                     $mensaje_aux = "Debe llenar los campos Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
                 } elseif ($request->input('nota_venta') == NULL) {
