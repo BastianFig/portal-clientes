@@ -657,19 +657,19 @@ class ProyectoController extends Controller
                 DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
 
                 if ($request->input('nota_venta') == NULL && $request->tipo_proyecto == NULL) {
-                    $mensaje_aux = "Debe llenar los campos Nota de Venta y Tipo de Proyecto para continuar a la siguiente fase.";
+                    $mensaje_aux = "Debe llenar los campos Documento Nota de Venta y Tipo de Proyecto para continuar a la siguiente fase.";
                 } elseif ($request->input('nota_venta') == NULL && $request->fecha_despacho == NULL) {
-                    $mensaje_aux = "Debe llenar los campos Nota de Venta y Plazo de Entrega para continuar a la siguiente fase.";
+                    $mensaje_aux = "Debe llenar los campos Documento Nota de Venta y Plazo de Entrega para continuar a la siguiente fase.";
                 } elseif ($request->tipo_proyecto == NULL && $request->fecha_despacho == NULL) {
                     $mensaje_aux = "Debe llenar los campos Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
                 } elseif ($request->input('nota_venta') == NULL) {
-                    $mensaje_aux = "Debe llenar el campo Nota de Venta para continuar a la siguiente fase.";
+                    $mensaje_aux = "Debe llenar el campo Documento Nota de Venta para continuar a la siguiente fase.";
                 } elseif ($request->tipo_proyecto == NULL) {
                     $mensaje_aux = "Debe llenar el campo Tipo de Proyecto para continuar a la siguiente fase.";
                 } elseif ($request->fecha_despacho == NULL) {
                     $mensaje_aux = "Debe llenar el campo Fecha de Despacho para continuar a la siguiente fase.";
                 } else {
-                    $mensaje_aux = "Debe llenar los campos Nota de Venta, Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
+                    $mensaje_aux = "Debe llenar los campos Documento Nota de Venta, Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
                 }
 
 
