@@ -199,8 +199,8 @@
 
                             <div class="form-group">
                                 <label>Monto Neto</label>
-                                <input class="form-control {{ $errors->has('monto') ? 'is-invalid' : '' }}"
-                                    type="number" name="monto" id="monto"
+                                <input class="form-control {{ $errors->has('monto') ? 'is-invalid' : '' }}" type="text"
+                                    name="monto" id="monto"
                                     value="{{ old('monto', $proyecto->faseComercial->monto ?? '') }}">
                             </div>
                             <script>
