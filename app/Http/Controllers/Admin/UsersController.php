@@ -42,9 +42,9 @@ class UsersController extends Controller
             $table->addColumn('actions', '&nbsp;');
 
             $table->editColumn('actions', function ($row) {
-                $viewGate      = 'user_show';
-                $editGate      = 'user_edit';
-                $deleteGate    = 'user_delete';
+                $viewGate = 'user_show';
+                $editGate = 'user_edit';
+                $deleteGate = 'user_delete';
                 $crudRoutePart = 'users';
 
                 return view('partials.datatablesActions', compact(
@@ -109,28 +109,29 @@ class UsersController extends Controller
             return $table->make(true);
         }
 
-        $roles     = Role::get();
-        $empresas  = Empresa::get();
+        $roles = Role::get();
+        $empresas = Empresa::get();
         $sucursals = Sucursal::get();
 
         return view('admin.users.index', compact('roles', 'empresas', 'sucursals'));
     }
 
-    public function getSucursales(Request $request){
+    public function getSucursales(Request $request)
+    {
 
         $id_empresa = $request->id_empresa;
-        $cuando_empresa =[
+        $cuando_empresa = [
             ['empresa_id', '=', $id_empresa]
         ];
-        $sucursales= Sucursal::orderby('nombre', 'asc')->select('id', 'nombre')->where($cuando_empresa )->get();
+        $sucursales = Sucursal::orderby('nombre', 'asc')->select('id', 'nombre')->where($cuando_empresa)->get();
         $response = array();
-        foreach($sucursales as $sucursal){
+        foreach ($sucursales as $sucursal) {
             $response[] = array(
-                 "id"=>$sucursal->id,
-                 "text"=>$sucursal->nombre
+                "id" => $sucursal->id,
+                "text" => $sucursal->nombre
             );
-         }
-         return response()->json($response);
+        }
+        return response()->json($response);
     }
 
     public function create()
@@ -144,11 +145,11 @@ class UsersController extends Controller
         $sucursals = Sucursal::pluck('nombre', 'id');
         $user = Auth::user();
         //dd($user->roles);
-        foreach($user->roles as $rol){
-            $rol_activo =$rol->title;
+        foreach ($user->roles as $rol) {
+            $rol_activo = $rol->title;
         }
 
-        return view('admin.users.create', compact('empresas', 'roles', 'sucursals','rol_activo'));
+        return view('admin.users.create', compact('empresas', 'roles', 'sucursals', 'rol_activo'));
     }
 
     public function store(StoreUserRequest $request)
@@ -184,7 +185,16 @@ class UsersController extends Controller
     {
         abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $roles = Role::pluck('title', 'id');
+        //$roles = Role::pluck('title', 'id');
+
+        $Userconectado = auth()->user();
+
+        if ($Userconectado->roles->contains('title', 'Admin')) {
+            $roles = Role::pluck('title', 'id');
+        } else {
+            $roles = Role::where('title', 'User')->pluck('title', 'id');
+        }
+
 
         $empresas = Empresa::Orderby('razon_social')->pluck('razon_social', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -201,7 +211,7 @@ class UsersController extends Controller
         $user->roles()->sync($request->input('roles', []));
         $user->sucursals()->sync($request->input('sucursals', []));
         if ($request->input('foto_perfil', false)) {
-            if (! $user->foto_perfil || $request->input('foto_perfil') !== $user->foto_perfil->file_name) {
+            if (!$user->foto_perfil || $request->input('foto_perfil') !== $user->foto_perfil->file_name) {
                 if ($user->foto_perfil) {
                     $user->foto_perfil->delete();
                 }
@@ -247,10 +257,10 @@ class UsersController extends Controller
     {
         abort_if(Gate::denies('user_create') && Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $model         = new User();
-        $model->id     = $request->input('crud_id', 0);
+        $model = new User();
+        $model->id = $request->input('crud_id', 0);
         $model->exists = true;
-        $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
+        $media = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
