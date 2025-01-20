@@ -763,10 +763,7 @@
                                 @endif
                             </div>
                             <div class="form-group">
-                                <label
-                                    for="orden">{{ trans('cruds.fasecomercialproyecto.fields.nota_venta') }}<br><small
-                                        style="color:rgba(255, 0, 0, 0.562);"><strong>(Archivos Permitidos:
-                                            .PDF)</strong></small></label>
+                                <label for="orden">{{ trans('cruds.fasecomercialproyecto.fields.nota_venta') }}</label>
                                 <input type="text" id="orden" name="orden" class="form-control"
                                     value="{{ old('orden', $proyecto->orden ?? '') }}">
 
@@ -777,8 +774,8 @@
                                 @endif
                             </div>
                             <div class="form-group">
-                                <label
-                                    for="nota_venta">{{ trans('cruds.fasecomercialproyecto.fields.nota_venta') }}<br><small
+                                <label for="nota_venta">Documento
+                                    {{ trans('cruds.fasecomercialproyecto.fields.nota_venta') }}<br><small
                                         style="color:rgba(255, 0, 0, 0.562);"><strong>(Archivos Permitidos:
                                             .PDF)</strong></small></label>
                                 <div class="needsclick dropzone {{ $errors->has('nota_venta') ? 'is-invalid' : '' }}"
