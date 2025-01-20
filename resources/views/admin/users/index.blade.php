@@ -152,7 +152,7 @@
             ajax: "{{ route('admin.users.index') }}",
             columns: [
                 { data: 'placeholder', name: 'id' },
-                { data: 'actions', name: 'acciones' },
+                { data: 'actions', name: 'actions', orderable: false },
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
                 { data: 'email_verified_at', name: 'email_verified_at' },
