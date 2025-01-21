@@ -38,6 +38,7 @@ use Illuminate\Support\Collection;
 use App\Models\UserAlert;
 use App\Mail\CambioDeFase;
 use App\Mail\ConfirmaHorario;
+use App\Mail\AvisoDiseno;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\Mailable;
@@ -1545,6 +1546,16 @@ class ProyectoController extends Controller
         $nombre_vendedor = User::where('id', $userId)->value('name');
         $anioActual = date("Y");
 
+
+        $disenador = User::find($request->disenador);
+        $email = $disenador->email;
+        $name = $disenador->name;
+        $nombre_proyecto = $request->nombre_proyecto;
+        $id_proyecto = $request->id;
+
+        if ($disenador) {
+            Mail::to($email)->send(new AvisoDiseno($name, $nombre_proyecto, $id_proyecto));
+        }
 
         try {
             // Definir la ruta donde se quiere crear la carpeta
