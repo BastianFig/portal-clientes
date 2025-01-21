@@ -13,7 +13,7 @@ class AvisoDiseno extends Mailable
     public $name;
     public $email;
     public $nombre_proyecto;
-    public $id_proyectos;
+    public $id_proyecto;
 
     /**
      * Create a new message instance.
