@@ -1551,7 +1551,7 @@ class ProyectoController extends Controller
         $email = $disenador->email;
         $name = $disenador->name;
         $nombre_proyecto = $request->nombre_proyecto;
-        $id_proyecto = $request->id;
+        $id_proyecto = $proyecto->id;
 
         if ($disenador) {
             Mail::to($email)->send(new AvisoDiseno($name, $nombre_proyecto, $id_proyecto));

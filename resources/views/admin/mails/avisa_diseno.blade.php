@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-    <title>Su Proyecto {{ $nombre_proyecto }}, ha cambiado de Fase.</title>
+    <title>Se te ha asigando el siguiente proyecto {{ $nombre_proyecto }}.</title>
 </head>
 
 <body>
