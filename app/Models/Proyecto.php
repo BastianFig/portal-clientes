@@ -26,6 +26,7 @@ class Proyecto extends Model implements HasMedia
         'Gabriel Moya' => 'Gabriel Moya',
         'Rodrigo Calderón' => 'Rodrigo Calderón',
         'Rodrigo González' => 'Rodrigo González',
+        'Jhonatan Gregory Vergara Cajas' => 'Jhonatan Gregory Vergara Cajas',
     ];
 
     public const INSTALADOR_SELECT = [
