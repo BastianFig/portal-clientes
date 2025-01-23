@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\Mailable;
 use App\Mail\NotificarTicket;
+use App\Mail\AsignarTicket;
 
 class TicketController extends Controller
 {
@@ -44,6 +45,13 @@ class TicketController extends Controller
         if ($ticket) {
             $ticket->vendedor_id = $request->id_vendedor;
             $ticket->update();
+        }
+
+        $evelyn = User::find($request->id_vendedor)->first();
+        $email = $evelyn->email;
+        $nombre = $evelyn->name;
+        if ($evelyn) {
+            Mail::to('jvergara@probit.cl')->send(new AsignarTicket($nombre, $id_ticket));
         }
 
         return back();
