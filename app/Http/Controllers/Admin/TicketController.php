@@ -40,7 +40,6 @@ class TicketController extends Controller
 
     public function asignarVendedor(Request $request)
     {
-        dd($request);
         $id_ticket = $request->ticket_id;
         $ticket = Ticket::find($id_ticket);
         if ($ticket) {
@@ -51,6 +50,7 @@ class TicketController extends Controller
         $evelyn = User::find($request->id_vendedor)->first();
         $email = $evelyn->email;
         $nombre = $evelyn->name;
+        dd($evelyn);
         if ($evelyn) {
             Mail::to('jvergara@probit.cl')->send(new AsignarTicket($nombre, $id_ticket));
         }
