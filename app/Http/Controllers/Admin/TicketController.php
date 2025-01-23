@@ -51,7 +51,7 @@ class TicketController extends Controller
         $email = $evelyn->email;
         $nombre = $evelyn->name;
         if ($evelyn) {
-            Mail::to('jvergara@probit.cl')->send(new AsignarTicket($nombre, $id_ticket));
+            Mail::to($email)->send(new AsignarTicket($nombre, $id_ticket));
         }
 
         return back();
