@@ -241,12 +241,14 @@
                                         @foreach($proyecto->fasecomercial->cotizacion as $archivo)
                                             <tr>
                                                 <td>{{$archivo['file_name']}}</td>
-                                                @if(Str::endsWith($archivo['file_name'], '.xlsx'))
-                                                    <a href="{{$archivo['url']}}" download="{{$archivo['file_name']}}">Descargar
-                                                        Archivo</a>
-                                                @else
-                                                    <a href="{{$archivo['url']}}" target="_blank">Ver Archivo</a>
-                                                @endif
+                                                <td>
+                                                    @if(Str::endsWith($archivo['file_name'], '.xlsx'))
+                                                        <a href="{{$archivo['url']}}" download="{{$archivo['file_name']}}">Descargar
+                                                            Archivo</a>
+                                                    @else
+                                                        <a href="{{$archivo['url']}}" target="_blank">Ver Archivo</a>
+                                                    @endif
+                                                </td>
                                                 <td>{{$archivo['created_at']->format('d-m-Y')}}</td>
                                             </tr>
 
