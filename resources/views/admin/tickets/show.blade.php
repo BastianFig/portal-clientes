@@ -21,6 +21,8 @@
                                     @csrf
                                     <input type="hidden" id="id_vendedor" class="id_vendedor" name="id_vendedor"
                                         value="42">
+                                    <input type="hidden" id="ticket_id" class="ticket_id" name="ticket_id"
+                                        value="{{$ticket->id}}">
                                     @if($ticket->proyecto->id_vendedor == 42)
                                         <input type="submit" class="btn btn-warning ml-5 mr-5" href="#"
                                             style="border-radius:10px; color:black;" value="Asignar a Post Venta" disabled>
