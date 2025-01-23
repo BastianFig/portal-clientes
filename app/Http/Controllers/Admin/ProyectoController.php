@@ -1027,7 +1027,7 @@ class ProyectoController extends Controller
                 $faseDespacho->save();
                 $fasePostventum = FasePostventum::create(['estado' => 'En Proceso']);
                 DB::update('UPDATE proyectos SET id_fasepostventa = ' . $fasePostventum->id . ' WHERE id = ' . $request->id_proyecto_id);
-                DB::update('UPDATE proyectos SET estado = "Despachado" WHERE id = ' . $request->id_proyecto_id);
+                DB::update('UPDATE proyectos SET estado = "Negocio Ganado" WHERE id = ' . $request->id_proyecto_id);
                 DB::update('UPDATE proyectos SET fase = "Fase Postventa" WHERE id = ' . $request->id_proyecto_id);
                 $txt = "La Fase de Despacho de tu proyecto ha terminado";
                 $this->Alerta_modifica($request->id_proyecto_id, $txt);
@@ -1126,7 +1126,7 @@ class ProyectoController extends Controller
                 $faseDespacho->save();
                 $fasePostventum = FasePostventum::create(['estado' => 'En Proceso']);
                 DB::update('UPDATE proyectos SET id_fasepostventa = ' . $fasePostventum->id . ' WHERE id = ' . $request->id_proyecto_id);
-                DB::update('UPDATE proyectos SET estado = "Despachado" WHERE id = ' . $request->id_proyecto_id);
+                DB::update('UPDATE proyectos SET estado = "Negocio Ganado" WHERE id = ' . $request->id_proyecto_id);
                 DB::update('UPDATE proyectos SET fase = "Fase Postventa" WHERE id = ' . $request->id_proyecto_id);
                 $txt = "La Fase de Despacho de tu proyecto ha terminado";
                 $this->Alerta_modifica($request->id_proyecto_id, $txt);
