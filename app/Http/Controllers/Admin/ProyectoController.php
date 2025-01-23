@@ -1548,6 +1548,7 @@ class ProyectoController extends Controller
 
 
         $disenador = User::where('name', $request->disenador)->first();
+        dd($disenador);
         $email = $disenador->email;
         $name = $disenador->name;
         $nombre_proyecto = $request->nombre_proyecto;
