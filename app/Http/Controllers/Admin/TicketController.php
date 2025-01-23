@@ -47,7 +47,7 @@ class TicketController extends Controller
             $ticket->update();
         }
 
-        $evelyn = User::find($request->id_vendedor)->first();
+        $evelyn = User::find($request->id_vendedor);
         $email = $evelyn->email;
         $nombre = $evelyn->name;
         dd($evelyn);
