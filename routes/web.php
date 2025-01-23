@@ -119,7 +119,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Ticket
     Route::post('tickets/cerrarTicket', 'TicketController@cerrarTicket')->name('tickets.cerrarTicket');
-    Route::post('tickets/asignar_vendedor', 'TicketController@asignar_vendedor')->name('tickets.asignar_vendedor');
+    Route::post('tickets/asignarVendedor', 'TicketController@asignarVendedor')->name('tickets.asignarVendedor');
     Route::post('tickets/getVendedor', 'TicketController@getVendedor')->name('tickets.getVendedor');
     Route::post('tickets/storeMensaje', 'TicketController@storeMensaje')->name('tickets.storeMensaje');
     Route::delete('tickets/destroy', 'TicketController@massDestroy')->name('tickets.massDestroy');
