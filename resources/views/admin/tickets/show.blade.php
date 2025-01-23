@@ -25,10 +25,7 @@
                                         <a class="btn btn-warning ml-5 mr-5"
                                             href="{{ route('admin.tickets.asignarVendedor ') }}"
                                             style="border-radius:10px; color:black;" disabled>Asignar a vendedor</a>
-                                    @else
-                                        <a class="btn btn-warning ml-5 mr-5"
-                                            href="{{ route('admin.tickets.asignarVendedor ') }}"
-                                            style="border-radius:10px; color:black;">Asignar a vendedor</a>
+
                                     @endif
 
                                 </form>
