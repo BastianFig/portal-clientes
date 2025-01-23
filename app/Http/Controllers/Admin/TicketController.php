@@ -40,6 +40,7 @@ class TicketController extends Controller
 
     public function asignarVendedor(Request $request)
     {
+        dd($request);
         $id_ticket = $request->ticket_id;
         $ticket = Ticket::find($id_ticket);
         if ($ticket) {
