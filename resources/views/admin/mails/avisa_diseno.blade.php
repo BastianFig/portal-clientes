@@ -107,7 +107,6 @@
                                                                                                 style="font-size: 24px;">
                                                                                                 Podrá visualizar el
                                                                                                 proyecto en el siguiente
-                                                                                                en el siguiente
                                                                                                 Link: <strong><a
                                                                                                         href="{{ url('admin/proyectos') . '/' . $id_proyecto}}">Ver
                                                                                                         Proyecto</a></strong>
