@@ -22,10 +22,10 @@
                                     <input type="hidden" id="id_vendedor" class="id_vendedor" name="id_vendedor"
                                         value="42">
                                     @if($ticket->proyecto->id_vendedor == 42)
-                                        <a class="btn btn-warning ml-5 mr-5" href="#"
+                                        <a type="submit" class="btn btn-warning ml-5 mr-5" href="#"
                                             style="border-radius:10px; color:black;" disabled>Asignar a vendedor</a>
                                     @else
-                                        <a class="btn btn-warning ml-5 mr-5" href="#"
+                                        <a type="submit" class="btn btn-warning ml-5 mr-5" href="#"
                                             style="border-radius:10px; color:black;">Asignar a vendedor</a>
                                     @endif
 
