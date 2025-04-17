@@ -1529,9 +1529,13 @@ class ProyectoController extends Controller
 
         $id_usuarios_clientes = User::pluck('name', 'id');
 
+        $disenadores = User::whereHas('roles', function ($query) {
+            $query->where('role_id', 7);
+        })->select('id', 'name')->get();
+
         $sucursals = Sucursal::orderBy('nombre')->pluck('nombre', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.proyectos.create', compact('id_clientes', 'id_usuarios_clientes', 'sucursals', 'userId'));
+        return view('admin.proyectos.create', compact('id_clientes', 'id_usuarios_clientes', 'sucursals', 'userId', 'disenadores'));
     }
 
     public function store(StoreProyectoRequest $request)
@@ -1668,6 +1672,20 @@ class ProyectoController extends Controller
             $proyecto->save();
         }
 
+        if ($proyecto->fasedespacho == null) {
+            // Crear una nueva fase comercial y asignarle un ID basado en el siguiente disponible
+
+            $nuevaFaseDespacho = Fasedespacho::create([
+                'id_proyecto_id' => $proyecto->id,
+            ]);
+
+            $nuevaFaseDespacho->save();
+
+            // Asignar la nueva instancia de fase comercial al proyecto
+            $proyecto->fasedespacho()->associate($nuevaFaseDespacho);
+            $proyecto->save();
+        }
+
         // Limpiar y mover archivos desde la ruta temporal
         $basePath = 'E:\\OHFFICE\\Usuarios\\TI_Ohffice\\Proyecto_temp';
         $rut_empresa = $proyecto->id_cliente->rut;
@@ -1746,6 +1764,9 @@ class ProyectoController extends Controller
                         } elseif ($carpetaPadre === '02 ISO') {
                             $proyecto->fasediseno->addMedia(storage_path('app/public/' . $destino))
                                 ->toMediaCollection('propuesta');
+                        } elseif ($carpetaPadre === '07 DESPACHO') {
+                            $proyecto->fasedespacho->addMedia(storage_path('app/public/' . $destino))
+                                ->toMediaCollection('guia_despacho');
                         } else {
                             Log::warning("Carpeta no reconocida: {$carpetaPadre}. Archivo no se asignó a ninguna colección.");
                         }

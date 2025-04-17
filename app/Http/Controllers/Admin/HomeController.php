@@ -44,46 +44,35 @@ class HomeController
                     ->select('proyectos.*', 'proyecto_user.user_id')
                     ->paginate(5);    */
 
-            $proyectos = Proyecto::where('id_vendedor', $id_cliente)->orderBy('created_at', 'desc')->paginate(5);
+            //ULTIMO UTILIZADO //$proyectos = Proyecto::where('id_vendedor', $id_cliente)->orderBy('created_at', 'desc')->paginate(5);
+            $proyectos = Proyecto::where(function ($query) use ($id_cliente) {
+                $query->where('id_vendedor', $id_cliente)
+                    ->orWhere('disenador', $id_cliente);
+            })->orderBy('created_at', 'desc')->paginate(5);
 
-            /* $p_activos = Proyecto::join('proyecto_user', 'proyectos.id', '=', 'proyecto_user.proyecto_id')
-                     ->where('proyecto_user.user_id', $id_cliente)
-                     ->where('proyectos.estado', '=', 'Activo')
-                     ->select('proyectos.*', 'proyecto_user.user_id')
-                     ->count();*/
 
-            /*$p_activos = Proyecto::join('proyecto_user', 'proyecto_user.proyecto_id', '=', 'proyectos.id')
-                   ->where('proyecto_user.user_id', $id_cliente)
-                   ->where(function($query) {
-                   $query->where('proyectos.estado', '=', 'Proyecto Caliente')
-                       ->orWhere('proyectos.estado', '=', 'Proyecto Interesante')
-                       ->orWhere('proyectos.estado', '=', 'Proyecto Potencial');
-                   })->count();*/
-
-            $p_activos = Proyecto::where('id_vendedor', $id_cliente)
+            $p_activos = Proyecto::where(function ($query) use ($id_cliente) {
+                $query->where('id_vendedor', $id_cliente)
+                    ->orWhere('disenador', $id_cliente);
+            })
                 ->where(function ($query) {
-                    $query->where('proyectos.estado', '=', 'Proyecto Caliente')
-                        ->orWhere('proyectos.estado', '=', 'Proyecto Interesante')
-                        ->orWhere('proyectos.estado', '=', 'Proyecto Potencial');
-                })->count();
+                    $query->where('estado', 'Proyecto Caliente')
+                        ->orWhere('estado', 'Proyecto Interesante')
+                        ->orWhere('estado', 'Proyecto Potencial');
+                })
+                ->count();
 
-            /*$p_finalizados = Proyecto::join('proyecto_user', 'proyectos.id', '=', 'proyecto_user.proyecto_id')
-                    ->where('proyecto_user.user_id', $id_cliente)
-                    ->where('proyectos.estado', '=', 'Despachado')
-                    ->select('proyectos.*', 'proyecto_user.user_id')
-                    ->count();*/
 
-            /*$p_finalizados = Proyecto::join('proyecto_user', 'proyecto_user.proyecto_id', '=', 'proyectos.id')
-                    ->where('proyecto_user.user_id', $id_cliente)->where(function($query) {
-                    $query->where('estado', '=', 'Negocio Ganado')
-                        ->orWhere('estado', '=', 'Negocio Perdido');
-                    })->count();*/
-
-            $p_finalizados = Proyecto::where('id_vendedor', $id_cliente)
+            $p_finalizados = Proyecto::where(function ($query) use ($id_cliente) {
+                $query->where('id_vendedor', $id_cliente)
+                    ->orWhere('disenador', $id_cliente);
+            })
                 ->where(function ($query) {
-                    $query->where('estado', '=', 'Negocio Ganado')
-                        ->orWhere('estado', '=', 'Negocio Perdido');
-                })->count();
+                    $query->where('estado', 'Negocio Ganado')
+                        ->orWhere('estado', 'Negocio Perdido');
+                })
+                ->count();
+
         }
 
         $empresas = Empresa::all();
