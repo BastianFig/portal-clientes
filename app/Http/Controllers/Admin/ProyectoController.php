@@ -1801,7 +1801,8 @@ class ProyectoController extends Controller
                 throw new \Exception("La ruta de facturas no existe: {$facturasBasePath}");
             }
 
-            $ordenes = is_array($proyecto->orden) ? $proyecto->orden : explode(',', $proyecto->orden);
+            // $ordenes = is_array($proyecto->orden) ? $proyecto->orden : explode(',', $proyecto->orden);
+            $ordenes = is_array($proyecto->orden) ? $proyecto->orden : array_map('trim', explode(',', $proyecto->orden));
 
             $fechas = array_diff(scandir($facturasBasePath), ['.', '..']);
             foreach ($fechas as $fechaFolder) {
