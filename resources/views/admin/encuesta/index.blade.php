@@ -44,6 +44,7 @@
 @section('scripts')
   @parent
   <script>
+    const _token = '{{ csrf_token() }}';
     $(function () {
     let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
     @can('encuestum_delete')
