@@ -152,7 +152,7 @@
                 aaSorting: [],
                 ajax: "{{ route('admin.empresas.index') }}",
                 columns: [
-                    { data: 'id', name: 'id' },
+                    { data: 'placeholder', name: 'id' },
                     { data: 'actions', name: 'actions' },
                     { data: 'rut', name: 'rut' },
                     { data: 'razon_social', name: 'razon_social' },
