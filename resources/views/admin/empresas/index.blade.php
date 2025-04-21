@@ -52,7 +52,7 @@
                             Tipo Empresa
                         </th>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <td>
 
                         </td>
@@ -74,7 +74,7 @@
                             <select class="search" strict="true" id="busc_region">
                                 <option value>{{ trans('global.all') }}</option>
                                 @foreach(App\Models\Empresa::REGION_SELECT as $key => $item)
-                                    <option value="{{ $key }}">{{ $item }}</option>
+                                <option value="{{ $key }}">{{ $item }}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -82,7 +82,7 @@
                             <select class="search" strict="true" id="busc_comu">
                                 <option value>{{ trans('global.all') }}</option>
                                 @foreach(App\Models\Empresa::COMUNA_SELECT as $key => $item)
-                                    <option value="{{ $key }}">{{ $item }}</option>
+                                <option value="{{ $key }}">{{ $item }}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -96,10 +96,10 @@
                             <select class="search" strict="true" id="busc_empresa">
                                 <option value>{{ trans('global.all') }}</option>
                                 @foreach(App\Models\Empresa::TIPO_EMPRESA_SELECT as $key => $item)
-                                    <option value="{{ $key }}">{{ $item }}</option>
+                                <option value="{{ $key }}">{{ $item }}</option>
                                 @endforeach
                         </td>
-                    </tr>
+                    </tr> --}}
                 </thead>
             </table>
         </div>
