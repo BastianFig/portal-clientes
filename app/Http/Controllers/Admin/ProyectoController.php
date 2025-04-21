@@ -1419,7 +1419,7 @@ class ProyectoController extends Controller
                 $query = Proyecto::with(['id_cliente', 'id_usuarios_clientes', 'sucursal'])
                     ->where(function ($query) {
                         $query->where('id_vendedor', auth()->id())
-                            ->orWhere('disenador', auth()->user()->name);
+                            ->orWhere('disenador', auth()->id());
                     })
                     ->select(sprintf('%s.*', (new Proyecto)->table));
 
