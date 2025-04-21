@@ -87,8 +87,8 @@
       columns: [
       { data: 'placeholder', name: 'id' },
       { data: 'actions', name: 'id' },
-      { data: 'proyecto.nombre_proyecto', name: 'proyecto.nombre_proyecto' },
-      { data: 'empresa.razon_social', name: 'empresa.razon_social' },
+      { data: 'nombre_proyecto', name: 'proyecto.nombre_proyecto' },
+      { data: 'razon_social', name: 'empresa.razon_social' },
       { data: 'nombre_encuestado', name: 'nombre_encuestado' },
       {
         data: 'rating',

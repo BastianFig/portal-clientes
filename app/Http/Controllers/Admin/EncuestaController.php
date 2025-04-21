@@ -58,20 +58,11 @@ class EncuestaController extends Controller
             $table->editColumn('proyecto_id', function ($row) {
                 return $row->proyecto_id ? $row->proyecto_id : '';
             });
-            $table->addColumn('proyecto.nombre_proyecto', function ($row) {
+            $table->addColumn('nombre_proyecto', function ($row) {
                 return $row->proyecto ? $row->proyecto->nombre_proyecto : '';
             });
-
-            $table->addColumn('empresa.razon_social', function ($row) {
+            $table->addColumn('razon_social', function ($row) {
                 return $row->empresa ? $row->empresa->razon_social : '';
-            });
-
-            $table->addColumn('nombre_encuestado', function ($row) {
-                return $row->user ? $row->user->name : '';
-            });
-
-            $table->addColumn('rating', function ($row) {
-                return $row->rating ?? 0;
             });
 
             $table->rawColumns(['actions', 'placeholder']);
