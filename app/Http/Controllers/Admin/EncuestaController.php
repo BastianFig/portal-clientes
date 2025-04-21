@@ -32,9 +32,9 @@ class EncuestaController extends Controller
             $table->addColumn('actions', '&nbsp;');
 
             $table->editColumn('actions', function ($row) {
-                $viewGate      = 'encuestum_show';
-                $editGate      = 'encuestum_edit';
-                $deleteGate    = 'encuestum_delete';
+                $viewGate = 'encuestum_show';
+                $editGate = 'encuestum_edit';
+                $deleteGate = 'encuestum_delete';
                 $crudRoutePart = 'encuesta';
 
                 return view('partials.datatablesActions', compact(
@@ -57,6 +57,21 @@ class EncuestaController extends Controller
             });
             $table->editColumn('proyecto_id', function ($row) {
                 return $row->proyecto_id ? $row->proyecto_id : '';
+            });
+            $table->addColumn('proyecto.nombre_proyecto', function ($row) {
+                return $row->proyecto ? $row->proyecto->nombre_proyecto : '';
+            });
+
+            $table->addColumn('empresa.razon_social', function ($row) {
+                return $row->empresa ? $row->empresa->razon_social : '';
+            });
+
+            $table->addColumn('nombre_encuestado', function ($row) {
+                return $row->user ? $row->user->name : '';
+            });
+
+            $table->addColumn('rating', function ($row) {
+                return $row->rating ?? 0;
             });
 
             $table->rawColumns(['actions', 'placeholder']);
@@ -81,7 +96,7 @@ class EncuestaController extends Controller
     public function store(StoreEncuestumRequest $request)
     {
         $encuestum = Encuestum::create($request->all());
-        
+
 
         return redirect()->route('admin.encuesta.index');
     }
@@ -107,7 +122,7 @@ class EncuestaController extends Controller
         $user = User::find($userID);
         $empresa_user = Empresa::find($user->empresa_id);
 
-        return view('admin.encuesta.show', compact('encuestum','userID','user','empresa_user'));
+        return view('admin.encuesta.show', compact('encuestum', 'userID', 'user', 'empresa_user'));
     }
 
     public function destroy(Encuestum $encuestum)
