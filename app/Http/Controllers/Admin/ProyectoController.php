@@ -1766,7 +1766,7 @@ class ProyectoController extends Controller
                         } elseif ($carpetaPadre === '02 ISO') {
                             $proyecto->fasediseno->addMedia(storage_path('app/public/' . $destino))
                                 ->toMediaCollection('propuesta');
-                        } elseif ($carpetaPadre === '07 DESPACHO') {
+                        } elseif ($carpetaPadre === '07 DESPACHOS') {
                             $proyecto->fasedespacho->addMedia(storage_path('app/public/' . $destino))
                                 ->toMediaCollection('guia_despacho');
                         } else {
