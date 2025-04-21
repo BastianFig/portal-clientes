@@ -354,7 +354,8 @@
                                                                     </td>
                                                                     <td class="col-3 align-middle">
                                                                         <h6 class="fw-bold">
-                                                                            {{ $item->empresa->razon_social }}</h6>
+                                                                            {{ $item->empresa->razon_social ?? '' }}
+                                                                        </h6>
                                                                     </td>
                                                                     <td class="col-2 align-middle">
                                                                         <h6 class="fw-bold">{{ $item->nombre_encuestado }}
