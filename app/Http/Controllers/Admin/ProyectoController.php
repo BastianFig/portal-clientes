@@ -1551,7 +1551,8 @@ class ProyectoController extends Controller
         $anioActual = date("Y");
 
 
-        $disenador = User::where('name', $request->disenador)->first();
+        $disenador = User::find($request->disenador);
+
         $email = $disenador->email;
         $name = $disenador->name;
         $nombre_proyecto = $request->nombre_proyecto;
