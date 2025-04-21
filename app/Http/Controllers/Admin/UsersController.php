@@ -185,8 +185,6 @@ class UsersController extends Controller
     {
         abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        //$roles = Role::pluck('title', 'id');
-
         $Userconectado = auth()->user();
 
         if ($Userconectado->roles->contains('title', 'Admin')) {
@@ -195,15 +193,16 @@ class UsersController extends Controller
             $roles = Role::where('title', 'User')->pluck('title', 'id');
         }
 
+        $empresas = Empresa::orderBy('razon_social')->pluck('razon_social', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $empresas = Empresa::Orderby('razon_social')->pluck('razon_social', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $sucursals = Sucursal::pluck('nombre', 'id');
+        // Sucursales filtradas por la empresa del usuario a editar
+        $sucursals = Sucursal::where('empresa_id', $user->empresa_id)->pluck('nombre', 'id');
 
         $user->load('roles', 'empresa', 'sucursals');
 
         return view('admin.users.edit', compact('empresas', 'roles', 'sucursals', 'user'));
     }
+
 
     public function update(UpdateUserRequest $request, User $user)
     {
