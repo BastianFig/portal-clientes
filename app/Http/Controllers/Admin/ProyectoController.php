@@ -1572,6 +1572,7 @@ class ProyectoController extends Controller
                 mkdir($rutaDirectorio . '/COMERCIAL\/04 DISENO', 0777, true);
                 mkdir($rutaDirectorio . '/COMERCIAL\/05 CURSE', 0777, true);
                 mkdir($rutaDirectorio . '/COMERCIAL\/06 FACTURAS', 0777, true);
+                mkdir($rutaDirectorio . '/COMERCIAL\/07 DESPACHOS', 0777, true);
                 mkdir($rutaDirectorio . '/DISEÑO\/INFO_CLTS\/DWG', 0777, true);
                 mkdir($rutaDirectorio . '/DISEÑO\/INFO_CLTS\/PDF', 0777, true);
                 mkdir($rutaDirectorio . '/DISEÑO\/INFO_CLTS\/PRESENTACIONES', 0777, true);
