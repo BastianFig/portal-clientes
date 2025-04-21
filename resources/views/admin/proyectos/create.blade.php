@@ -131,7 +131,7 @@
                     <label for="disenador">Diseñador</label>
                     <select class="form-control {{ $errors->has('disenador') ? 'is-invalid' : '' }}" name="disenador"
                         id="disenador">
-                        @foreach($diseadores as $id => $nombre)
+                        @foreach($disenadores as $id => $nombre)
                             <option value="{{ $id }}" {{ old('disenador') == $id ? 'selected' : '' }}>
                                 {{ $nombre }}
                             </option>
@@ -155,19 +155,19 @@
                     @endif
                 </div>
                 <!-- <div class="form-group">
-                    <label>Instalador</label>
-                    <select class="form-control {{ $errors->has('instalador') ? 'is-invalid' : '' }}" name="instalador" id="instalador">
-                        <option value disabled {{ old('instalador', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                        @foreach(App\Models\Proyecto::INSTALADOR_SELECT as $key => $label)
-                            <option value="{{ $key }}" {{ old('instalador', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                    @if($errors->has('instalador'))
-                        <div class="invalid-feedback">
-                            {{ $errors->first('instalador') }}
-                        </div>
-                    @endif
-                </div>-->
+                        <label>Instalador</label>
+                        <select class="form-control {{ $errors->has('instalador') ? 'is-invalid' : '' }}" name="instalador" id="instalador">
+                            <option value disabled {{ old('instalador', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                            @foreach(App\Models\Proyecto::INSTALADOR_SELECT as $key => $label)
+                                <option value="{{ $key }}" {{ old('instalador', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @if($errors->has('instalador'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('instalador') }}
+                            </div>
+                        @endif
+                    </div>-->
                 <div class="form-group d-none">
                     <label>{{ trans('cruds.proyecto.fields.fase') }}</label>
                     <select class="form-control {{ $errors->has('fase') ? 'is-invalid' : '' }}" name="fase" id="fase">
