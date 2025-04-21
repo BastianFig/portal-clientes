@@ -1721,6 +1721,7 @@ class ProyectoController extends Controller
                 // Si el elemento es una carpeta
                 if (is_dir($itemPath)) {
                     $archivosSubcarpeta = $this->cleanAndMoveFiles($itemPath, $proyecto, $identifierPath);
+                    $this->procesarFacturasTemp('E:\\OHFFICE\\Usuarios\\TI_Ohffice\\Facturas_temp', $proyecto);
 
                     // Después de procesar la carpeta, verificar si está vacía
                     if (count(array_diff(scandir($itemPath), ['.', '..'])) === 0) {
@@ -1792,6 +1793,74 @@ class ProyectoController extends Controller
 
         return $archivos;
     }
+
+    public function procesarFacturasTemp($facturasBasePath, $proyecto)
+    {
+        try {
+            if (!file_exists($facturasBasePath) || !is_dir($facturasBasePath)) {
+                throw new \Exception("La ruta de facturas no existe: {$facturasBasePath}");
+            }
+
+            $ordenes = is_array($proyecto->orden) ? $proyecto->orden : explode(',', $proyecto->orden);
+
+            $fechas = array_diff(scandir($facturasBasePath), ['.', '..']);
+            foreach ($fechas as $fechaFolder) {
+                $fechaPath = $facturasBasePath . DIRECTORY_SEPARATOR . $fechaFolder;
+
+                if (!is_dir($fechaPath))
+                    continue;
+
+                $carpetasOrdenes = array_diff(scandir($fechaPath), ['.', '..']);
+                foreach ($carpetasOrdenes as $carpetaOrden) {
+                    $ordenPath = $fechaPath . DIRECTORY_SEPARATOR . $carpetaOrden;
+
+                    if (!is_dir($ordenPath))
+                        continue;
+
+                    // Extraer el número de orden
+                    preg_match('/(?:03-0)?(\d+)/', $carpetaOrden, $matches);
+                    if (!isset($matches[1]))
+                        continue;
+
+                    $numeroOrden = $matches[1];
+
+                    if (in_array($numeroOrden, $ordenes)) {
+                        $archivos = array_diff(scandir($ordenPath), ['.', '..']);
+                        foreach ($archivos as $archivo) {
+                            $archivoPath = $ordenPath . DIRECTORY_SEPARATOR . $archivo;
+
+                            if (!is_file($archivoPath))
+                                continue;
+
+                            // Copiar temporalmente al storage
+                            $destino = 'temporal/' . basename($archivoPath);
+                            Storage::disk('public')->put($destino, file_get_contents($archivoPath));
+
+                            // Adjuntar al proyecto
+                            $proyecto->fasecomercialproyecto->addMedia(storage_path('app/public/' . $destino))
+                                ->toMediaCollection('facturas');
+
+                            // Borrar archivo original
+                            unlink($archivoPath);
+                        }
+
+                        // Borrar carpeta de orden si quedó vacía
+                        if (count(array_diff(scandir($ordenPath), ['.', '..'])) === 0) {
+                            rmdir($ordenPath);
+                        }
+                    }
+                }
+
+                // Borrar carpeta de fecha si quedó vacía
+                if (count(array_diff(scandir($fechaPath), ['.', '..'])) === 0) {
+                    rmdir($fechaPath);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Error procesando facturas temp: " . $e->getMessage());
+        }
+    }
+
 
     public function destroy(Proyecto $proyecto)
     {
