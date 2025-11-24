@@ -90,6 +90,17 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
+        'ohffice' => [
+            'driver' => 'sqlsrv',
+            'host' => env('DB_HOST_OHFFICE', '192.168.10.110'),
+            'port' => env('DB_PORT_OHFFICE', '50186'),
+            'database' => env('DB_DATABASE_OHFFICE', 'CALENDARIOPROYECTOS2'),
+            'username' => env('DB_USERNAME_OHFFICE', 'sa'),
+            'password' => env('DB_PASSWORD_OHFFICE', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
 
     ],
 

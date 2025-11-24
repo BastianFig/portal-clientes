@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4da007cb4ccbd537076c81db8c712eaf
+class ComposerStaticInitb0f4f55504f49f37655f3d75a67aae9e
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -619,6 +619,7 @@ class ComposerStaticInit4da007cb4ccbd537076c81db8c712eaf
         'App\\Http\\Controllers\\Admin\\UserAlertsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/UserAlertsController.php',
         'App\\Http\\Controllers\\Admin\\UsersController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/UsersController.php',
         'App\\Http\\Controllers\\Api\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/AuthController.php',
+        'App\\Http\\Controllers\\Api\\OcController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/OcController.php',
         'App\\Http\\Controllers\\Api\\V1\\Admin\\CarpetaclienteApiController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/Admin/CarpetaclienteApiController.php',
         'App\\Http\\Controllers\\Api\\V1\\Admin\\EmpresaApiController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/Admin/EmpresaApiController.php',
         'App\\Http\\Controllers\\Api\\V1\\Admin\\EncuestaApiController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/Admin/EncuestaApiController.php',
@@ -744,6 +745,8 @@ class ComposerStaticInit4da007cb4ccbd537076c81db8c712eaf
         'App\\Http\\Resources\\Admin\\SucursalResource' => __DIR__ . '/../..' . '/app/Http/Resources/Admin/SucursalResource.php',
         'App\\Http\\Resources\\Admin\\TicketResource' => __DIR__ . '/../..' . '/app/Http/Resources/Admin/TicketResource.php',
         'App\\Http\\Resources\\Admin\\UserResource' => __DIR__ . '/../..' . '/app/Http/Resources/Admin/UserResource.php',
+        'App\\Mail\\AsignarTicket' => __DIR__ . '/../..' . '/app/Mail/AsignarTicket.php',
+        'App\\Mail\\AvisoDiseno' => __DIR__ . '/../..' . '/app/Mail/AvisoDiseno.php',
         'App\\Mail\\CambioDeFase' => __DIR__ . '/../..' . '/app/Mail/CambioDeFase.php',
         'App\\Mail\\CompletaEncuesta' => __DIR__ . '/../..' . '/app/Mail/CompletaEncuesta.php',
         'App\\Mail\\ConfirmaHorario' => __DIR__ . '/../..' . '/app/Mail/ConfirmaHorario.php',
@@ -751,7 +754,9 @@ class ComposerStaticInit4da007cb4ccbd537076c81db8c712eaf
         'App\\Mail\\EnvioDatosFacturacion' => __DIR__ . '/../..' . '/app/Mail/EnvioDatosFacturacion.php',
         'App\\Mail\\MiCorreo' => __DIR__ . '/../..' . '/app/Mail/MiCorreo.php',
         'App\\Mail\\NotificarTicket' => __DIR__ . '/../..' . '/app/Mail/NotificarTicket.php',
+        'App\\Mail\\OcProveedoresCargado' => __DIR__ . '/../..' . '/app/Mail/OcProveedoresCargado.php',
         'App\\Mail\\SubirArchivoContable' => __DIR__ . '/../..' . '/app/Mail/SubirArchivoContable.php',
+        'App\\Models\\CalProyecto' => __DIR__ . '/../..' . '/app/Models/CalProyecto.php',
         'App\\Models\\Carpetacliente' => __DIR__ . '/../..' . '/app/Models/Carpetacliente.php',
         'App\\Models\\Empresa' => __DIR__ . '/../..' . '/app/Models/Empresa.php',
         'App\\Models\\Encuestum' => __DIR__ . '/../..' . '/app/Models/Encuestum.php',
@@ -6434,27 +6439,6 @@ class ComposerStaticInit4da007cb4ccbd537076c81db8c712eaf
         'Termwind\\ValueObjects\\Node' => __DIR__ . '/..' . '/nunomaduro/termwind/src/ValueObjects/Node.php',
         'Termwind\\ValueObjects\\Style' => __DIR__ . '/..' . '/nunomaduro/termwind/src/ValueObjects/Style.php',
         'Termwind\\ValueObjects\\Styles' => __DIR__ . '/..' . '/nunomaduro/termwind/src/ValueObjects/Styles.php',
-        'Tests\\Browser\\CarpetaclienteTest' => __DIR__ . '/../..' . '/tests/Browser/CarpetaclienteTest.php',
-        'Tests\\Browser\\EmpresaTest' => __DIR__ . '/../..' . '/tests/Browser/EmpresaTest.php',
-        'Tests\\Browser\\EncuestaTest' => __DIR__ . '/../..' . '/tests/Browser/EncuestaTest.php',
-        'Tests\\Browser\\FaseDisenoTest' => __DIR__ . '/../..' . '/tests/Browser/FaseDisenoTest.php',
-        'Tests\\Browser\\FasePostventaTest' => __DIR__ . '/../..' . '/tests/Browser/FasePostventaTest.php',
-        'Tests\\Browser\\FasecomercialTest' => __DIR__ . '/../..' . '/tests/Browser/FasecomercialTest.php',
-        'Tests\\Browser\\FasecomercialproyectoTest' => __DIR__ . '/../..' . '/tests/Browser/FasecomercialproyectoTest.php',
-        'Tests\\Browser\\FasecontableTest' => __DIR__ . '/../..' . '/tests/Browser/FasecontableTest.php',
-        'Tests\\Browser\\FasedespachoTest' => __DIR__ . '/../..' . '/tests/Browser/FasedespachoTest.php',
-        'Tests\\Browser\\FasefabricaTest' => __DIR__ . '/../..' . '/tests/Browser/FasefabricaTest.php',
-        'Tests\\Browser\\PermissionsTest' => __DIR__ . '/../..' . '/tests/Browser/PermissionsTest.php',
-        'Tests\\Browser\\ProyectoTest' => __DIR__ . '/../..' . '/tests/Browser/ProyectoTest.php',
-        'Tests\\Browser\\RolesTest' => __DIR__ . '/../..' . '/tests/Browser/RolesTest.php',
-        'Tests\\Browser\\SucursalTest' => __DIR__ . '/../..' . '/tests/Browser/SucursalTest.php',
-        'Tests\\Browser\\TicketTest' => __DIR__ . '/../..' . '/tests/Browser/TicketTest.php',
-        'Tests\\Browser\\UserAlertsTest' => __DIR__ . '/../..' . '/tests/Browser/UserAlertsTest.php',
-        'Tests\\Browser\\UsersTest' => __DIR__ . '/../..' . '/tests/Browser/UsersTest.php',
-        'Tests\\CreatesApplication' => __DIR__ . '/../..' . '/tests/CreatesApplication.php',
-        'Tests\\Feature\\ExampleTest' => __DIR__ . '/../..' . '/tests/Feature/ExampleTest.php',
-        'Tests\\TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
-        'Tests\\Unit\\ExampleTest' => __DIR__ . '/../..' . '/tests/Unit/ExampleTest.php',
         'TheSeer\\Tokenizer\\Exception' => __DIR__ . '/..' . '/theseer/tokenizer/src/Exception.php',
         'TheSeer\\Tokenizer\\NamespaceUri' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUri.php',
         'TheSeer\\Tokenizer\\NamespaceUriException' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUriException.php',
@@ -6533,9 +6517,9 @@ class ComposerStaticInit4da007cb4ccbd537076c81db8c712eaf
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4da007cb4ccbd537076c81db8c712eaf::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4da007cb4ccbd537076c81db8c712eaf::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit4da007cb4ccbd537076c81db8c712eaf::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb0f4f55504f49f37655f3d75a67aae9e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb0f4f55504f49f37655f3d75a67aae9e::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitb0f4f55504f49f37655f3d75a67aae9e::$classMap;
 
         }, null, ClassLoader::class);
     }

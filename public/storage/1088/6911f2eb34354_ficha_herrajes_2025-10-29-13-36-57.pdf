@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Herraje Fábrica (Múltiples)</title>
+
+  <style>[x-cloak]{ display:none !important; }</style>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    tailwind.config = {
+      theme: { extend: { container: { center: true, padding: '1rem' } } }
+    }
+  </script>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased">
+  <div class="min-h-dvh flex items-stretch">
+    <div x-data="{ open: false, groupOpen: null }" class="contents">
+  <aside
+   x-cloak
+    @toggle-sidebar.window="open = !open"
+    class="bg-gradient-to-b from-blue-600 to-indigo-700 text-white
+           flex-none flex flex-col py-4 shadow-lg transition-all duration-300 ease-in-out
+           self-stretch"  
+    :class="open ? 'w-56' : 'w-16'">
+
+    <div class="flex justify-end px-2 mb-4">
+      <button @click="$dispatch('toggle-sidebar')" class="p-2 rounded-md hover:bg-blue-700">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+
+    <nav class="flex-1 space-y-2 px-2 text-sm font-medium overflow-y-auto">
+      <a href="http://127.0.0.1:8000/dashboard" class="flex items-center gap-3 w-full px-3 py-2 rounded-md transition focus:outline-none text-white/90 hover:bg-white/10 hover:text-white">
+          <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M11.47 3.84a.75.75 0 0 1 1.06 0l8.25 8.25a.75.75 0 1 1-1.06 1.06l-.22-.22V20a2.25 2.25 0 0 1-2.25 2.25h-3.75a.75.75 0 0 1-.75-.75v-4.5a1.5 1.5 0 0 0-1.5-1.5H9.75a1.5 1.5 0 0 0-1.5 1.5V21.5a.75.75 0 0 1-.75.75H3.75A2.25 2.25 0 0 1 1.5 20v-7.07l-.22.22a.75.75 0 1 1-1.06-1.06l8.25-8.25Z"/>
+    </svg>
+            <span x-show="open" x-transition.opacity
+          class="leading-5 whitespace-normal break-words">
+      Inicio
+    </span>
+  </a>
+<a href="http://127.0.0.1:8000/historial" class="flex items-center gap-3 w-full px-3 py-2 rounded-md transition focus:outline-none text-white/90 hover:bg-white/10 hover:text-white" title="Historial">
+          <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+    <!-- círculo -->
+    <circle cx="12" cy="12" r="9" stroke-width="1.8"/>
+    <!-- manecillas -->
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 7.5v5l3 1.5"/>
+  </svg>
+          <span x-show="open" x-transition.opacity
+          class="leading-5 whitespace-normal break-words">
+      Historial
+    </span>
+  </a>
+
+
+      <form method="POST" action="http://127.0.0.1:8000/logout" id="logout-form">
+        <input type="hidden" name="_token" value="dFMje70LKD6bTJIwXCQZo08E6f6g6mmfHLjcvm9N" autocomplete="off">        <button type="submit" class="flex items-center gap-3 w-full px-3 py-2 rounded-md transition focus:outline-none text-white/90 hover:bg-white/10 hover:text-white w-full text-left">
+          <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6A2.25 2.25 0 0 0 5.25 5.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l3-3m0 0 3 3m-3-3v12"/>
+    </svg>
+            <span x-show="open" x-transition.opacity
+          class="leading-5 whitespace-normal break-words">
+      Salir
+    </span>
+  </button>
+      </form>
+    </nav>
+
+    <div class="mt-auto text-center text-xs text-blue-200 py-3" x-show="open">
+      © 2025 Ilesa
+    </div>
+  </aside>
+
+  <div x-show="open" x-transition.opacity @click="$dispatch('toggle-sidebar')"
+       class="fixed inset-0 bg-black/50 md:hidden"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.querySelector('#logout-form button[type="submit"]');
+  if (btn) {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('logout-form').submit();
+    });
+  }
+});
+</script>
+
+    <div class="flex-1 min-w-0 flex flex-col">
+      <header class="bg-white shadow sticky top-0 z-10">
+        <div class="px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <button class="md:hidden p-2 rounded hover:bg-gray-100"
+                    @click="$dispatch('toggle-sidebar')">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 6h16M4 12h16m-7 6h7"/>
+              </svg>
+            </button>
+            <h1 class="font-semibold">Herraje Fábrica (Múltiples)</h1>
+          </div>
+          <div class="text-sm text-gray-500">
+            Admin
+          </div>
+        </div>
+      </header>
+
+      <main class="p-4 flex-1 min-h-0 overflow-auto">
+        
+
+
+  
+  <div
+    x-data="{
+      // Cabecera
+      pedido: '',
+      ordenCompra: '',
+      proyecto: '',
+
+      // Bloques (uno por medida)
+      productos: JSON.parse('[{\u0022label\u0022:\u0022Gabinete 40\\u00d740\\u00d750 cm\u0022,\u0022product\u0022:\u0022gabinete\u0022,\u0022type\u0022:\u0022medida\u0022,\u0022variant\u0022:\u002240-40-50\u0022,\u0022muebles\u0022:1,\u0022dim\u0022:{\u0022ancho\u0022:\u002240\u0022,\u0022fondo\u0022:\u002240\u0022,\u0022alto\u0022:\u002250\u0022},\u0022dimBuscadas\u0022:{\u0022ancho\u0022:40,\u0022fondo\u0022:40,\u0022alto\u0022:50},\u0022con_cubierta\u0022:false,\u0022rows\u0022:[{\u0022DETALLE\u0022:\u0022MINIFIX\u0022,\u0022CANTIDAD\u0022:12,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022TARUGO DE MADERA\u0022,\u0022CANTIDAD\u0022:12,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022PATINES\u0022,\u0022CANTIDAD\u0022:4,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022INCERTO ARA\\u00f1A\u0022,\u0022CANTIDAD\u0022:4,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022BISAGRA\u0022,\u0022CANTIDAD\u0022:2,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022CERRADURA\u0022,\u0022CANTIDAD\u0022:1,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022TIRADOR\u0022,\u0022CANTIDAD\u0022:1,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022TORNILLOS DE 40MM\u0022,\u0022CANTIDAD\u0022:4,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022TORNILLO 4,5 X 20\u0022,\u0022CANTIDAD\u0022:8,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022derivado\u0022},{\u0022DETALLE\u0022:\u0022TORNILLO 3,5 X 20\u0022,\u0022CANTIDAD\u0022:4,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022derivado\u0022}],\u0022encontrado\u0022:true},{\u0022label\u0022:\u0022Gabinete 50\\u00d750\\u00d760 cm\u0022,\u0022product\u0022:\u0022gabinete\u0022,\u0022type\u0022:\u0022medida\u0022,\u0022variant\u0022:\u002250-50-60\u0022,\u0022muebles\u0022:1,\u0022dim\u0022:{\u0022ancho\u0022:\u002250\u0022,\u0022fondo\u0022:\u002250\u0022,\u0022alto\u0022:\u002260\u0022},\u0022dimBuscadas\u0022:{\u0022ancho\u0022:50,\u0022fondo\u0022:50,\u0022alto\u0022:60},\u0022con_cubierta\u0022:false,\u0022rows\u0022:[{\u0022DETALLE\u0022:\u0022MINIFIX\u0022,\u0022CANTIDAD\u0022:12,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022TARUGO DE MADERA\u0022,\u0022CANTIDAD\u0022:12,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022PATINES\u0022,\u0022CANTIDAD\u0022:4,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022INCERTO ARA\\u00f1A\u0022,\u0022CANTIDAD\u0022:4,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022BISAGRA\u0022,\u0022CANTIDAD\u0022:2,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022CERRADURA\u0022,\u0022CANTIDAD\u0022:1,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022TIRADOR\u0022,\u0022CANTIDAD\u0022:1,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022TORNILLOS DE 40MM\u0022,\u0022CANTIDAD\u0022:4,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022ESCUADRA PL\\u00e1STICA\u0022,\u0022CANTIDAD\u0022:1,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022base\u0022},{\u0022DETALLE\u0022:\u0022TORNILLO 4,5 X 20\u0022,\u0022CANTIDAD\u0022:8,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022derivado\u0022},{\u0022DETALLE\u0022:\u0022TORNILLO 3,5 X 20\u0022,\u0022CANTIDAD\u0022:4,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022derivado\u0022},{\u0022DETALLE\u0022:\u0022TORNILLO 3,5 X 15\u0022,\u0022CANTIDAD\u0022:2,\u0022ESTADO\u0022:\u0022\u0022,\u0022scale\u0022:true,\u0022tipo\u0022:\u0022derivado\u0022}],\u0022encontrado\u0022:true}]'),
+
+      addRow(i){ this.productos[i].rows.push({ DETALLE:'', CANTIDAD:0, ESTADO:'', scale:false }) },
+      removeRow(i, j){ this.productos[i].rows.splice(j, 1) },
+
+      // ===== Helpers =====
+    
+   csrf(){
+  const m = document.querySelector('meta[name=csrf-token]');
+  return m ? m.getAttribute('content') : 'dFMje70LKD6bTJIwXCQZo08E6f6g6mmfHLjcvm9N';
+},
+buildPayload(){
+  return {
+    // encabezado que espera el service
+    pedido: this.pedido || null,
+    ordenCompra: this.ordenCompra || null, // <-- ¡camelCase!
+    proyecto: this.proyecto || null,
+    // lista de productos que espera prepararDatosDesdeDemo()
+    productos: this.productos.map(p => ({
+      // el service arma todo a partir de estas claves
+      label: p.label,
+      muebles: Number(p.muebles) || 1,
+      dim: p.dim,
+      dimBuscadas: p.dimBuscadas,
+      con_cubierta: !!p.con_cubierta,
+      encontrado: !!p.encontrado,
+      // rows -> items (lo hace el service)
+      rows: (p.rows || []).map(r => ({
+        DETALLE: r.DETALLE || '',
+        CANTIDAD: Number(r.CANTIDAD) || 0,
+        ESTADO: r.ESTADO || '',
+        tipo: r.tipo || 'base',   // preserva 'base'/'derivado'
+        scale: !!r.scale
+      }))
+    })),
+  };
+},
+async save(){
+  try{
+    const ok = await Swal.fire({
+      icon:'question', title:'¿Guardar ficha?', text:'Se guardará la ficha (múltiple).',
+      showCancelButton:true, confirmButtonText:'Sí, guardar', cancelButtonText:'Cancelar',
+      confirmButtonColor:'#2563eb'
+    });
+    if(!ok.isConfirmed) return;
+
+    const res = await fetch('http://127.0.0.1:8000/herrajes/gabinete/guardar', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'X-CSRF-TOKEN': this.csrf(),
+        'Accept':'application/json',
+      },
+      body: JSON.stringify(this.buildPayload())
+    });
+
+    if(!res.ok){
+      const err = await res.json().catch(()=>({message:'Error'}));
+      throw new Error(err.message || 'Error al guardar');
+    }
+    const out = await res.json();
+    Swal.fire({icon:'success', title:'Guardado', text: out.message || 'Ficha guardada correctamente.'});
+  }catch(e){
+    Swal.fire({icon:'error', title:'Error', text: e.message || 'No se pudo guardar.'});
+  }
+},
+async exportPdf(){
+  try{
+    const res = await fetch('http://127.0.0.1:8000/herrajes/gabinete/pdf', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'X-CSRF-TOKEN': this.csrf(),
+        'Accept':'application/pdf',
+      },
+      body: JSON.stringify(this.buildPayload())
+    });
+    if(!res.ok){
+      const errTxt = await res.text();
+      throw new Error('No se pudo generar el PDF: ' + errTxt);
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const nice = (this.proyecto || 'ficha_herrajes') + '_' + (new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')) + '.pdf';
+    a.href = url; a.download = nice;
+    document.body.appendChild(a); a.click();
+    a.remove(); URL.revokeObjectURL(url);
+  }catch(e){
+    Swal.fire({icon:'error', title:'Error', text: e.message || 'No se pudo descargar el PDF.'});
+  }
+},
+
+      async fakeExcel(){ Swal.fire({icon:'info', title:'Exportar Excel', text:'Acción simulada. Luego conectamos la ruta.'}); },
+    }"
+    class="space-y-6"
+  >
+    
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+      <div class="bg-slate-200 px-4 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 class="text-xl font-semibold tracking-wide">HERRAJE FABRICA — Ficha múltiple (Gabinetes)</h1>
+
+        <div class="flex items-center gap-3">
+          <button type="button" @click="fakeExcel()"
+                  class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-md transition">
+            Exportar a Excel
+          </button>
+
+          <button type="button" @click="exportPdf()"
+                  class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md shadow">
+            Exportar a PDF
+          </button>
+
+          <button type="button" @click="save()"
+                  class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow">
+            Guardar
+          </button>
+
+          <a href="#" onclick="history.back(); return false;"
+             class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-md shadow">
+            Volver
+          </a>
+        </div>
+      </div>
+
+      
+      <div class="p-4">
+        <table class="w-full text-sm border border-gray-300">
+          <tbody>
+          <tr class="border-b border-gray-300">
+            <th class="w-28 bg-gray-100 px-3 py-2 text-left font-semibold">NOTA VENTA</th>
+            <td class="px-3 py-2 w-40">
+              <input type="text" x-model="pedido"
+                     class="w-full max-w-xs bg-transparent border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-300" />
+            </td>
+
+            <th class="w-40 bg-gray-100 px-3 py-2 text-left font-semibold">N° ORDEN DE COMPRA</th>
+            <td class="px-3 py-2 w-40">
+              <input type="text" x-model="ordenCompra"
+                     class="w-full max-w-xs bg-transparent border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-300" />
+            </td>
+
+            <th class="w-28 bg-gray-100 px-3 py-2 text-left font-semibold">PROYECTO</th>
+            <td class="px-3 py-2 w-60">
+              <input type="text" x-model="proyecto"
+                     class="w-full max-w-xs bg-transparent border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-300" />
+            </td>
+
+            <th class="w-20 bg-gray-100 px-3 py-2 text-left font-semibold">ITEMS</th>
+            <td class="px-3 py-2 w-16 text-center" x-text="productos.length"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    
+    <template x-for="(p, i) in productos" :key="i">
+      <div class="bg-white rounded-xl shadow overflow-hidden">
+        <div class="px-4 py-3 border-b bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h2 class="text-base font-semibold" x-text="p.label"></h2>
+            <p class="text-xs text-gray-500">
+              <b>Medida:</b>
+              <span x-text="`${p.dim.ancho} × ${p.dim.fondo} × ${p.dim.alto} cm`"></span>
+              <span class="text-xs">(Ancho × Fondo × Alto)</span>
+              <template x-if="p.dimBuscadas.ancho != p.dim.ancho || p.dimBuscadas.fondo != p.dim.fondo || p.dimBuscadas.alto != p.dim.alto">
+                <span class="ml-2 text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                  Busca: <span x-text="`${p.dimBuscadas.ancho}×${p.dimBuscadas.fondo}×${p.dimBuscadas.alto}`"></span>
+                </span>
+              </template>
+              <template x-if="p.con_cubierta">
+                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  ✓ Con cubierta
+                </span>
+              </template>
+              · Ajusta <b>MUEBLES</b> o añade filas extra.
+            </p>
+            
+            <template x-if="!p.encontrado">
+              <p class="text-xs text-amber-600 font-medium mt-1">⚠️ Gabinete no encontrado en la base de datos</p>
+            </template>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-sm font-medium text-gray-700">MUEBLES</label>
+            <input type="number" min="1" x-model.number="p.muebles"
+                   class="w-20 text-center bg-transparent border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-300" />
+            <button type="button" @click="addRow(i)"
+                    class="px-3 py-1.5 rounded-md border bg-white text-gray-700 hover:bg-blue-50 hover:border-blue-500 transition">
+              + Añadir fila
+            </button>
+          </div>
+        </div>
+
+        <div class="p-4">
+          <table class="w-full text-sm border border-gray-800">
+            <thead>
+            <tr class="bg-slate-200">
+              <th class="px-3 py-2 text-left border border-gray-800">DETALLE</th>
+              <th class="px-3 py-2 text-center border border-gray-800 w-40">CANTIDAD</th>
+              <th class="px-3 py-2 text-center border border-gray-800 w-40">ESTADO</th>
+              <th class="px-3 py-2 text-center border border-gray-800 w-16">—</th>
+            </tr>
+            </thead>
+            <tbody>
+            <template x-if="p.rows.length === 0">
+              <tr>
+                <td colspan="4" class="px-3 py-4 text-center text-gray-500 italic border border-gray-800">
+                  No se encontraron herrajes para este gabinete. Agrega filas manualmente.
+                </td>
+              </tr>
+            </template>
+            <template x-for="(r, j) in p.rows" :key="j">
+              <tr>
+                <td class="px-3 py-2 border border-gray-800">
+                  <input x-model="r.DETALLE" class="w-full bg-transparent border-0 p-0 focus:outline-none focus:ring-0"
+                         placeholder="Descripción del herraje" />
+                </td>
+                <td class="px-3 py-2 text-center border border-gray-800">
+                  <template x-if="r.scale">
+                    <span x-text="(Number(r.CANTIDAD)||0) * (Number(p.muebles)||1)"></span>
+                  </template>
+                  <template x-if="!r.scale">
+                    <input type="number" min="0" x-model.number="r.CANTIDAD"
+                           class="w-24 text-center bg-transparent border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-300" />
+                  </template>
+                </td>
+                <td class="px-3 py-2 text-center border border-gray-800">
+                  <input x-model="r.ESTADO" class="w-full text-center bg-transparent border-0 p-0 focus:outline-none focus:ring-0" />
+                </td>
+                <td class="px-3 py-2 text-center border border-gray-800">
+                  <button @click="removeRow(i, j)" class="text-red-600 hover:underline">Eliminar</button>
+                </td>
+              </tr>
+            </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </template>
+
+    
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+      <div class="px-4 pb-8">
+        <div class="max-w-md mx-auto">
+          <div class="border-t border-gray-800 mt-10 pt-4 text-center">
+            <p class="text-sm font-medium">RECEPCION CONFORME POR</p>
+            <p class="text-xs text-gray-600">(NOMBRE Y FIRMA MAESTRO)</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-slate-200 px-4 py-3 text-xs">
+        <strong>NOTA:</strong> FAVOR AVISAR POR ALGÚN CAMBIO EN LOS HERRAJES
+      </div>
+    </div>
+  </div>
+
+      </main>
+    </div>
+  </div>
+
+
+<script>
+Swal.fire({
+  icon: 'error',
+  title: 'Error',
+  text: "Error al generar PDF: The fecha field is required.",
+  confirmButtonColor: '#d33',
+  confirmButtonText: 'Cerrar'
+});
+</script>
+
+
+  
+</body>
+</html>

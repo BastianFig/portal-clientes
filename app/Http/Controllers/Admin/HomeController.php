@@ -32,7 +32,7 @@ class HomeController
             ->where('id', $id_rol_usuario)
             ->value('title');
 
-        if ($rol_usuario == "Admin") {
+        if ($rol_usuario == "Admin" || $rol_usuario == 'Fabrica') {
             $proyectos = Proyecto::paginate(5);
             //$p_activos = Proyecto::where('estado', '=', 'Activo')->count();
             $p_activos = Proyecto::whereIn('estado', ['Proyecto Caliente', 'Proyecto Interesante', 'Proyecto Potencial'])->count();

@@ -14,11 +14,13 @@
                                                 <h3>PROYECTOS</h3>
                                             </div>
                                         </div>
+                                        @can('proyecto_create')
                                         <div class="col-auto ms-auto">
                                             <a class="btn btn-success" href="{{ route('admin.proyectos.create') }}">
                                                 {{ trans('global.add') }} {{ trans('cruds.proyecto.title_singular') }}
                                             </a>
                                         </div>
+                                        @endcan
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table mb-0">

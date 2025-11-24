@@ -814,6 +814,7 @@
                             <input type="hidden" name="id_proyecto_id" id="id_proyecto_id" value="{{$proyecto->id}}">
                             <input type="hidden" name="id_fasefabricas" id="id_fasefabricas"
                                 value="{{$proyecto->id_fasefabricas}}">
+                                @can('parte1_fase_fabrica')
                             <div class="form-group">
                                 <label>Aprobación Curse</label>
                                 <select class="form-control {{ $errors->has('aprobacion_course') ? 'is-invalid' : '' }}"
@@ -831,7 +832,7 @@
                                 <span
                                     class="help-block">{{ trans('cruds.fasefabrica.fields.aprobacion_course_helper') }}</span>
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label>Etapa Fabril</label>
                                 <select class="form-control {{ $errors->has('fase') ? 'is-invalid' : '' }}" name="fase"
                                     id="fase">
@@ -849,7 +850,7 @@
                                 @endif
                                 <span
                                     class="help-block">{{ trans('cruds.fasefabrica.fields.aprobacion_course_helper') }}</span>
-                            </div>
+                            </div> -->
                             <div class="form-group">
                                 <label for="oc_proveedores">Orden de Compra Proveedores<br><small
                                         style="color:rgba(255, 0, 0, 0.562);"><strong>(Archivos Permitidos:
@@ -865,6 +866,8 @@
                                 <span
                                     class="help-block">{{ trans('cruds.fasefabrica.fields.oc_proveedores_helper') }}</span>
                             </div>
+                            @endcan
+                            @can('parte2_fase_fabrica')
                             <div class="form-group">
                                 <label>{{ trans('cruds.fasefabrica.fields.estado_produccion') }}</label>
                                 <select class="form-control {{ $errors->has('estado_produccion') ? 'is-invalid' : '' }}"
@@ -911,6 +914,7 @@
                                 <span
                                     class="help-block">{{ trans('cruds.fasefabrica.fields.galeria_estado_entrega_helper') }}</span>
                             </div>
+                            @endcan
                             <div class="form-group">
                                 <input class="form-control {{ $errors->has('estado') ? 'is-invalid' : '' }}"
                                     type="hidden" name="estado" id="estado"

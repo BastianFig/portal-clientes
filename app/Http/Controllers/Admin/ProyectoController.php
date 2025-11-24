@@ -39,12 +39,13 @@ use App\Models\UserAlert;
 use App\Mail\CambioDeFase;
 use App\Mail\ConfirmaHorario;
 use App\Mail\AvisoDiseno;
+use App\Mail\OcProveedoresCargado;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-
+use Carbon\Carbon;
 
 
 
@@ -531,311 +532,323 @@ class ProyectoController extends Controller
         return back()->with('success', 'Datos guardados correctamente');
     }
 
+
     public function storeFasecomercialproyecto(StoreFasecomercialproyectoRequest $request)
-    {
-        abort_if(Gate::denies('fasecomercialproyecto_create') && Gate::denies('fasecomercialproyecto_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $id_proyecto_aux = $request->id_proyecto_id;
-        $fasecontableaux = Proyecto::find($id_proyecto_aux)->fasecontable;
+{
+    abort_if(Gate::denies('fasecomercialproyecto_create') && Gate::denies('fasecomercialproyecto_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+    $id_proyecto_aux = $request->id_proyecto_id;
+    $fasecontableaux = Proyecto::find($id_proyecto_aux)->fasecontable;
 
-        $proyecto = Proyecto::find($id_proyecto_aux);
-        $proyecto->load('id_cliente', 'id_usuarios_clientes', 'sucursal', 'fasediseno', 'fasecomercial', 'fasecomercialproyecto', 'fasecontable', 'fasedespacho', 'fasefabrica', 'fasepostventa', 'carpetacliente');
+    $proyecto = Proyecto::find($id_proyecto_aux);
+    $proyecto->load('id_cliente', 'id_usuarios_clientes', 'sucursal', 'fasediseno', 'fasecomercial', 'fasecomercialproyecto', 'fasecontable', 'fasedespacho', 'fasefabrica', 'fasepostventa', 'carpetacliente');
 
-        $messages_aux = "Debe Completar la Fase Contable.";
+    $messages_aux = "Debe Completar la Fase Contable.";
 
-        if ($fasecontableaux) {
+    if ($fasecontableaux) {
 
-        } else {
-            return back()->withErrors($messages_aux);
+    } else {
+        return back()->withErrors($messages_aux);
+    }
+
+    $aux = $request->all();
+    //dd($request->all());
+    if (empty($request->input('id_fasecomercialproyectos'))) {
+
+        if ($request->has('orden')) {
+            $proyecto->orden = $request->input('orden');
+            $proyecto->save();
         }
 
-        $aux = $request->all();
-        //dd($request->all());
-        if (empty($request->input('id_fasecomercialproyectos'))) {
-
-            if ($request->has('orden')) {
-                $proyecto->orden = $request->input('orden');
-                $proyecto->save();
-            }
-
-            if ($request->input('nota_venta') != NULL && $request->fecha_despacho != NULL) {
-                $faseComercialproyecto = Fasecomercialproyecto::create($request->all());
-
-                if ($request->input('nota_venta', false)) {
-                    $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('nota_venta'))))->toMediaCollection('nota_venta');
-                }
-
-                /*if ($request->input('facturas', false)) {
-                    $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('facturas'))))->toMediaCollection('facturas');
-                }*/
-
-                foreach ($request->input('facturas', []) as $file) {
-                    $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('facturas');
-                }
-
-
-                if ($request->input('credito', false)) {
-                    $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('credito'))))->toMediaCollection('credito');
-                }
-
-                if ($media = $request->input('ck-media', false)) {
-                    Media::whereIn('id', $media)->update(['model_id' => $faseComercialproyecto->id]);
-                }
-                //dd($request);
-                if ($request->tipo_proyecto == "Sillas") {
-                    $faseComercialproyecto->estado = 'Completa';
-                    $faseComercialproyecto->save();
-                    $faseFabricacion = Fasefabrica::create($request->all());
-                    $faseFabricacion->estado = 'Completa';
-                    $faseFabricacion->save();
-
-                    DB::update('UPDATE proyectos SET fase = "Fase Despacho" WHERE id = ' . $request->id_proyecto_id);
-                    $txt = "La Fase de Acuerdo Comercial de tu proyecto ha terminado";
-                    $this->Alerta_modifica($request->id_proyecto_id, $txt);
-                    $proyecto = Proyecto::find($request->id_proyecto_id); // Suponiendo que el modelo de Proyecto se llama Proyecto
-                    $id_proyecto = $proyecto->id;
-                    if ($proyecto) {
-                        $userID = DB::table('proyecto_user')->where('proyecto_id', $request->id_proyecto_id)->first();
-                        $nombre_proyecto = $proyecto->nombre_proyecto;
-                        $fase_anterior = "Fase Comercial";
-                        $fase_actual = "Fase de Despacho";
-                        if ($userID) {
-                            $user = User::find($userID->user_id);
-                            $email = $user->email;
-                            $name = $user->name;
-                            DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
-                            DB::update('UPDATE proyectos SET id_fasefabricas = ' . $faseFabricacion->id . ' WHERE id = ' . $request->id_proyecto_id);
-                            if ($email) {
-                                Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto));
-                            }
-                        }
-                    }
-                } else {
-                    $faseComercialproyecto->estado = 'Completa';
-                    $faseComercialproyecto->save();
-                    DB::update('UPDATE proyectos SET fase = "Fase Fabricacion" WHERE id = ' . $request->id_proyecto_id);
-                    $txt = "La Fase de Acuerdo Comercial de tu proyecto ha terminado";
-                    $this->Alerta_modifica($request->id_proyecto_id, $txt);
-                    $proyecto = Proyecto::find($request->id_proyecto_id); // Suponiendo que el modelo de Proyecto se llama Proyecto
-                    $id_proyecto = $proyecto->id;
-                    if ($proyecto) {
-                        $userID = DB::table('proyecto_user')->where('proyecto_id', $request->id_proyecto_id)->first();
-                        $nombre_proyecto = $proyecto->nombre_proyecto;
-                        $fase_anterior = "Fase Comercial";
-                        $fase_actual = "Fase de Fabricación";
-                        if ($userID) {
-                            $user = User::find($userID->user_id);
-                            $email = $user->email;
-                            $name = $user->name;
-                            DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
-                            if ($email) {
-                                Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto));
-                            }
-                        }
-                    }
-                }
-            } elseif ($request->input('nota_venta') == NULL || $request->tipo_proyecto == NULL || $request->fecha_despacho == NULL) {
-                $faseComercialproyecto = Fasecomercialproyecto::create($request->all());
-
-                /* if ($request->input('facturas', false)) {
-                     $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('facturas'))))->toMediaCollection('facturas');
-                 }*/
-
-                foreach ($request->input('facturas', []) as $file) {
-                    $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('facturas');
-                }
-
-                if ($request->input('credito', false)) {
-                    $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('credito'))))->toMediaCollection('credito');
-                }
-
-                if ($media = $request->input('ck-media', false)) {
-                    Media::whereIn('id', $media)->update(['model_id' => $faseComercialproyecto->id]);
-                }
-
-                $faseComercialproyecto->estado = 'Activa';
-                $faseComercialproyecto->save();
-
-                DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
-
-                if ($request->input('nota_venta') == NULL && $request->tipo_proyecto == NULL) {
-                    $mensaje_aux = "Debe llenar los campos Documento Nota de Venta y Tipo de Proyecto para continuar a la siguiente fase.";
-                } elseif ($request->input('nota_venta') == NULL && $request->fecha_despacho == NULL) {
-                    $mensaje_aux = "Debe llenar los campos Documento Nota de Venta y Plazo de Entrega para continuar a la siguiente fase.";
-                } elseif ($request->tipo_proyecto == NULL && $request->fecha_despacho == NULL) {
-                    $mensaje_aux = "Debe llenar los campos Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
-                } elseif ($request->input('nota_venta') == NULL) {
-                    $mensaje_aux = "Debe llenar el campo Documento Nota de Venta para continuar a la siguiente fase.";
-                } elseif ($request->tipo_proyecto == NULL) {
-                    $mensaje_aux = "Debe llenar el campo Tipo de Proyecto para continuar a la siguiente fase.";
-                } elseif ($request->fecha_despacho == NULL) {
-                    $mensaje_aux = "Debe llenar el campo Fecha de Despacho para continuar a la siguiente fase.";
-                } else {
-                    $mensaje_aux = "Debe llenar los campos Documento Nota de Venta, Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
-                }
-
-
-                return back()->withErrors($mensaje_aux);
-            } else {
-
-
-                // $faseComercialproyecto->estado = 'Activa';
-                // $faseComercialproyecto->save();
-                // $txt = "Se ha modificado la Fase Comercial de tu proyecto";
-                // $this->Alerta_modifica($request->id_proyecto_id, $txt);
-                // DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
-            }
-
-        } else {    //CUANDO EXISTE, MODIFICA.
-
-            if ($request->has('orden')) {
-                $proyecto->orden = $request->input('orden');
-                $proyecto->save();
-            }
-            $faseComercialproyecto = Fasecomercialproyecto::find($request->input('id_fasecomercialproyectos'));
-            $faseComercialproyecto->update($request->all());
+        if ($request->input('nota_venta') != NULL && $request->fecha_despacho != NULL) {
+            $faseComercialproyecto = Fasecomercialproyecto::create($request->all());
 
             if ($request->input('nota_venta', false)) {
-                if (!$faseComercialproyecto->nota_venta || $request->input('nota_venta') !== $faseComercialproyecto->nota_venta->file_name) {
-                    if ($faseComercialproyecto->nota_venta) {
-                        $faseComercialproyecto->nota_venta->delete();
-                    }
-                    $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('nota_venta'))))->toMediaCollection('nota_venta');
-                }
-            } elseif ($faseComercialproyecto->nota_venta) {
-                $faseComercialproyecto->nota_venta->delete();
+                $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('nota_venta'))))->toMediaCollection('nota_venta');
             }
 
             /*if ($request->input('facturas', false)) {
-                if (!$faseComercialproyecto->facturas || $request->input('facturas') !== $faseComercialproyecto->facturas->file_name) {
-                    if ($faseComercialproyecto->facturas) {
-                        $faseComercialproyecto->facturas->delete();
-                    }
-                    $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('facturas'))))->toMediaCollection('facturas');
-                }
-            }elseif($faseComercialproyecto->facturas) {
-                $faseComercialproyecto->facturas->delete();
+                $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('facturas'))))->toMediaCollection('facturas');
             }*/
 
-
-            if (count($faseComercialproyecto->facturas) > 0) {
-                foreach ($faseComercialproyecto->facturas as $media) {
-                    if (!in_array($media->file_name, $request->input('facturas', []))) {
-                        $media->delete();
-                    }
-                }
-            }
-            $media = $faseComercialproyecto->facturas->pluck('file_name')->toArray();
             foreach ($request->input('facturas', []) as $file) {
-                if (count($media) === 0 || !in_array($file, $media)) {
-                    $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('facturas');
-                }
+                $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('facturas');
             }
-
-
-
 
 
             if ($request->input('credito', false)) {
-                if (!$faseComercialproyecto->credito || $request->input('credito') !== $faseComercialproyecto->credito->file_name) {
-                    if ($faseComercialproyecto->credito) {
-                        $faseComercialproyecto->credito->delete();
-                    }
-                    $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('credito'))))->toMediaCollection('credito');
-                }
-            } elseif ($faseComercialproyecto->credito) {
-                $faseComercialproyecto->credito->delete();
+                $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('credito'))))->toMediaCollection('credito');
             }
 
-            if ($request->input('nota_venta') != NULL && $request->fecha_despacho != NULL && $request->fecha_despacho != NULL) {
-                if ($request->tipo_proyecto == "Sillas") {
-                    $faseComercialproyecto->estado = 'Completa';
-                    $faseComercialproyecto->save();
-                    $faseFabricacion = Fasefabrica::create($request->all());
-                    $faseFabricacion->estado = 'Completa';
-                    $faseFabricacion->save();
-
-                    DB::update('UPDATE proyectos SET fase = "Fase Despacho" WHERE id = ' . $request->id_proyecto_id);
-                    $txt = "La Fase de Acuerdo Comercial de tu proyecto ha terminado";
-                    $this->Alerta_modifica($request->id_proyecto_id, $txt);
-                    $proyecto = Proyecto::find($request->id_proyecto_id); // Suponiendo que el modelo de Proyecto se llama Proyecto
-                    $id_proyecto = $proyecto->id;
-                    if ($proyecto) {
-                        $userID = DB::table('proyecto_user')->where('proyecto_id', $request->id_proyecto_id)->first();
-                        $nombre_proyecto = $proyecto->nombre_proyecto;
-                        $fase_anterior = "Fase Comercial";
-                        $fase_actual = "Fase de Despacho";
-                        if ($userID) {
-                            $user = User::find($userID->user_id);
-                            $email = $user->email;
-                            $name = $user->name;
-                            DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
-                            DB::update('UPDATE proyectos SET id_fasefabricas = ' . $faseFabricacion->id . ' WHERE id = ' . $request->id_proyecto_id);
-                            if ($email) {
-                                Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto));
-                            }
-                        }
-                    }
-                } else {
-                    $faseComercialproyecto->estado = 'Completa';
-                    $faseComercialproyecto->save();
-                    DB::update('UPDATE proyectos SET fase = "Fase Fabricacion" WHERE id = ' . $request->id_proyecto_id);
-                    $txt = "La Fase de Acuerdo Comercial de tu proyecto ha terminado";
-                    $this->Alerta_modifica($request->id_proyecto_id, $txt);
-                    $proyecto = Proyecto::find($request->id_proyecto_id); // Suponiendo que el modelo de Proyecto se llama Proyecto
-                    $id_proyecto = $proyecto->id;
-                    if ($proyecto) {
-                        $userID = DB::table('proyecto_user')->where('proyecto_id', $request->id_proyecto_id)->first();
-                        $nombre_proyecto = $proyecto->nombre_proyecto;
-                        $fase_anterior = "Fase Comercial";
-                        $fase_actual = "Fase de Fabricación";
-                        if ($userID) {
-                            $user = User::find($userID->user_id);
-                            $email = $user->email;
-                            $name = $user->name;
-                            DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
-                            if ($email) {
-                                Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto));
-                            }
-                        }
-                    }
-                }
-            } elseif ($request->input('nota_venta') == NULL || $request->tipo_proyecto == NULL || $request->fecha_despacho == NULL) {
-                $faseComercialproyecto->estado = 'Activa';
+            if ($media = $request->input('ck-media', false)) {
+                Media::whereIn('id', $media)->update(['model_id' => $faseComercialproyecto->id]);
+            }
+            
+            // AGREGAR: Actualizar fecha en Ohffice cuando se crea
+            if ($proyecto->orden && $request->fecha_despacho) {
+                $this->actualizarFechaEntregaOhffice($proyecto->orden, $request->fecha_despacho);
+            }
+            
+            //dd($request);
+            if ($request->tipo_proyecto == "Sillas") {
+                $faseComercialproyecto->estado = 'Completa';
                 $faseComercialproyecto->save();
+                $faseFabricacion = Fasefabrica::create($request->all());
+                $faseFabricacion->estado = 'Completa';
+                $faseFabricacion->save();
 
-                DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
-
-                if ($request->input('nota_venta') == NULL && $request->tipo_proyecto == NULL) {
-                    $mensaje_aux = "Debe llenar los campos Nota de Venta y Tipo de Proyecto para continuar a la siguiente fase.";
-                } elseif ($request->input('nota_venta') == NULL && $request->fecha_despacho == NULL) {
-                    $mensaje_aux = "Debe llenar los campos Nota de Venta y Fecha de Despacho para continuar a la siguiente fase.";
-                } elseif ($request->tipo_proyecto == NULL && $request->fecha_despacho == NULL) {
-                    $mensaje_aux = "Debe llenar los campos Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
-                } elseif ($request->input('nota_venta') == NULL) {
-                    $mensaje_aux = "Debe llenar el campo Nota de Venta para continuar a la siguiente fase.";
-                } elseif ($request->tipo_proyecto == NULL) {
-                    $mensaje_aux = "Debe llenar el campo Tipo de Proyecto para continuar a la siguiente fase.";
-                } elseif ($request->fecha_despacho == NULL) {
-                    $mensaje_aux = "Debe llenar el campo Fecha de Despacho para continuar a la siguiente fase.";
-                } else {
-                    $mensaje_aux = "Debe llenar los campos Nota de Venta, Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
+                DB::update('UPDATE proyectos SET fase = "Fase Despacho" WHERE id = ' . $request->id_proyecto_id);
+                $txt = "La Fase de Acuerdo Comercial de tu proyecto ha terminado";
+                $this->Alerta_modifica($request->id_proyecto_id, $txt);
+                $proyecto = Proyecto::find($request->id_proyecto_id); // Suponiendo que el modelo de Proyecto se llama Proyecto
+                $id_proyecto = $proyecto->id;
+                if ($proyecto) {
+                    $userID = DB::table('proyecto_user')->where('proyecto_id', $request->id_proyecto_id)->first();
+                    $nombre_proyecto = $proyecto->nombre_proyecto;
+                    $fase_anterior = "Fase Comercial";
+                    $fase_actual = "Fase de Despacho";
+                    if ($userID) {
+                        $user = User::find($userID->user_id);
+                        $email = $user->email;
+                        $name = $user->name;
+                        DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
+                        DB::update('UPDATE proyectos SET id_fasefabricas = ' . $faseFabricacion->id . ' WHERE id = ' . $request->id_proyecto_id);
+                        if ($email) {
+                            Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto));
+                        }
+                    }
                 }
-
-                return back()->withErrors($mensaje_aux);
             } else {
-                // $faseComercialproyecto->estado = 'Activa';
-                // $faseComercialproyecto->save();
-                // $txt = "Se ha modificado la Fase Comercial de tu proyecto";
-                // $this->Alerta_modifica($request->id_proyecto_id, $txt);
-                // DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
+                $faseComercialproyecto->estado = 'Completa';
+                $faseComercialproyecto->save();
+                DB::update('UPDATE proyectos SET fase = "Fase Fabricacion" WHERE id = ' . $request->id_proyecto_id);
+                $txt = "La Fase de Acuerdo Comercial de tu proyecto ha terminado";
+                $this->Alerta_modifica($request->id_proyecto_id, $txt);
+                $proyecto = Proyecto::find($request->id_proyecto_id); // Suponiendo que el modelo de Proyecto se llama Proyecto
+                $id_proyecto = $proyecto->id;
+                if ($proyecto) {
+                    $userID = DB::table('proyecto_user')->where('proyecto_id', $request->id_proyecto_id)->first();
+                    $nombre_proyecto = $proyecto->nombre_proyecto;
+                    $fase_anterior = "Fase Comercial";
+                    $fase_actual = "Fase de Fabricación";
+                    if ($userID) {
+                        $user = User::find($userID->user_id);
+                        $email = $user->email;
+                        $name = $user->name;
+                        DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
+                        if ($email) {
+                            Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto));
+                        }
+                    }
+                }
+            }
+        } elseif ($request->input('nota_venta') == NULL || $request->tipo_proyecto == NULL || $request->fecha_despacho == NULL) {
+            $faseComercialproyecto = Fasecomercialproyecto::create($request->all());
+
+            /* if ($request->input('facturas', false)) {
+                 $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('facturas'))))->toMediaCollection('facturas');
+             }*/
+
+            foreach ($request->input('facturas', []) as $file) {
+                $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('facturas');
+            }
+
+            if ($request->input('credito', false)) {
+                $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('credito'))))->toMediaCollection('credito');
+            }
+
+            if ($media = $request->input('ck-media', false)) {
+                Media::whereIn('id', $media)->update(['model_id' => $faseComercialproyecto->id]);
+            }
+
+            $faseComercialproyecto->estado = 'Activa';
+            $faseComercialproyecto->save();
+
+            DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
+
+            if ($request->input('nota_venta') == NULL && $request->tipo_proyecto == NULL) {
+                $mensaje_aux = "Debe llenar los campos Documento Nota de Venta y Tipo de Proyecto para continuar a la siguiente fase.";
+            } elseif ($request->input('nota_venta') == NULL && $request->fecha_despacho == NULL) {
+                $mensaje_aux = "Debe llenar los campos Documento Nota de Venta y Plazo de Entrega para continuar a la siguiente fase.";
+            } elseif ($request->tipo_proyecto == NULL && $request->fecha_despacho == NULL) {
+                $mensaje_aux = "Debe llenar los campos Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
+            } elseif ($request->input('nota_venta') == NULL) {
+                $mensaje_aux = "Debe llenar el campo Documento Nota de Venta para continuar a la siguiente fase.";
+            } elseif ($request->tipo_proyecto == NULL) {
+                $mensaje_aux = "Debe llenar el campo Tipo de Proyecto para continuar a la siguiente fase.";
+            } elseif ($request->fecha_despacho == NULL) {
+                $mensaje_aux = "Debe llenar el campo Fecha de Despacho para continuar a la siguiente fase.";
+            } else {
+                $mensaje_aux = "Debe llenar los campos Documento Nota de Venta, Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
+            }
+
+
+            return back()->withErrors($mensaje_aux);
+        } else {
+
+
+            // $faseComercialproyecto->estado = 'Activa';
+            // $faseComercialproyecto->save();
+            // $txt = "Se ha modificado la Fase Comercial de tu proyecto";
+            // $this->Alerta_modifica($request->id_proyecto_id, $txt);
+            // DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
+        }
+
+    } else {    //CUANDO EXISTE, MODIFICA.
+
+        if ($request->has('orden')) {
+            $proyecto->orden = $request->input('orden');
+            $proyecto->save();
+        }
+        $faseComercialproyecto = Fasecomercialproyecto::find($request->input('id_fasecomercialproyectos'));
+        $faseComercialproyecto->update($request->all());
+
+        if ($request->input('nota_venta', false)) {
+            if (!$faseComercialproyecto->nota_venta || $request->input('nota_venta') !== $faseComercialproyecto->nota_venta->file_name) {
+                if ($faseComercialproyecto->nota_venta) {
+                    $faseComercialproyecto->nota_venta->delete();
+                }
+                $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('nota_venta'))))->toMediaCollection('nota_venta');
+            }
+        } elseif ($faseComercialproyecto->nota_venta) {
+            $faseComercialproyecto->nota_venta->delete();
+        }
+
+        /*if ($request->input('facturas', false)) {
+            if (!$faseComercialproyecto->facturas || $request->input('facturas') !== $faseComercialproyecto->facturas->file_name) {
+                if ($faseComercialproyecto->facturas) {
+                    $faseComercialproyecto->facturas->delete();
+                }
+                $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('facturas'))))->toMediaCollection('facturas');
+            }
+        }elseif($faseComercialproyecto->facturas) {
+            $faseComercialproyecto->facturas->delete();
+        }*/
+
+
+        if (count($faseComercialproyecto->facturas) > 0) {
+            foreach ($faseComercialproyecto->facturas as $media) {
+                if (!in_array($media->file_name, $request->input('facturas', []))) {
+                    $media->delete();
+                }
+            }
+        }
+        $media = $faseComercialproyecto->facturas->pluck('file_name')->toArray();
+        foreach ($request->input('facturas', []) as $file) {
+            if (count($media) === 0 || !in_array($file, $media)) {
+                $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('facturas');
             }
         }
 
 
-        return back()->with('success', 'Datos guardados correctamente');
+
+
+
+        if ($request->input('credito', false)) {
+            if (!$faseComercialproyecto->credito || $request->input('credito') !== $faseComercialproyecto->credito->file_name) {
+                if ($faseComercialproyecto->credito) {
+                    $faseComercialproyecto->credito->delete();
+                }
+                $faseComercialproyecto->addMedia(storage_path('tmp/uploads/' . basename($request->input('credito'))))->toMediaCollection('credito');
+            }
+        } elseif ($faseComercialproyecto->credito) {
+            $faseComercialproyecto->credito->delete();
+        }
+
+        // AGREGAR: Actualizar fecha en Ohffice cuando se modifica
+        if ($proyecto->orden && $request->fecha_despacho) {
+            $this->actualizarFechaEntregaOhffice($proyecto->orden, $request->fecha_despacho);
+        }
+
+        if ($request->input('nota_venta') != NULL && $request->fecha_despacho != NULL && $request->fecha_despacho != NULL) {
+            if ($request->tipo_proyecto == "Sillas") {
+                $faseComercialproyecto->estado = 'Completa';
+                $faseComercialproyecto->save();
+                $faseFabricacion = Fasefabrica::create($request->all());
+                $faseFabricacion->estado = 'Completa';
+                $faseFabricacion->save();
+
+                DB::update('UPDATE proyectos SET fase = "Fase Despacho" WHERE id = ' . $request->id_proyecto_id);
+                $txt = "La Fase de Acuerdo Comercial de tu proyecto ha terminado";
+                $this->Alerta_modifica($request->id_proyecto_id, $txt);
+                $proyecto = Proyecto::find($request->id_proyecto_id); // Suponiendo que el modelo de Proyecto se llama Proyecto
+                $id_proyecto = $proyecto->id;
+                if ($proyecto) {
+                    $userID = DB::table('proyecto_user')->where('proyecto_id', $request->id_proyecto_id)->first();
+                    $nombre_proyecto = $proyecto->nombre_proyecto;
+                    $fase_anterior = "Fase Comercial";
+                    $fase_actual = "Fase de Despacho";
+                    if ($userID) {
+                        $user = User::find($userID->user_id);
+                        $email = $user->email;
+                        $name = $user->name;
+                        DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
+                        DB::update('UPDATE proyectos SET id_fasefabricas = ' . $faseFabricacion->id . ' WHERE id = ' . $request->id_proyecto_id);
+                        if ($email) {
+                            Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto));
+                        }
+                    }
+                }
+            } else {
+                $faseComercialproyecto->estado = 'Completa';
+                $faseComercialproyecto->save();
+                DB::update('UPDATE proyectos SET fase = "Fase Fabricacion" WHERE id = ' . $request->id_proyecto_id);
+                $txt = "La Fase de Acuerdo Comercial de tu proyecto ha terminado";
+                $this->Alerta_modifica($request->id_proyecto_id, $txt);
+                $proyecto = Proyecto::find($request->id_proyecto_id); // Suponiendo que el modelo de Proyecto se llama Proyecto
+                $id_proyecto = $proyecto->id;
+                if ($proyecto) {
+                    $userID = DB::table('proyecto_user')->where('proyecto_id', $request->id_proyecto_id)->first();
+                    $nombre_proyecto = $proyecto->nombre_proyecto;
+                    $fase_anterior = "Fase Comercial";
+                    $fase_actual = "Fase de Fabricación";
+                    if ($userID) {
+                        $user = User::find($userID->user_id);
+                        $email = $user->email;
+                        $name = $user->name;
+                        DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
+                        if ($email) {
+                            Mail::to($email)->send(new CambioDeFase($name, $nombre_proyecto, $fase_anterior, $fase_actual, $id_proyecto));
+                        }
+                    }
+                }
+            }
+        } elseif ($request->input('nota_venta') == NULL || $request->tipo_proyecto == NULL || $request->fecha_despacho == NULL) {
+            $faseComercialproyecto->estado = 'Activa';
+            $faseComercialproyecto->save();
+
+            DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
+
+            if ($request->input('nota_venta') == NULL && $request->tipo_proyecto == NULL) {
+                $mensaje_aux = "Debe llenar los campos Nota de Venta y Tipo de Proyecto para continuar a la siguiente fase.";
+            } elseif ($request->input('nota_venta') == NULL && $request->fecha_despacho == NULL) {
+                $mensaje_aux = "Debe llenar los campos Nota de Venta y Fecha de Despacho para continuar a la siguiente fase.";
+            } elseif ($request->tipo_proyecto == NULL && $request->fecha_despacho == NULL) {
+                $mensaje_aux = "Debe llenar los campos Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
+            } elseif ($request->input('nota_venta') == NULL) {
+                $mensaje_aux = "Debe llenar el campo Nota de Venta para continuar a la siguiente fase.";
+            } elseif ($request->tipo_proyecto == NULL) {
+                $mensaje_aux = "Debe llenar el campo Tipo de Proyecto para continuar a la siguiente fase.";
+            } elseif ($request->fecha_despacho == NULL) {
+                $mensaje_aux = "Debe llenar el campo Fecha de Despacho para continuar a la siguiente fase.";
+            } else {
+                $mensaje_aux = "Debe llenar los campos Nota de Venta, Tipo de Proyecto y Fecha de Despacho para continuar a la siguiente fase.";
+            }
+
+            return back()->withErrors($mensaje_aux);
+        } else {
+            // $faseComercialproyecto->estado = 'Activa';
+            // $faseComercialproyecto->save();
+            // $txt = "Se ha modificado la Fase Comercial de tu proyecto";
+            // $this->Alerta_modifica($request->id_proyecto_id, $txt);
+            // DB::update('UPDATE proyectos SET id_fasecomercialproyectos = ' . $faseComercialproyecto->id . ' WHERE id = ' . $request->id_proyecto_id);
+        }
     }
 
-    public function storeFasefabricacion(StoreFasefabricaRequest $request)
+
+    return back()->with('success', 'Datos guardados correctamente');
+}
+
+    /*public function storeFasefabricacion(StoreFasefabricaRequest $request)
     {
         abort_if(Gate::denies('fasefabrica_create') && Gate::denies('fasefabrica_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $id_proyecto_aux = $request->id_proyecto_id;
@@ -861,6 +874,10 @@ class ProyectoController extends Controller
                 $faseFabricacion = Fasefabrica::create($request->all());
                 foreach ($request->input('oc_proveedores', []) as $file) {
                     $faseFabricacion->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('oc_proveedores');
+                }
+                // Enviar correo a jvergara@probit.cl si se suben archivos oc_proveedores
+                if (count($request->input('oc_proveedores', [])) > 0) {
+                    Mail::to('jvergara@probit.cl')->send(new OcProveedoresCargado($proyecto, $faseFabricacion));
                 }
 
                 foreach ($request->input('galeria_estado_entrega', []) as $file) {
@@ -899,6 +916,10 @@ class ProyectoController extends Controller
                 $faseFabricacion = Fasefabrica::create($request->all());
                 foreach ($request->input('oc_proveedores', []) as $file) {
                     $faseFabricacion->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('oc_proveedores');
+                }
+                // Enviar correo a jvergara@probit.cl si se suben archivos oc_proveedores
+                if (count($request->input('oc_proveedores', [])) > 0) {
+                    Mail::to('jvergara@probit.cl')->send(new OcProveedoresCargado($proyecto, $faseFabricacion));
                 }
 
                 foreach ($request->input('galeria_estado_entrega', []) as $file) {
@@ -985,7 +1006,180 @@ class ProyectoController extends Controller
 
 
         return back()->with('success', 'Datos guardados correctamente');
+    }*/
+
+public function storeFasefabricacion(StoreFasefabricaRequest $request)
+{
+    abort_if(Gate::denies('fasefabrica_create') && Gate::denies('fasefabrica_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+    $id_proyecto_aux = $request->id_proyecto_id;
+    $fasecomercialproyectolaux = Proyecto::find($id_proyecto_aux)->fasecomercialproyecto;
+
+    $proyecto = Proyecto::find($id_proyecto_aux);
+    $proyecto->load(
+        'id_cliente',
+        'id_usuarios_clientes',
+        'sucursal',
+        'fasediseno',
+        'fasecomercial',
+        'fasecomercialproyecto',
+        'fasecontable',
+        'fasedespacho',
+        'fasefabrica',
+        'fasepostventa',
+        'carpetacliente'
+    );
+
+    $messages_aux = "Debe Completar la Fase de Acuerdo Comercial.";
+
+    if (!$fasecomercialproyectolaux || $fasecomercialproyectolaux->estado != 'Completa') {
+        return back()->withErrors($messages_aux);
     }
+
+    if (empty($request->input('id_fasefabricas'))) {
+        // CREACIÓN NUEVA
+        $faseFabricacion = Fasefabrica::create($request->all());
+
+        foreach ($request->input('oc_proveedores', []) as $file) {
+            $faseFabricacion->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('oc_proveedores');
+        }
+
+        // Enviar correo si se subieron archivos oc_proveedores
+        if (count($request->input('oc_proveedores', [])) > 0) {
+            Mail::to('ricardo.chavez@ohffice.cl')->send(new OcProveedoresCargado($proyecto, $faseFabricacion));
+        }
+
+        foreach ($request->input('galeria_estado_entrega', []) as $file) {
+            $faseFabricacion->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('galeria_estado_entrega');
+        }
+
+        if ($media = $request->input('ck-media', false)) {
+            Media::whereIn('id', $media)->update(['model_id' => $faseFabricacion->id]);
+        }
+
+        if (
+            $request->fase == "Limpieza/Embalaje" &&
+            $request->aprobacion_course &&
+            $request->fecha_entrega &&
+            $request->input('oc_proveedores') &&
+            $request->input('galeria_estado_entrega')
+        ) {
+            $faseFabricacion->estado = 'Completa';
+            $faseFabricacion->save();
+            DB::update('UPDATE proyectos SET fase = "Fase Despacho" WHERE id = ?', [$request->id_proyecto_id]);
+            $txt = "La Fase de Fabricación de tu proyecto ha terminado";
+        } elseif (
+            !$request->fase && 
+            !$request->aprobacion_course &&
+            !$request->fecha_entrega && 
+            !$request->input('oc_proveedores') && 
+            !$request->input('galeria_estado_entrega')
+        ) {
+            return back()->withErrors("Debe llenar los campos para continuar a la siguiente fase.");
+        } else {
+            $faseFabricacion->estado = 'Activa';
+            $faseFabricacion->save();
+            $txt = "Se ha modificado la Fase de Fabricación de tu proyecto";
+        }
+
+        $this->Alerta_modifica($request->id_proyecto_id, $txt);
+        DB::update('UPDATE proyectos SET id_fasefabricas = ? WHERE id = ?', [$faseFabricacion->id, $request->id_proyecto_id]);
+
+        // Enviar correo de cambio de fase si está completa
+        if ($faseFabricacion->estado === 'Completa') {
+            $userID = DB::table('proyecto_user')->where('proyecto_id', $request->id_proyecto_id)->first();
+            if ($userID) {
+                $user = User::find($userID->user_id);
+                if ($user && $user->email) {
+                    Mail::to($user->email)->send(new CambioDeFase($user->name, $proyecto->nombre_proyecto, "Fase de Fabricación", "Fase de Despacho", $proyecto->id));
+                }
+            }
+        }
+    } else {
+        // ACTUALIZACIÓN
+        $faseFabricacion = Fasefabrica::find($request->input('id_fasefabricas'));
+        $faseFabricacion->update($request->all());
+
+        // OC Proveedores
+        if (count($faseFabricacion->oc_proveedores) > 0) {
+            foreach ($faseFabricacion->oc_proveedores as $media) {
+                if (!in_array($media->file_name, $request->input('oc_proveedores', []))) {
+                    $media->delete();
+                }
+            }
+        }
+        $media = $faseFabricacion->oc_proveedores->pluck('file_name')->toArray();
+        foreach ($request->input('oc_proveedores', []) as $file) {
+            if (count($media) === 0 || !in_array($file, $media)) {
+                $faseFabricacion->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('oc_proveedores');
+            }
+        }
+
+        // Validar si antes no había archivos y ahora sí => enviar correo
+        $archivosAntes = $faseFabricacion->getMedia('oc_proveedores')->count();
+        $archivosAhora = count($request->input('oc_proveedores', []));
+
+        if ($archivosAntes === 0 && $archivosAhora > 0) {
+            Mail::to('ricardo.chavez@ohffice.cl')->send(new OcProveedoresCargado($proyecto, $faseFabricacion));
+        }
+
+
+        // Galería estado entrega
+        if (count($faseFabricacion->galeria_estado_entrega) > 0) {
+            foreach ($faseFabricacion->galeria_estado_entrega as $media) {
+                if (!in_array($media->file_name, $request->input('galeria_estado_entrega', []))) {
+                    $media->delete();
+                }
+            }
+        }
+        $media = $faseFabricacion->galeria_estado_entrega->pluck('file_name')->toArray();
+        foreach ($request->input('galeria_estado_entrega', []) as $file) {
+            if (count($media) === 0 || !in_array($file, $media)) {
+                $faseFabricacion->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('galeria_estado_entrega');
+            }
+        }
+
+        // Evaluar completitud
+        if (
+            $request->fase && 
+            $request->aprobacion_course &&
+            $request->input('oc_proveedores') && 
+            $request->input('galeria_estado_entrega')
+        ) {
+            $faseFabricacion->estado = 'Completa';
+            $faseFabricacion->save();
+            DB::update('UPDATE proyectos SET fase = "Fase Despacho" WHERE id = ?', [$request->id_proyecto_id]);
+            $txt = "La Fase de Fabricación de tu proyecto ha terminado";
+
+            $this->Alerta_modifica($request->id_proyecto_id, $txt);
+            DB::update('UPDATE proyectos SET id_fasefabricas = ? WHERE id = ?', [$faseFabricacion->id, $request->id_proyecto_id]);
+
+            $userID = DB::table('proyecto_user')->where('proyecto_id', $request->id_proyecto_id)->first();
+            if ($userID) {
+                $user = User::find($userID->user_id);
+                if ($user && $user->email) {
+                    Mail::to($user->email)->send(new CambioDeFase($user->name, $proyecto->nombre_proyecto, "Fase de Fabricación", "Fase de Despacho", $proyecto->id));
+                }
+            }
+        } elseif (
+            !$request->fase && 
+            !$request->aprobacion_course &&
+            !$request->input('oc_proveedores') && 
+            !$request->input('galeria_estado_entrega')
+        ) {
+            return back()->withErrors("Debe llenar los campos para continuar a la siguiente fase.");
+        } else {
+            $faseFabricacion->estado = 'Activa';
+            $faseFabricacion->save();
+            $txt = "Se ha modificado la Fase de Fabricación de tu proyecto";
+            $this->Alerta_modifica($request->id_proyecto_id, $txt);
+            DB::update('UPDATE proyectos SET id_fasefabricas = ? WHERE id = ?', [$faseFabricacion->id, $request->id_proyecto_id]);
+        }
+    }
+
+    return back()->with('success', 'Datos guardados correctamente');
+}
+
 
     public function storeFasedespachos(StoreFasedespachoRequest $request)
     {
@@ -1400,6 +1594,14 @@ class ProyectoController extends Controller
             ->where('role_user.user_id', $userId)
             ->where('roles.title', 'Admin')
             ->exists();
+
+        $role = \DB::table('role_user')
+            ->join('roles', 'role_user.role_id', '=', 'roles.id')
+            ->where('role_user.user_id', $userId)
+            ->select('roles.title')
+            ->first();
+        
+
         if ($request->ajax()) {
 
             error_log('Valor de la columna fase recibido desde la solicitud: ' . $request->input('columns')[12]['search']['value']);
@@ -1416,14 +1618,25 @@ class ProyectoController extends Controller
                 //     ->select(sprintf('%s.*', (new Proyecto)->table));
                 // $query->orderBy('created_at', 'desc');
 
-                $query = Proyecto::with(['id_cliente', 'id_usuarios_clientes', 'sucursal'])
-                    ->where(function ($query) {
-                        $query->where('id_vendedor', auth()->id())
-                            ->orWhere('disenador', auth()->id());
-                    })
-                    ->select(sprintf('%s.*', (new Proyecto)->table));
+                if ($role) {
+                    error_log('El usuario tiene el rol: ' . $role->title);
+                    if ($role->title === 'Fabrica') {
+                        $query = Proyecto::with(['id_cliente', 'id_usuarios_clientes', 'sucursal'])
+                            ->select(sprintf('%s.*', (new Proyecto)->table));
+                        $query->orderBy('created_at', 'desc');
+                        $table = Datatables::of($query);
+                    }else{
+                        $query = Proyecto::with(['id_cliente', 'id_usuarios_clientes', 'sucursal'])
+                        ->where(function ($query) {
+                            $query->where('id_vendedor', auth()->id())
+                                ->orWhere('disenador', auth()->id());
+                        })
+                        ->select(sprintf('%s.*', (new Proyecto)->table));
+    
+                        $table = Datatables::of($query);
+                    }
+                }
 
-                $table = Datatables::of($query);
             }
 
 
@@ -1881,5 +2094,85 @@ class ProyectoController extends Controller
         }
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+
+
+
+ 
+
+    private function actualizarFechaEntregaOhffice($orden, $fechaDespacho)
+    {
+        try {
+            // Verificar que existan los datos necesarios
+            if (empty($orden) || empty($fechaDespacho)) {
+                \Log::warning('No se puede actualizar Ohffice: orden o fecha vacía', [
+                    'orden' => $orden,
+                    'fecha_despacho' => $fechaDespacho
+                ]);
+                return false;
+            }
+    
+            try {
+                $fechaFormateada = Carbon::createFromFormat(config('panel.date_format', 'd/m/Y'), $fechaDespacho)->format('Y-m-d');
+            } catch (\Exception $e) {
+                $fechaFormateada = Carbon::parse($fechaDespacho)->format('Y-m-d');
+            }
+    
+            // Separar múltiples órdenes por coma y espacio
+            $ordenes = array_map('trim', explode(',', $orden));
+            
+            $totalActualizados = 0;
+            $ordenesActualizadas = [];
+            $ordenesNoEncontradas = [];
+    
+            foreach ($ordenes as $ordenIndividual) {
+                if (empty($ordenIndividual)) {
+                    continue;
+                }
+    
+                $resultado = DB::connection('ohffice')
+                    ->table('CalProyectos')
+                    ->where('c_nventa', $ordenIndividual)
+                    ->update([
+                        'c_fechaEntrega' => $fechaFormateada,
+                        'c_fecha_modificada' => now()
+                    ]);
+    
+                if ($resultado > 0) {
+                    $totalActualizados += $resultado;
+                    $ordenesActualizadas[] = $ordenIndividual;
+                } else {
+                    $ordenesNoEncontradas[] = $ordenIndividual;
+                }
+            }
+    
+            // Log de resultados
+            if ($totalActualizados > 0) {
+                \Log::info('Fecha de entrega actualizada en Ohffice', [
+                    'ordenes_procesadas' => count($ordenes),
+                    'ordenes_actualizadas' => $ordenesActualizadas,
+                    'fecha_entrega' => $fechaFormateada,
+                    'registros_actualizados' => $totalActualizados
+                ]);
+            }
+    
+            if (count($ordenesNoEncontradas) > 0) {
+                \Log::warning('Algunas órdenes no se encontraron en Ohffice', [
+                    'ordenes_no_encontradas' => $ordenesNoEncontradas
+                ]);
+            }
+    
+            return $totalActualizados > 0;
+    
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar fecha en Ohffice', [
+                'orden' => $orden,
+                'fecha_original' => $fechaDespacho,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return false;
+        }
     }
 }

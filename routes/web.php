@@ -103,6 +103,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('fasefabricas/destroy', 'FasefabricaController@massDestroy')->name('fasefabricas.massDestroy');
     Route::post('fasefabricas/media', 'FasefabricaController@storeMedia')->name('fasefabricas.storeMedia');
     Route::post('fasefabricas/ckmedia', 'FasefabricaController@storeCKEditorImages')->name('fasefabricas.storeCKEditorImages');
+    Route::post('fasefabricas/update-estado-produccion', 'FasefabricaController@updateEstadoProduccion')->name('fasefabricas.updateEstadoProduccion');
     Route::resource('fasefabricas', 'FasefabricaController');
 
     // Fasecomercialproyecto

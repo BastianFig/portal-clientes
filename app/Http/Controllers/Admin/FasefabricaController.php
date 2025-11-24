@@ -20,6 +20,17 @@ class FasefabricaController extends Controller
 {
     use MediaUploadingTrait;
 
+    public function updateEstadoProduccion(Request $request)
+    {
+        abort_if(!auth()->user()->can('fasefabrica_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $fase = Fasefabrica::findOrFail($request->id);
+        $fase->estado_produccion = $request->estado_produccion;
+        $fase->save();
+
+        return response()->json(['success' => true]);
+    }
+
     public function index(Request $request)
     {
         abort_if(Gate::denies('fasefabrica_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -66,8 +77,11 @@ class FasefabricaController extends Controller
                 return implode(', ', $links);
             });
             $table->editColumn('estado_produccion', function ($row) {
-                return $row->estado_produccion ? Fasefabrica::ESTADO_PRODUCCION_SELECT[$row->estado_produccion] : '';
+                return isset(Fasefabrica::ESTADO_PRODUCCION_SELECT[$row->estado_produccion])
+                    ? Fasefabrica::ESTADO_PRODUCCION_SELECT[$row->estado_produccion]
+                    : $row->estado_produccion;
             });
+            
 
             $table->editColumn('galeria_estado_entrega', function ($row) {
                 if (!$row->galeria_estado_entrega) {

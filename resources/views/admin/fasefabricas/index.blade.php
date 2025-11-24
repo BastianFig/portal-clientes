@@ -21,8 +21,8 @@
                     <th width="10">
                         {{ trans('cruds.fasefabrica.fields.id') }}
                     </th>
-                    <th>
-                        Acciones
+                    <th width="10">
+
                     </th>
                     <th>
                         Curse
@@ -56,84 +56,98 @@
 @endsection
 @section('scripts')
 @parent
+<!-- En tu layout, probablemente en layouts/admin.blade.php -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 <script>
-    $(function () {
-   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-/* @can('fasefabrica_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
-   let deleteButton = {
-    text: deleteButtonTrans,
-    url: "{{ route('admin.fasefabricas.massDestroy') }}",
-    className: 'btn-danger',
-    action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).data(), function (entry) {
-          return entry.id
-      });
+$(function () {
+    let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons);
 
-      if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+    let dtOverrideGlobals = {
+        buttons: dtButtons,
+        processing: true,
+        serverSide: true,
+        retrieve: true,
+        aaSorting: [], // orden por ID descendente
+        ajax: "{{ route('admin.fasefabricas.index') }}",
+        columns: [
+            { data: 'placeholder', name: 'ID' }, // columna 0
+            { 
+                data: 'actions',
+                name: 'actions',
+                orderable: false,
+                searchable: false,
+                render: function (data, type, full, meta) {
+                    if (type === 'display') {
+                        var id = full['id'];
+                        return '<a href="/admin/fasefabricas/' + id + '/edit" class="btn btn-primary btn-sm">Ver</a>';
+                    }
+                    return data;
+                }
+            },
+            { data: 'aprobacion_course', name: 'aprobacion_course' },
+            { data: 'oc_proveedores', name: 'oc_proveedores', orderable: false, searchable: false },
+            {
+                data: 'estado_produccion',
+                name: 'estado_produccion',
+                render: function (data, type, full, meta) {
+                    if (type === 'display') {
+                        const options = ['Ingenieria','Produccion', 'Embalaje', 'Listo para despacho'];
+                        let select = `<select class="form-control form-control-sm estado-produccion" data-id="${full.id}">`;
+                        options.forEach(function (opt) {
+                            const selected = data === opt ? 'selected' : '';
+                            select += `<option value="${opt}" ${selected}>${opt}</option>`;
+                        });
+                        select += `</select>`;
+                        return select;
+                    }
+                    return data;
+                }
+            },
+            { data: 'fecha_entrega', name: 'fecha_entrega' },
+            { data: 'galeria_estado_entrega', name: 'galeria_estado_entrega', orderable: false, searchable: false },
+            { data: 'id_proyecto_nombre_proyecto', name: 'id_proyecto.nombre_proyecto' },
+            { data: 'estado', name: 'estado' },
+        ],
+        orderCellsTop: true,
+        pageLength: 10,
+    };
 
-        return
-      }
+    let table = $('.datatable-Fasefabrica').DataTable(dtOverrideGlobals);
 
-      if (confirm('{{ trans('global.areYouSure') }}')) {
+    $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
+        $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+    });
+
+    $(document).on('change', '.estado-produccion', function () {
+        const id = $(this).data('id');
+        const estado = $(this).val();
+
         $.ajax({
-          headers: {'x-csrf-token': _token},
-          method: 'POST',
-          url: config.url,
-          data: { ids: ids, _method: 'DELETE' }})
-          .done(function () { location.reload() })
-      }
-    }
-  } 
-  dtButtons.push(deleteButton)
-@endcan */
-  let dtOverrideGlobals = {
-    buttons: dtButtons,
-    processing: true,
-    serverSide: true,
-    retrieve: true,
-    aaSorting: [],
-    ajax: "{{ route('admin.fasefabricas.index') }}",
-    columns: [
-{ data: 'id', name: 'id' },
-{ 
-        data: 'actions',
-        name: '{{ trans('global.actions') }}',
-        render: function (data, type, full, meta) {
-            // Verificamos si la acción es de tipo editar
-            if (type === 'display' && meta.col === 1) {
-                // Obtenemos el ID del elemento actual
-                var id = full['id'];
-                
-                // Creamos el enlace con la URL de edición
-                data = '<a href="/admin/fasefabricas/' + id + '/edit" class="btn btn-primary">Ver</a>';
+            url: "{{ route('admin.fasefabricas.updateEstadoProduccion') }}",
+            method: 'POST',
+            headers: {
+                'x-csrf-token': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                id: id,
+                estado_produccion: estado
+            },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success('Estado actualizado correctamente');
+                } else {
+                    toastr.error('Error al actualizar estado');
+                }
+            },
+            error: function () {
+                toastr.error('Error al actualizar estado');
             }
-            return data;
-        }
-    },
-{ data: 'aprobacion_course', name: 'aprobacion_course' },
-{ data: 'oc_proveedores', name: 'oc_proveedores', sortable: false, searchable: false },
-{ data: 'estado_produccion', name: 'estado_produccion' },
-{ data: 'fecha_entrega', name: 'fecha_entrega' },
-{ data: 'galeria_estado_entrega', name: 'galeria_estado_entrega', sortable: false, searchable: false },
-{ data: 'id_proyecto_nombre_proyecto', name: 'id_proyecto.nombre_proyecto' },
-{ data: 'estado', name: 'estado' },
-    ],
-    orderCellsTop: true,
-    order: [[ 0, 'desc' ]],
-    pageLength: 10,
-  };
-  console.log(dtOverrideGlobals)
-  let table = $('.datatable-Fasefabrica').DataTable(dtOverrideGlobals);
-  $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
-      $($.fn.dataTable.tables(true)).DataTable()
-          .columns.adjust();
-  });
-  
+        });
+    });
+
 });
-
-   
-
 </script>
+
 @endsection

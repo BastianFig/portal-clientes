@@ -29,12 +29,9 @@ class Fasefabrica extends Model implements HasMedia
 
     public const FASE = [
         'Ingenieria' => 'Ingenieria',
-        'Dimensionado' => 'Dimensionado',
-        'Prensado' => 'Prensado',
-        'Enchape' => 'Enchape',
-        'Perforado' => 'Perforado',
-        'Armado' => 'Armado',
-        'Limpieza/Embalaje' => 'Limpieza/Embalaje',
+        'Produccion' => 'Produccion',
+        'Embalaje' => 'Embalaje',
+        'Listo para despacho' => 'Listo para despacho',
     ];
 
     protected $dates = [
@@ -45,9 +42,10 @@ class Fasefabrica extends Model implements HasMedia
     ];
 
     public const ESTADO_PRODUCCION_SELECT = [
-        'pendiente'  => 'Pendiente',
-        'en proceso' => 'En proceso',
-        'finalizado' => 'Finalizado',
+        'Ingenieria' => 'Ingenieria',
+        'Produccion' => 'Produccion',
+        'Embalaje' => 'Embalaje',
+        'Listo para despacho' => 'Listo para despacho',
     ];
 
     protected $fillable = [

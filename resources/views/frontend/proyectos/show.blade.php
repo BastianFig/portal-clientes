@@ -893,7 +893,7 @@
                                                                     <div class="d-flex flex-column justify-content-start">
                                                                         <div class="d-flex flex-column">
                                                                             <p href="#" class="fabricacion-custom" id="fase-ingenieria">
-                                                                                Diseño</p>
+                                                                                Ingeniería</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -906,7 +906,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="rounded-xl shadow d-flex flex-shrink-0 justify-content-center align-items-center">
-                                                                <div class="bg-gradient-light sw-1 sh-1 rounded-xl position-relative" id="bg-gradient-light-dimensionado">
+                                                                <div class="bg-gradient-light sw-1 sh-1 rounded-xl position-relative" id="bg-gradient-light-produccion">
                                                                 </div>
                                                             </div>
                                                             <div class="w-100 d-flex h-100 justify-content-center position-relative">
@@ -918,8 +918,35 @@
                                                             <div class="h-100">
                                                                 <div class="d-flex flex-column justify-content-start">
                                                                     <div class="d-flex flex-column">
-                                                                        <p href="#" class="fabricacion-custom" id="fase-dimension">
+                                                                        <p href="#" class="fabricacion-custom" id="fase-produccion">
                                                                             Producción</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="row g-0">
+                                                        <div class="col-auto sw-1 d-flex flex-column justify-content-center align-items-center position-relative me-4">
+                                                            <div class="w-100 d-flex sh-1 position-relative justify-content-center">
+                                                                <div class="line-w-1 bg-separator h-100 position-absolute">
+                                                                </div>
+                                                            </div>
+                                                            <div class="rounded-xl shadow d-flex flex-shrink-0 justify-content-center align-items-center">
+                                                                <div class="bg-gradient-light sw-1 sh-1 rounded-xl position-relative" id="bg-gradient-light-embalaje">
+                                                                </div>
+                                                            </div>
+                                                            <div class="w-100 d-flex h-100 justify-content-center position-relative">
+                                                                <div class="line-w-1 bg-separator h-100 position-absolute">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col mb-4">
+                                                            <div class="h-100">
+                                                                <div class="d-flex flex-column justify-content-start">
+                                                                    <div class="d-flex flex-column">
+                                                                        <p href="#" class="fabricacion-custom" id="fase-embalaje">
+                                                                            Embalaje</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -932,7 +959,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="rounded-xl shadow d-flex flex-shrink-0 justify-content-center align-items-center">
-                                                                <div class="bg-gradient-light sw-1 sh-1 rounded-xl position-relative" id="bg-gradient-light-limpieza">
+                                                                <div class="bg-gradient-light sw-1 sh-1 rounded-xl position-relative" id="bg-gradient-light-despacho">
                                                                 </div>
                                                             </div>
                                                             <div class="w-100 d-flex h-100 justify-content-center position-relative">
@@ -942,8 +969,8 @@
                                                             <div class="h-100">
                                                                 <div class="d-flex flex-column justify-content-start">
                                                                     <div class="d-flex flex-column">
-                                                                        <p href="#" class="fabricacion-custom" id="fase-limpieza">
-                                                                            Limpieza/Embalaje</p>
+                                                                        <p href="#" class="fabricacion-custom" id="fase-despacho">
+                                                                            Listo para Despacho</p>
 
                                                                     </div>
                                                                 </div>
@@ -2421,152 +2448,68 @@
 
 
         // listado fase de fabricacion
-        const handleFase = (fase) => {
-            console.log(fase);
-
+        var fase_preparacion = "<?php echo $proyecto->fasefabrica->estado_produccion; ?>";
+        const handleFase_preparacion = (fase_preparacion) => {
 
             let faseIngenieria = $('#fase-ingenieria');
-            let faseDimensionado = $('#fase-dimension');
-            let fasePrensado = $('#fase-prensado');
-            let faseEnchape = $('#fase-enchape');
-            let fasePerforado = $('#fase-peforado');
-            let faseArmado = $('#fase-armado');
-            let faseLimpieza = $('#fase-limpieza');
+            let faseProduccion = $('#fase-produccion');
+            let faseEmbalaje = $('#fase-embalaje');
+            let faseDespacho = $('#fase-despacho');
 
             let circleIngenieria = $('#bg-gradient-light-ingenieria');
-            let circleDimensionado = $('#bg-gradient-light-dimensionado');
-            let circlePrensado = $('#bg-gradient-light-prensado');
-            let circleEnchape = $('#bg-gradient-light-enchape');
-            let circlePerforado = $('#bg-gradient-light-perforado');
-            let circleArmado = $('#bg-gradient-light-armado');
-            let circleLimpieza = $('#bg-gradient-light-limpieza');
+            let circleProduccion = $('#bg-gradient-light-produccion');
+            let circleEmbalaje = $('#bg-gradient-light-embalaje');
+            let circleDespacho= $('#bg-gradient-light-despacho');
 
-            switch (fase) {
+            switch (fase_preparacion) {
                 case 'Ingenieria':
                     faseIngenieria.addClass('fabricacion-custom-active');
-                    faseDimensionado.removeClass('fabricacion-custom-active');
-                    fasePrensado.removeClass('fabricacion-custom-active');
-                    faseEnchape.removeClass('fabricacion-custom-active');
-                    fasePerforado.removeClass('fabricacion-custom-active');
-                    faseArmado.removeClass('fabricacion-custom-active');
-                    faseLimpieza.removeClass('fabricacion-custom-active');
+                    faseProduccion.removeClass('fabricacion-custom-active');
+                    faseEmbalaje.removeClass('fabricacion-custom-active');
+                    faseDespacho.removeClass('fabricacion-custom-active');
 
                     circleIngenieria.addClass('circle-active');
-                    circleDimensionado.removeClass('circle-active');
-                    circlePrensado.removeClass('circle-active');
-                    circleEnchape.removeClass('circle-active');
-                    circlePerforado.removeClass('circle-active');
-                    circleArmado.removeClass('circle-active');
-                    circleLimpieza.removeClass('circle-active');
+                    circleProduccion.removeClass('circle-active');
+                    circleEmbalaje.removeClass('circle-active');
+                    circleDespacho.removeClass('circle-active');
                     $('.circle-active').removeClass('bg-gradient-light');
                     break;
-                case 'Dimensionado':
-                    faseIngenieria.addClass('fabricacion-custom-active');
-                    faseDimensionado.removeClass('fabricacion-custom-active');
-                    fasePrensado.removeClass('fabricacion-custom-active');
-                    faseEnchape.removeClass('fabricacion-custom-active');
-                    fasePerforado.removeClass('fabricacion-custom-active');
-                    faseArmado.removeClass('fabricacion-custom-active');
-                    faseLimpieza.removeClass('fabricacion-custom-active');
-
-                    circleIngenieria.removeClass('circle-active');
-                    circleDimensionado.addClass('circle-active');
-                    circlePrensado.removeClass('circle-active');
-                    circleEnchape.removeClass('circle-active');
-                    circlePerforado.removeClass('circle-active');
-                    circleArmado.removeClass('circle-active');
-                    circleLimpieza.removeClass('circle-active');
-                    $('.circle-active').removeClass('bg-gradient-light');
-                    break;
-                case 'Prensado':
+                case 'Produccion':
                     faseIngenieria.removeClass('fabricacion-custom-active');
-                    faseDimensionado.addClass('fabricacion-custom-active');
-                    fasePrensado.removeClass('fabricacion-custom-active');
-                    faseEnchape.removeClass('fabricacion-custom-active');
-                    fasePerforado.removeClass('fabricacion-custom-active');
-                    faseArmado.removeClass('fabricacion-custom-active');
-                    faseLimpieza.removeClass('fabricacion-custom-active');
+                    faseProduccion.addClass('fabricacion-custom-active');
+                    faseEmbalaje.removeClass('fabricacion-custom-active');
+                    faseDespacho.removeClass('fabricacion-custom-active');
 
                     circleIngenieria.removeClass('circle-active');
-                    circleDimensionado.addClass('circle-active');
-                    circlePrensado.removeClass('circle-active');
-                    circleEnchape.removeClass('circle-active');
-                    circlePerforado.removeClass('circle-active');
-                    circleArmado.removeClass('circle-active');
-                    circleLimpieza.removeClass('circle-active');
+                    circleProduccion.addClass('circle-active');
+                    circleEmbalaje.removeClass('circle-active');
+                    circleDespacho.removeClass('circle-active');
                     $('.circle-active').removeClass('bg-gradient-light');
                     break;
-                case 'Enchape':
+                case 'Embalaje':
+                    console.log('esta es ñaa fase' + fase);
                     faseIngenieria.removeClass('fabricacion-custom-active');
-                    faseDimensionado.addClass('fabricacion-custom-active');
-                    fasePrensado.removeClass('fabricacion-custom-active');
-                    faseEnchape.removeClass('fabricacion-custom-active');
-                    fasePerforado.removeClass('fabricacion-custom-active');
-                    faseArmado.removeClass('fabricacion-custom-active');
-                    faseLimpieza.removeClass('fabricacion-custom-active');
+                    faseProduccion.removeClass('fabricacion-custom-active');
+                    faseEmbalaje.addClass('fabricacion-custom-active');
+                    faseDespacho.removeClass('fabricacion-custom-active');
 
                     circleIngenieria.removeClass('circle-active');
-                    circleDimensionado.addClass('circle-active');
-                    circlePrensado.removeClass('circle-active');
-                    circleEnchape.removeClass('circle-active');
-                    circlePerforado.removeClass('circle-active');
-                    circleArmado.removeClass('circle-active');
-                    circleLimpieza.removeClass('circle-active');
-
+                    circleProduccion.removeClass('circle-active');
+                    circleEmbalaje.addClass('circle-active');
+                    circleDespacho.removeClass('circle-active');
                     $('.circle-active').removeClass('bg-gradient-light');
                     break;
-                case 'Perforado':
+                case 'Listo para despacho':
                     faseIngenieria.removeClass('fabricacion-custom-active');
-                    faseDimensionado.addClass('fabricacion-custom-active');
-                    fasePrensado.removeClass('fabricacion-custom-active');
-                    faseEnchape.removeClass('fabricacion-custom-active');
-                    fasePerforado.removeClass('fabricacion-custom-active');
-                    faseArmado.removeClass('fabricacion-custom-active');
-                    faseLimpieza.removeClass('fabricacion-custom-active');
+                    faseProduccion.removeClass('fabricacion-custom-active');
+                    faseEmbalaje.removeClass('fabricacion-custom-active');
+                    faseDespacho.addClass('fabricacion-custom-active');
 
                     circleIngenieria.removeClass('circle-active');
-                    circleDimensionado.addClass('circle-active');
-                    circlePrensado.removeClass('circle-active');
-                    circleEnchape.removeClass('circle-active');
-                    circlePerforado.removeClass('circle-active');
-                    circleArmado.removeClass('circle-active');
-                    circleLimpieza.removeClass('circle-active');
-                    $('.circle-active').removeClass('bg-gradient-light');
-                    break;
-                case 'Armado':
-                    faseIngenieria.removeClass('fabricacion-custom-active');
-                    faseDimensionado.addClass('fabricacion-custom-active');
-                    fasePrensado.removeClass('fabricacion-custom-active');
-                    faseEnchape.removeClass('fabricacion-custom-active');
-                    fasePerforado.removeClass('fabricacion-custom-active');
-                    faseArmado.removeClass('fabricacion-custom-active');
-                    faseLimpieza.removeClass('fabricacion-custom-active');
+                    circleProduccion.removeClass('circle-active');
+                    circleEmbalaje.removeClass('circle-active');
+                    circleDespacho.addClass('circle-active');
 
-                    circleIngenieria.removeClass('circle-active');
-                    circleDimensionado.addClass('circle-active');
-                    circlePrensado.removeClass('circle-active');
-                    circleEnchape.removeClass('circle-active');
-                    circlePerforado.removeClass('circle-active');
-                    circleArmado.removeClass('circle-active');
-                    circleLimpieza.removeClass('circle-active');
-                    $('.circle-active').removeClass('bg-gradient-light');
-                    break;
-                case 'Limpieza/Embalaje':
-                    faseIngenieria.removeClass('fabricacion-custom-active');
-                    faseDimensionado.removeClass('fabricacion-custom-active');
-                    fasePrensado.removeClass('fabricacion-custom-active');
-                    faseEnchape.removeClass('fabricacion-custom-active');
-                    fasePerforado.removeClass('fabricacion-custom-active');
-                    faseArmado.removeClass('fabricacion-custom-active');
-                    faseLimpieza.addClass('fabricacion-custom-active');
-
-                    circleIngenieria.removeClass('circle-active');
-                    circleDimensionado.removeClass('circle-active');
-                    circlePrensado.removeClass('circle-active');
-                    circleEnchape.removeClass('circle-active');
-                    circlePerforado.removeClass('circle-active');
-                    circleArmado.removeClass('circle-active');
-                    circleLimpieza.addClass('circle-active');
                     $('.circle-active').removeClass('bg-gradient-light');
                     break;
                 default:
@@ -2574,9 +2517,10 @@
             }
         };
         @if ($proyecto->fasefabrica)
-            const fases = '{{ $proyecto->fasefabrica->fase }}';
+            const fases = '{{ $proyecto->fasefabrica->estado_produccion }}';
+            console.log('fasecillas: '+ fases);
             document.addEventListener('DOMContentLoaded', function() {
-                handleFase(fases.toString());
+                handleFase_preparacion(fases.toString());
             });
         @endif
         if (document.getElementById('btn-abono50')) {

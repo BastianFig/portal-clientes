@@ -56,3 +56,11 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
  //AUTH
     Route::post('register', 'Api\\AuthController@register');
     Route::post('login', 'Api\\AuthController@login');
+
+
+    use App\Http\Controllers\Api\OcController;
+Route::get('/fft/{folio}', [OcController::class, 'listarFft']);
+Route::get('/oc/{folio}', [OcController::class, 'listarOc']);
+
+Route::get('/descargar-fft/{folio}/{id?}', [OcController::class, 'descargarFft']);
+Route::get('/descargar-oc/{folio}/{id?}', [OcController::class, 'descargarOc']);
